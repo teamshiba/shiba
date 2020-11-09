@@ -1,5 +1,9 @@
+import {createBrowserHistory} from "history";
+
 /**
  * @desc helper functions.
  */
 
-export { }
+const browserHistory = createBrowserHistory();
+
+export { browserHistory }
