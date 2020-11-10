@@ -14,7 +14,7 @@ interface IProps {
 const Layout: FC<IProps> = (props) => {
     return <Container>
         {props.children}
-        <Footer history={browserHistory} />
+        <Footer history={browserHistory}/>
     </Container>
 }
 
