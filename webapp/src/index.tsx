@@ -1,10 +1,11 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import {Route, Router, Switch} from 'react-router'
-import {createBrowserHistory} from 'history';
+// import {createBrowserHistory} from 'history';
 import './index.css';
 import Layout from "./components/Layout";
 import App from './App';
+import Authentication from "./pages/Authentication/index"
 import reportWebVitals from './reportWebVitals';
 import { browserHistory } from './common/utils';
 
@@ -14,10 +15,7 @@ ReactDOM.render(
             <Switch>
                 <Route path="/" component={App} exact={true}/>
                 <Route path="/404" component={App}/>
-                <Route path={"/auth/"}>
-                    <Route path={'login'}/>
-                    <Route path={'signup'}/>
-                </Route>
+                <Route path="/auth/:id" component={Authentication} />
                 <Layout>
                     <Route path={"/room/"}>
                         <Route path={'active'}/>
