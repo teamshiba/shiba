@@ -9,6 +9,7 @@ import {browserHistory} from './common/utils';
 import RoomList from "./pages/RoomList";
 import Voting from "./pages/Voting";
 import {createMuiTheme, ThemeProvider} from '@material-ui/core/styles';
+import {Shadows} from "@material-ui/core/styles/shadows";
 
 const theme = createMuiTheme({
     palette: {
@@ -19,6 +20,7 @@ const theme = createMuiTheme({
             main: "#FFFFFF"
         },
     },
+    shadows: Array(25).fill("none") as Shadows
 });
 
 ReactDOM.render(
