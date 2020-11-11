@@ -15,7 +15,7 @@ ReactDOM.render(
             <Switch>
                 <Route path="/" component={App} exact={true}/>
                 <Route path="/404" component={App}/>
-                <Route path="/auth/:id" component={Authentication} />
+                <Route exact path="/auth" component={Authentication} />
                 <Layout>
                     <Route path={"/room/"}>
                         <Route path={'active'}/>
