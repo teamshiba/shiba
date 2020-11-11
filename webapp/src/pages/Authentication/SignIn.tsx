@@ -4,7 +4,7 @@
 
 import React, { FC } from "react";
 import { Container } from "@material-ui/core";
-import firebase from "../../firebase";
+import firebase from "../../firebase/index";
 import StyledFirebaseAuth from 'react-firebaseui/StyledFirebaseAuth';
 
 const uiConfig = {
