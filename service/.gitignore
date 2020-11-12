@@ -204,6 +204,7 @@ venv/
 ENV/
 env.bak/
 venv.bak/
+fbConfigs.json
 
 # Spyder project settings
 .spyderproject
