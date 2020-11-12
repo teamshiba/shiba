@@ -2,9 +2,9 @@
  * @desc authentication page.
  */
 
-import React, { FC } from "react";
-import { Container } from "@material-ui/core";
-import firebase from "../../firebase/index";
+import React, {FC} from "react";
+import {Container} from "@material-ui/core";
+import firebase from "../../firebase";
 import StyledFirebaseAuth from 'react-firebaseui/StyledFirebaseAuth';
 
 const uiConfig = {

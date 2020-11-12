@@ -1,6 +1,3 @@
-import dotenv from "dotenv";
-
-dotenv.config()
 export const config = {
     apiKey: process.env.REACT_APP_apiKey,
     authDomain: process.env.REACT_APP_authDomain,
