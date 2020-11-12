@@ -11,7 +11,7 @@ import RoomList from "./pages/RoomList";
 import Voting from "./pages/Voting";
 import {createMuiTheme, ThemeProvider} from '@material-ui/core/styles';
 import {Shadows} from "@material-ui/core/styles/shadows";
-import UserProvider from "./providers/UserProvider";
+import UserProfile from "./pages/UserProfile";
 
 const theme = createMuiTheme({
     palette: {
@@ -28,27 +28,25 @@ const theme = createMuiTheme({
 ReactDOM.render(
     <React.StrictMode>
         <ThemeProvider theme={theme}>
-            <UserProvider>
-                <Router history={browserHistory}>
-                    <Switch>
-                        <Route path="/" component={App} exact={true}/>
-                        <Route path="/404" component={App}/>
-                        <Route path="/auth/" component={Authentication}/>
-                        <Layout>
-                            <Route path="/room">
-                                <Switch>
-                                    <Route path="/room/active" component={RoomList}/>
-                                    <Route path="/room/history"/>
-                                    <Route path="/room/:id" component={Voting}/>
-                                </Switch>
-                            </Route>
-                            <Route path="/user/">
-                                <Route path="/user/profile"/>
-                            </Route>
-                        </Layout>
-                    </Switch>
-                </Router>
-            </UserProvider>
+            <Router history={browserHistory}>
+                <Switch>
+                    <Route path="/" component={App} exact={true}/>
+                    <Route path="/404" component={App}/>
+                    <Route path="/auth/" component={Authentication}/>
+                    <Layout>
+                        <Route path="/room">
+                            <Switch>
+                                <Route path="/room/active" component={RoomList}/>
+                                <Route path="/room/history"/>
+                                <Route path="/room/:id" component={Voting}/>
+                            </Switch>
+                        </Route>
+                        <Route path="/user/">
+                            <Route path="/user/profile" component={UserProfile}/>
+                        </Route>
+                    </Layout>
+                </Switch>
+            </Router>
         </ThemeProvider>
     </React.StrictMode>,
     document.getElementById('root')
