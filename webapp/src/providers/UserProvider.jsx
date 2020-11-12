@@ -17,10 +17,10 @@ class UserProvider extends Component {
     componentDidMount = async () => {
         auth.onAuthStateChanged(async userAuth => {
             // add empty history to user
-            const adtionalData = {
+            const additionalData = {
                 'history': ['']
             };
-            const user = await generateUserDocument(userAuth, adtionalData);
+            const user = await generateUserDocument(userAuth, additionalData);
             this.setState({user});
         });
 
