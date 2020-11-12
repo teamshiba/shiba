@@ -4,6 +4,7 @@ import {Route, Router, Switch} from 'react-router'
 import './index.css';
 import Layout from "./components/Layout";
 import App from './App';
+import Authentication from "./pages/Authentication/index"
 import reportWebVitals from './reportWebVitals';
 import {browserHistory} from './common/utils';
 import RoomList from "./pages/RoomList";
@@ -30,10 +31,7 @@ ReactDOM.render(
                 <Switch>
                     <Route path="/" component={App} exact={true}/>
                     <Route path="/404" component={App}/>
-                    <Route path="/auth/">
-                        <Route path="/auth/login"/>
-                        <Route path="/auth/signup"/>
-                    </Route>
+                    <Route path="/auth/" component={Authentication}/>
                     <Layout>
                         <Route path="/room">
                             <Switch>

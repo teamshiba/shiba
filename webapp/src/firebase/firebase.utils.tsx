@@ -1,21 +1,50 @@
-import firebase from "firebase/app";
+import firebase from "./index";
 import "firebase/firestore";
 import "firebase/auth";
-import dotenv from "dotenv";
 
+export const auth = firebase.auth();
+export const firestore = firebase.firestore();
 
-dotenv.config()
-const config = {
-    apiKey: process.env.REACT_APP_apiKey,
-    authDomain: process.env.REACT_APP_authDomain,
-    databaseURL: process.env.REACT_APP_databaseURL,
-    projectId: process.env.REACT_APP_projectId,
-    storageBucket: process.env.REACT_APP_storageBucket,
-    messagingSenderId: process.env.REACT_APP_messagingSenderId,
-    appId: process.env.REACT_APP_appId,
-    measurementId: process.env.REACT_APP_measurementId,
+const provider = new firebase.auth.GoogleAuthProvider();
+
+// eslint-disable-next-line
+export const signInWithGoogle = () => {
+    auth.signInWithPopup(provider);
 };
 
-firebase.initializeApp(config);
+// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
+export const generateUserDocument = async (user: firebase.User | null, additionalData: firebase.firestore.DocumentData | undefined) => {
+    if (!user) return;
 
-export {}
+    const userRef = firestore.doc(`Users/${user.uid}`);
+    const snapshot = await userRef.get();
+
+    if (!snapshot.exists) {
+        const {email, displayName, photoURL} = user;
+        try {
+            await userRef.set({
+                displayName,
+                email,
+                photoURL,
+                ...additionalData
+            });
+        } catch (error) {
+            console.error("Error creating user document", error);
+        }
+    }
+    return getUserDocument(user.uid);
+};
+
+const getUserDocument = async (uid: string) => {
+    if (!uid) return null;
+    try {
+        const userDocument = await firestore.doc(`users/${uid}`).get();
+
+        return {
+            uid,
+            ...userDocument.data()
+        };
+    } catch (error) {
+        console.error("Error fetching user", error);
+    }
+};
