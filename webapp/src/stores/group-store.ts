@@ -22,6 +22,10 @@ class GroupStore {
             }
         ];
     }
+
+    addActiveGroup(id: number, name: string) {
+        this.activeGroups.push({id: id, name: name})
+    }
 }
 
 export const groupStore = new GroupStore();
