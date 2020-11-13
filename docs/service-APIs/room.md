@@ -5,7 +5,7 @@
 Used to retrieve a list of matching rooms for a registered User.
 
 ```
-GET /api/room/list
+GET /api/room/list?uid=<user id>
 ```
 
 **Auth required** : `YES`
@@ -27,8 +27,8 @@ GET /api/room/list
 {
   "data" : [
     {
-      "gid" : "<string>[matching room id]",
-      "name" : "<string>[display name of the room]"
+      "groupId" : "<string>[matching room id]",
+      "displayName" : "<string>[display name of the room]"
     }
   ]
 }
@@ -64,7 +64,7 @@ POST /api/room
 
 ```json
 {
-    "uid": "[creator/organizer's user ID]"
+    "userId": "[creator/organizer's user ID]"
 }
 ```
 
@@ -94,7 +94,7 @@ POST /api/room
 Used to retrieve detailed information about a matching rooms by gid.
 
 ```
-GET /api/room
+GET /api/room?gid=<group id>
 ```
 
 **Auth required** : `YES`
@@ -115,9 +115,11 @@ GET /api/room
   "groupId": "<string>[doc id of that matching room]",
   "displayName": "<string>[display name of that matching room",
   "link": "<string>[the URL that others can click to join the group]",
+  "organizer": "<string>[organizer's user ID]",
   "members": [{
-    "uid": "", "displayName": "", "avatarUrl": ""
-  }]
+    "userId": "", "displayName": "", "avatarUrl": ""
+  }],
+  "items": []
 }
 ```
 
@@ -127,6 +129,60 @@ GET /api/room
 
 ## (4) Update a group profile
 
+Used to update the profile of a matching group.
+
+```
+PUT /api/room
+```
+
+**Auth required** : `YES`
+
+**Request body** :
+
+Raw data in the format of JSON.
+
+| Attribute | Type     | Required | Description   |
+|:-------- :|:--------:|:--------:|:--------------|
+| `groupId` | string | yes   | Matching room ID. |
+| `displayName` | string | no   | Display name of the room. |
+| `link` | string | no   | URL for sharing the room. |
+| `organizer` | string | no | organizer's user ID.|
+
+**Success response** :
+
+- **Code** : `200 OK`
+- **Body** :  the same as `API(3): get a group profile by id`.
+
+**Error responses**
+
+1. Not authorized: the same as in API (2).
+
 ## (5) Join a matching group
+
+Used to let a user join a matching group.
+
+```
+PUT /api/room/join
+```
+
+**Auth required** : `YES`
+
+**Request body** :
+
+Raw data in the format of JSON.
+
+| Attribute | Type     | Required | Description   |
+|:-------- :|:--------:|:--------:|:--------------|
+| `userId` | string | yes   | Matching room ID. |
+| `groupId` | string | yes  | User ID. |
+
+**Success response** :
+
+- **Code** : `200 OK`
+- **Body** :  the same as `API(3): get a group profile by id`.
+
+**Error responses**
+
+1. Not authorized: the same as in API (2).
 
 ## (6) Get the results at a matching room
