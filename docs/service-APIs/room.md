@@ -1,4 +1,4 @@
-# Service APIs: Room
+# Service APIs: Matching Room
 
 ## (1) Get a list of rooms
 
@@ -70,7 +70,7 @@ POST /api/room
 
 **Success response** :
 
-- **Code** : `200 OK`
+- **Code** : `201 CREATED`
 - **Body** : the same as `API(3): get a group profile by id`.
 
 **Error responses**
@@ -185,4 +185,26 @@ Raw data in the format of JSON.
 
 1. Not authorized: the same as in API (2).
 
+2. Bad parameters:
+
+- **Condition** : Either the user ID or the group ID is invalid. 
+
+- **Code** : `400`
+
+- **Content** :
+
+```json
+{
+    "msg": "Invalid group id."
+}
+```
+
 ## (6) Get the results at a matching room
+
+Retrieve the results or stats of a matching room.
+
+```
+GET /api/room/stats?gid=<group ID>
+```
+
+**Auth required** : `YES`
