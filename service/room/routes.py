@@ -1,7 +1,7 @@
+from firebase_admin import firestore
 from flask import Blueprint, request
 from service import db
 from service.room.fb_objects import Group
-import json
 
 room = Blueprint('room', __name__)
 
@@ -84,7 +84,16 @@ def update_group_profile():
 
     if display_name: group_ref.document(group_id).update({u'roomName': display_name})
     if access_link: group_ref.document(group_id).update({u'accessLink': access_link})
-    if organizer_uid: group_ref.document(group_id).update({u'organizerUid': organizer_uid})
+
+    if organizer_uid:
+        # organizer must be in members first.
+        if organizer_uid in group_ref.document(group_id).get().to_dict()["members"]:
+            group_ref.document(group_id).update({u'organizerUid': organizer_uid})
+        else:
+            return {
+                "status": "error",
+                "msg": 'organizer must be in the room!'
+            }
 
     group_doc = group_ref.document(group_id)
     return {
@@ -95,4 +104,36 @@ def update_group_profile():
 
 @room.route('/room/join', methods=['PUT'])
 def join_group():
-    pass
+    request_body = request.get_json()
+
+    user_id = request_body['userId']
+    group_id = request_body['groupId']
+
+    # validate group_id
+    if not group_ref.document(group_id).get().exists:
+        return {
+            "status": "error",
+            "msg": 'groupId not exists'
+        }
+
+    # validate user_id
+    if not user_ref.document(user_id).get().exists:
+        return {
+            "status": "error",
+            "msg": 'userId not exists'
+        }
+
+    group_ref.document(group_id).update({u'members': firestore.ArrayUnion([user_id])})
+
+    return {
+        "status": "success",
+        "data": group_ref.document(group_id).get().to_dict()
+    }
+
+
+
+
+
+
+
+
