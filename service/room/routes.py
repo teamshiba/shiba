@@ -1,7 +1,7 @@
 from firebase_admin import firestore
 from flask import Blueprint, request
-from service import db
-from service.room.fb_objects import Group
+from utils import db
+from room.fb_objects import Group
 
 room = Blueprint('room', __name__)
 
@@ -129,11 +129,4 @@ def join_group():
         "status": "success",
         "data": group_ref.document(group_id).get().to_dict()
     }
-
-
-
-
-
-
-
 
