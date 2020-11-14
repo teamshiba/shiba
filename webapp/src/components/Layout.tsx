@@ -27,7 +27,6 @@ const Layout: FC<IProps> = (props) => {
     const classes = useStyles();
 
     return <Container className={classes.container}>
-        <div id="header"/>
         <div className={classes.content}>
             {props.children}
         </div>

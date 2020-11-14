@@ -1,30 +1,35 @@
-import {makeAutoObservable, observable} from "mobx";
+import {makeAutoObservable} from "mobx";
 import {createContext} from "react";
 import {Group} from "../domain/group";
+import axios from 'axios';
+import {serverPrefix} from "../common/config";
+import {Message, unwrap} from "../domain/message";
 
 class GroupStore {
-    @observable activeGroups: Group[] = [];
-    @observable historyGroups: Group[] = [];
+    activeGroups: Group[] = [];
+    historyGroups: Group[] = [];
 
     constructor() {
-        makeAutoObservable(this)
+        makeAutoObservable(this);
     }
 
     async updateActiveGroups() {
-        this.activeGroups = [
-            {
-                id: 1,
-                name: "Test Group 1",
-            },
-            {
-                id: 2,
-                name: "Test Group 2",
-            }
-        ];
+        const uid = localStorage.getItem("uid");
+        this.activeGroups = unwrap((await axios.get<Message<Group[]>>(`${serverPrefix}/room/list?uid=${uid}`)).data);
     }
 
-    addActiveGroup(id: number, name: string) {
-        this.activeGroups.push({id: id, name: name})
+    async updateHistoryGroups() {
+        const uid = localStorage.getItem("uid");
+        this.historyGroups = unwrap((await axios.get<Message<Group[]>>(`${serverPrefix}/room/list?uid=${uid}&state=true`)).data);
+    }
+
+    async createGroup(name: string) {
+        await axios.post(`${serverPrefix}/room`, {
+            "userId": localStorage.getItem("uid"),
+            "displayName": name,
+        });
+
+        await this.updateActiveGroups();
     }
 }
 
