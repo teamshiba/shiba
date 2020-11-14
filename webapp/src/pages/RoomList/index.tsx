@@ -45,35 +45,33 @@ const CreateGroupModal: FC<IModalProps> = ((props) => {
 
             <form onSubmit={(e) => {
                 e.preventDefault();
-                groupStore.addActiveGroup(
-                    groupStore.activeGroups[groupStore.activeGroups.length - 1].id + 1,
-                    groupName
-                )
+                groupStore.createGroup(groupName);
                 setGroupName("");
-                props.handleClose(); } }>
+                props.handleClose();
+            }}>
 
                 <DialogContent>
-                  <TextField
-                    autoFocus
-                    margin="dense"
-                    id="groupName"
-                    label="Group Name"
-                    type="text"
-                    placeholder={groupName}
-                    fullWidth
-                    onChange ={e => {
-                        setGroupName(e.target.value)
-                    }}
-                    required
-                  />
+                    <TextField
+                        autoFocus
+                        margin="dense"
+                        id="groupName"
+                        label="Group Name"
+                        type="text"
+                        placeholder={groupName}
+                        fullWidth
+                        onChange={e => {
+                            setGroupName(e.target.value)
+                        }}
+                        required
+                    />
                 </DialogContent>
                 <DialogActions>
-                  <Button onClick={props.handleClose} color="primary">
-                    Cancel
-                  </Button>
-                  <Button onClick={props.handleClose} color="primary" type="submit">
-                    Create!
-                  </Button>
+                    <Button onClick={props.handleClose} color="primary">
+                        Cancel
+                    </Button>
+                    <Button onClick={props.handleClose} color="primary" type="submit">
+                        Create!
+                    </Button>
                 </DialogActions>
             </form>
         </Dialog>
@@ -95,11 +93,11 @@ const RoomList: FC = observer(() => {
         </Header>
         <List>
             {groupStore.activeGroups.map(group =>
-                <ListItem className={classes.listItem} key={group.id.toString()} button>
+                <ListItem className={classes.listItem} key={group.groupId.toString()} button>
                     <ListItemIcon>
                         <InboxIcon/>
                     </ListItemIcon>
-                    <ListItemText primary={group.name}/>
+                    <ListItemText primary={group.displayName}/>
                 </ListItem>
             )}
         </List>
