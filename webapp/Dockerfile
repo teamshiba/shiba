@@ -5,6 +5,12 @@ WORKDIR /build/
 COPY package.json package-lock.json /build/
 RUN npm install
 
+ARG API_SERVER
+ENV REACT_APP_API_SERVER ${API_SERVER}
+
+# Explicitly copy the file so that docker will raise an error if the
+# file doesn't exist
+COPY .env /build/
 COPY . /build/
 RUN npm run build
 

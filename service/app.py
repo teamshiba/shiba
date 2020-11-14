@@ -11,7 +11,9 @@ def create_app():
 
     return _app
 
+# This line must be outside of `if __name__ == "__main__"` so that
+# gunicorn can use it
+app = create_app()
 
 if __name__ == "__main__":
-    app = create_app()
     app.run(debug=True)
