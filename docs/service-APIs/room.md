@@ -17,6 +17,7 @@ GET /api/room/list?uid=<user id>
 | `uid` | string | yes   | User ID. |
 | `offset` | integer | no | Starting position in the table. By default: `0`. |
 | `limit` | integer | no | Max size of response data. By default: `100`. |
+| `state` | boolean | no | If to filter inactive matching rooms, use `true`. |
 
 **Success response** :
 
@@ -28,7 +29,9 @@ GET /api/room/list?uid=<user id>
   "data" : [
     {
       "groupId" : "<string>[matching room id]",
-      "displayName" : "<string>[display name of the room]"
+      "displayName" : "<string>[display name of the room]",
+      "isCompleted": "<boolean>[whether the match is completed or not]",
+      "organizer": "<string>[organizer's user ID]"
     }
   ]
 }
@@ -115,6 +118,7 @@ GET /api/room?gid=<group id>
   "groupId": "<string>[doc id of that matching room]",
   "displayName": "<string>[display name of that matching room",
   "link": "<string>[the URL that others can click to join the group]",
+  "completed": "<boolean>[whether the match is completed or not]",
   "organizer": "<string>[organizer's user ID]",
   "members": [{
     "userId": "", "displayName": "", "avatarUrl": ""
