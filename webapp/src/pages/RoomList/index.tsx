@@ -2,7 +2,7 @@
  * @desc Homepage. List of matching rooms.
  */
 
-import React, {FC, useContext, useEffect, useState} from "react";
+import React, {FC, Fragment, useContext, useEffect, useState} from "react";
 import Header from "../../components/Header";
 import ShibaLogo from "../../components/ShibaLogo";
 import IconButton from '@material-ui/core/IconButton';
@@ -21,6 +21,7 @@ import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import Button from '@material-ui/core/Button';
+import {Group} from "../../domain/group";
 
 
 const useStyles = makeStyles(() => ({
@@ -78,31 +79,51 @@ const CreateGroupModal: FC<IModalProps> = ((props) => {
     );
 })
 
-const RoomList: FC = observer(() => {
-    const groupStore = useContext(GroupStore);
+interface IRoomListProps {
+    groups: Group[]
+}
+
+const RoomList: FC<IRoomListProps> = (props) => {
     const classes = useStyles();
+
+    return <List>
+        {props.groups.map(group =>
+            <ListItem className={classes.listItem} key={group.groupId.toString()} button>
+                <ListItemIcon>
+                    <InboxIcon/>
+                </ListItemIcon>
+                <ListItemText primary={group.displayName}/>
+            </ListItem>
+        )}
+    </List>
+}
+
+export const ActiveRoomList: FC = observer(() => {
+    const groupStore = useContext(GroupStore);
     const [isOpen, setOpen] = useState(false);
 
     useEffect(() => {
         groupStore.updateActiveGroups();
     }, []);
 
-    return <div>
+    return <Fragment>
         <Header buttons={<IconButton onClick={() => setOpen(true)}> <AddIcon/> </IconButton>}>
             <ShibaLogo/>
         </Header>
-        <List>
-            {groupStore.activeGroups.map(group =>
-                <ListItem className={classes.listItem} key={group.groupId.toString()} button>
-                    <ListItemIcon>
-                        <InboxIcon/>
-                    </ListItemIcon>
-                    <ListItemText primary={group.displayName}/>
-                </ListItem>
-            )}
-        </List>
+        <RoomList groups={groupStore.activeGroups}/>
         <CreateGroupModal isOpen={isOpen} handleClose={() => setOpen(false)}/>
-    </div>
+    </Fragment>
 })
 
-export default RoomList;
+export const HistoryRoomList: FC = observer(() => {
+    const groupStore = useContext(GroupStore);
+
+    useEffect(() => {
+        groupStore.updateHistoryGroups();
+    }, []);
+
+    return <Fragment>
+        <Header> <ShibaLogo/> </Header>
+        <RoomList groups={groupStore.historyGroups}/>
+    </Fragment>
+})
