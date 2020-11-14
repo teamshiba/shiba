@@ -1,7 +1,8 @@
 from firebase_admin import firestore
 from flask import Blueprint, request
-from service import db
-from service.room.fb_objects import Group
+from utils import db
+from utils.exceptions import InvalidQueryParams, InvalidRequestBody
+from room.fb_objects import Group
 
 room = Blueprint('room', __name__)
 
@@ -22,6 +23,8 @@ def group_data_to_dict(record):
 @room.route('/room/list', methods=['GET'])
 def get_group_list():
     user_id = request.args.get('uid')
+    if user_id is None:
+        raise InvalidQueryParams("Param 'uid' is required.")
     offset = request.args.get('offset') if 'offset' in request.args else 0
     limit = request.args.get('limit') if 'limit' in request.args else 100
     filter_completed = request.args.get('state') if 'state' in request.args else None
@@ -90,10 +93,7 @@ def update_group_profile():
         if organizer_uid in group_ref.document(group_id).get().to_dict()["members"]:
             group_ref.document(group_id).update({u'organizerUid': organizer_uid})
         else:
-            return {
-                "status": "error",
-                "msg": 'organizer must be in the room!'
-            }
+            raise InvalidRequestBody('organizer must be in the room!')
 
     group_doc = group_ref.document(group_id)
     return {
@@ -111,17 +111,11 @@ def join_group():
 
     # validate group_id
     if not group_ref.document(group_id).get().exists:
-        return {
-            "status": "error",
-            "msg": 'groupId not exists'
-        }
+        raise InvalidRequestBody('groupId not exists')
 
     # validate user_id
     if not user_ref.document(user_id).get().exists:
-        return {
-            "status": "error",
-            "msg": 'userId not exists'
-        }
+        raise InvalidRequestBody('userId not exists')
 
     group_ref.document(group_id).update({u'members': firestore.ArrayUnion([user_id])})
 
@@ -129,11 +123,4 @@ def join_group():
         "status": "success",
         "data": group_ref.document(group_id).get().to_dict()
     }
-
-
-
-
-
-
-
 

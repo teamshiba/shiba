@@ -13,7 +13,7 @@ GET /api/room/list?uid=<user id>
 **Query Parameters** :
 
 | Attribute | Type     | Required | Description   |
-|:-------- :|:--------:|:--------:|:--------------|
+| :--------: | :--------: | :--------: | :-------------- |
 | `uid` | string | yes   | User ID. |
 | `offset` | integer | no | Starting position in the table. By default: `0`. |
 | `limit` | integer | no | Max size of response data. By default: `100`. |
@@ -63,11 +63,12 @@ POST /api/room
 
 **Auth required** : `YES`
 
-**Request Body** :
+**Request Body (JSON)** :
 
 ```json
 {
-    "userId": "[creator/organizer's user ID]"
+    "userId": "[creator/organizer's user ID]",
+    "displayName": "[initial display name of the matching group]"
 }
 ```
 
@@ -105,7 +106,7 @@ GET /api/room?gid=<group id>
 **Query Parameters** :
 
 | Attribute | Type     | Required | Description   |
-|:-------- :|:--------:|:--------:|:--------------|
+| :--------: | :--------: | :--------: | :-------------- |
 | `gid` | string | yes   | Matching room ID. |
 
 **Success response** :
@@ -141,12 +142,10 @@ PUT /api/room
 
 **Auth required** : `YES`
 
-**Request body** :
-
-Raw data in the format of JSON.
+**Request body (JSON)** :
 
 | Attribute | Type     | Required | Description   |
-|:-------- :|:--------:|:--------:|:--------------|
+| :--------: | :--------: | :--------: | :-------------- |
 | `groupId` | string | yes   | Matching room ID. |
 | `displayName` | string | no   | Display name of the room. |
 | `link` | string | no   | URL for sharing the room. |
@@ -171,12 +170,10 @@ PUT /api/room/join
 
 **Auth required** : `YES`
 
-**Request body** :
-
-Raw data in the format of JSON.
+**Request body (JSON)** :
 
 | Attribute | Type     | Required | Description   |
-|:-------- :|:--------:|:--------:|:--------------|
+| :--------: | :--------: | :--------: | :-------------- |
 | `userId` | string | yes   | Matching room ID. |
 | `groupId` | string | yes  | User ID. |
 
