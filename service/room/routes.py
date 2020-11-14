@@ -1,5 +1,7 @@
 from flask import Blueprint, request
 from service import db
+from service.room.fb_objects import Group
+import json
 
 room = Blueprint('room', __name__)
 
@@ -29,25 +31,68 @@ def get_group_list():
     results = query.stream()
     data = map(lambda doc: (doc.id, doc.to_dict()), results)
     return {
+        "status": "success",
         "data": list(map(group_data_to_dict, data))
     }
 
 
-# @room.route('/room', methods=['POST'])
-# def create_group():
-#     pass
-#
-#
-# @room.route('/room', methods=['GET'])
-# def get_group_profile():
-#     pass
-#
-#
-# @room.route('/room', methods=['PUT'])
-# def update_group_profile():
-#     pass
+@room.route('/room', methods=['POST'])
+def create_group():
+    organizer_id = request.get_json()["userId"]
+    group = Group(organizer_id)
+    create_group_response = group_ref.add(group.to_dict())
+    # create_group_response format:
+    # (DatetimeWithNanoseconds(2020, 11, 13, 23, 45, 49, 939350, tzinfo=datetime.timezone.utc), <google.cloud.firestore_v1.document.DocumentReference object at 0x7f8d1f8bfc10>)
+    return {
+        "status": "success",
+        "data": create_group_response[1].get().to_dict()
+    }
+
+
+@room.route('/room', methods=['GET'])
+def get_group_profile():
+    group_id = request.args.get('gid')
+    group_doc = group_ref.document(group_id)
+    # response: <google.cloud.firestore_v1.document.DocumentReference object at 0x7f85258958d0>
+    return {
+        "status": "success",
+        "data": group_doc.get().to_dict()
+    }
+
+
+@room.route('/room', methods=['PUT'])
+def update_group_profile():
+    request_body = request.get_json()
+
+    if 'groupId' not in request_body:
+        return {
+            "status": "error",
+            "msg": 'groupId required'
+        }
+
+    # validate group_id
+    group_id = request_body['groupId']
+    if not group_ref.document(group_id).get().exists:
+        return {
+            "status": "error",
+            "msg": 'groupId not exists'
+        }
+
+    display_name = request_body['displayName'] if 'displayName' in request_body else ''
+    access_link = request_body['link'] if 'link' in request_body else ''
+    organizer_uid = request_body['organizer'] if 'organizer' in request_body else ''
+
+    if display_name: group_ref.document(group_id).update({u'roomName': display_name})
+    if access_link: group_ref.document(group_id).update({u'accessLink': access_link})
+    if organizer_uid: group_ref.document(group_id).update({u'organizerUid': organizer_uid})
+
+    group_doc = group_ref.document(group_id)
+    return {
+        "status": "success",
+        "data": group_doc.get().to_dict()
+    }
 
 
 @room.route('/room/join', methods=['PUT'])
-def update_group_profile():
+def join_group():
     pass
