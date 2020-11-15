@@ -42,7 +42,8 @@ def get_group_list():
 @room.route('/room', methods=['POST'])
 def create_group():
     organizer_id = request.get_json()["userId"]
-    group = Group(organizer_id)
+    display_name = request.get_json()["displayName"]
+    group = Group(organizer_id=organizer_id, room_name=display_name)
     create_group_response = group_ref.add(group.to_dict())
     # create_group_response format:
     # (DatetimeWithNanoseconds(2020, 11, 13, 23, 45, 49, 939350, tzinfo=datetime.timezone.utc), <google.cloud.firestore_v1.document.DocumentReference object at 0x7f8d1f8bfc10>)

@@ -2,12 +2,12 @@ import datetime
 
 
 class Group(object):
-    def __init__(self, organizer_id, is_completed=False):
+    def __init__(self, organizer_id, room_name='', is_completed=False):
         self.organizer_uid = organizer_id
         self.is_completed = is_completed
         self.item_list = []
         self.members = [organizer_id]
-        self.room_name = ''
+        self.room_name = room_name
         self.created_time = datetime.datetime.now()
         self.access_link = ''
 
