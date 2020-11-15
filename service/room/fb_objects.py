@@ -18,7 +18,7 @@ class Group(object):
             "itemList": self.item_list,
             "members": self.members,
             "roomName": self.room_name,
-            "createdTime": self.created_time,
+            "creationTime": self.created_time,
             "accessLink": self.access_link
         }
 
@@ -30,7 +30,7 @@ class Group(object):
                         itemList={self.item_list}, \
                         members={self.members}, \
                         roomName={self.room_name}, \
-                        createdTime={self.created_time}, \
+                        creationTime={self.created_time}, \
                         accessLink={self.access_link}, \
                     )'
         )

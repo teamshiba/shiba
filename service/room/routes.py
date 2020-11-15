@@ -27,7 +27,7 @@ def get_group_list():
         raise InvalidQueryParams("Param 'uid' is required.")
     offset = request.args.get('offset') if 'offset' in request.args else 0
     limit = request.args.get('limit') if 'limit' in request.args else 100
-    filter_completed = request.args.get('state') if 'state' in request.args else None
+    filter_completed = request.args.get('state') if 'state' in request.args else False
     query = group_ref.where(u'members', u'array_contains', user_id)
     if filter_completed is not None:
         query = query.where(u'is_completed', u'==', filter_completed)
@@ -58,9 +58,15 @@ def get_group_profile():
     group_id = request.args.get('gid')
     group_doc = group_ref.document(group_id)
     # response: <google.cloud.firestore_v1.document.DocumentReference object at 0x7f85258958d0>
+    raw_group = group_doc.get().to_dict()
+    list_uid = raw_group.get("members")
+    members = list()
+    for uid in list_uid:
+        members.append(user_ref.document(uid).get().to_dict())
+    raw_group["members"] = members
     return {
         "status": "success",
-        "data": group_doc.get().to_dict()
+        "data": raw_group
     }
 
 
