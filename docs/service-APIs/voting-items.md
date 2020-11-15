@@ -22,7 +22,20 @@ PUT /api/item/vote
 **Success response** :
 
 - **Code** : `200 OK`
-- **Body** :  none.
+- **Body** : 
+
+```json
+{
+  "data" : [
+    {
+      "groupId" : "<string>[matching room id]",
+      "displayName" : "<string>[display name of the room]",
+      "isCompleted": "<boolean>[whether the match is completed or not]",
+      "organizer": "<string>[organizer's user ID]"
+    }
+  ]
+}
+```
 
 **Error responses**
 
