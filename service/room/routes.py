@@ -32,7 +32,7 @@ def get_group_list():
     filter_completed = request.args.get('state') if 'state' in request.args else False
     query = group_ref.where(u'members', u'array_contains', user_id)
     if filter_completed is not None:
-        query = query.where(u'is_completed', u'==', filter_completed)
+        query = query.where(u'isCompleted', u'==', filter_completed)
     results = query.stream()
     data = map(lambda doc: (doc.id, doc.to_dict()), results)
     return {
