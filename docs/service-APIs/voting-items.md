@@ -1,11 +1,51 @@
 # Service APIs: Voting & Items
 
-## (1) Vote for an item
+## (1) Get a list of items in one group
+
+Used to retrieve a list of added items.
+
+```
+GET /api/item/list
+```
+
+**Auth required** : `YES`
+
+**Query Parameters** :
+
+| Attribute | Type     | Required | Description   |
+| :--------: | :--------: | :--------: | :-------------- |
+| `gid` | string | yes | Target matching room ID. |
+| `voted_by` | string | no | If applied, include only items voted by that user. |
+| `unvoted_by` | string | no | If applied, include only items not voted by that user. |
+| `offset` | integer | no | Starting position in the table. By default: `0`. |
+| `limit` | integer | no | Max size of response data. By default: `100`. |
+
+- `voted_by` and `unvoted_by` takes `user_id` and only one of them can be used in one request.
+
+**Success response** :
+
+- **Code** : `200 OK`
+- **Body** : items not voted by that users in that group. 
+
+```json5
+{
+  "roomTotal" : 0, // total number of items in that group.
+  "items" : [
+    {
+      "itemUrl" : "<string>[The URL that links to the resource webpage.]",
+      "name" : "<string>[The display name of that item.]",
+      "imgUrl": "<string>[The URL that store the key picture of that item.]",
+    }
+  ]
+}
+```
+
+## (2) Vote for an item in a group
 
 Used to like or hate an item in the candidate list.
 
 ```
-PUT /api/item/vote
+PUT /api/voting
 ```
 
 **Auth required** : `YES`
@@ -22,20 +62,7 @@ PUT /api/item/vote
 **Success response** :
 
 - **Code** : `200 OK`
-- **Body** : 
-
-```json
-{
-  "data" : [
-    {
-      "groupId" : "<string>[matching room id]",
-      "displayName" : "<string>[display name of the room]",
-      "isCompleted": "<boolean>[whether the match is completed or not]",
-      "organizer": "<string>[organizer's user ID]"
-    }
-  ]
-}
-```
+- **Body** : the same as requesting `/api/item/list?gid=<current_room>&unvoted=<uid>`
 
 **Error responses**
 
@@ -66,3 +93,6 @@ PUT /api/item/vote
     "msg": "Invalid target item. "
 }
 ```
+
+
+
