@@ -9,7 +9,7 @@ voting = Blueprint('voting', __name__)
 
 user_ref = db.collection(u'Users')
 group_ref = db.collection(u'Groups')
-voting_ref: CollectionReference = db.collection(u'Voting')
+voting_ref: CollectionReference = db.collection(u'Votings')
 
 
 # PUT /api/voting

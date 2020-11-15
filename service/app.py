@@ -1,6 +1,6 @@
 from flask import Flask
 from room.routes import room
-from votings.routes import voting
+from routes.voting import voting
 from werkzeug.exceptions import HTTPException
 from utils.exceptions import handle_http_exception
 
@@ -15,7 +15,7 @@ def create_app():
     return _app
 
 # This line must be outside of `if __name__ == "__main__"` so that
-# gunicorn can use it
+# gunicorn can use ita
 app = create_app()
 
 if __name__ == "__main__":
