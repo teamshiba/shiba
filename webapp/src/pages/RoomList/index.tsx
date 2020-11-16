@@ -22,6 +22,7 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import Button from '@material-ui/core/Button';
 import {Group} from "../../domain/group";
+import {browserHistory} from "../../common/utils";
 
 
 const useStyles = makeStyles(() => ({
@@ -88,7 +89,8 @@ const RoomList: FC<IRoomListProps> = (props) => {
 
     return <List>
         {props.groups.map(group =>
-            <ListItem className={classes.listItem} key={group.groupId} button>
+            <ListItem className={classes.listItem} key={group.groupId} button
+                      onClick={() => browserHistory.push(`/room/${group.groupId}`)}>
                 <ListItemIcon>
                     <InboxIcon/>
                 </ListItemIcon>

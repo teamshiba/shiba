@@ -5,6 +5,6 @@ export interface Group {
 
 export interface GroupDetail {
     groupId: number
-    displayName: string,
-    completed: boolean;
+    roomName: string,
+    isCompleted: boolean;
 }

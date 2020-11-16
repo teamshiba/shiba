@@ -50,7 +50,7 @@ class GroupDetailStore {
     }
 
     async update() {
-        this.data = (await axios.get<GroupDetail>(`${serverPrefix}/room/?gid=${this.groupId}`)).data;
+        this.data = unwrap((await axios.get<Message<GroupDetail>>(`${serverPrefix}/room?gid=${this.groupId}`)).data);
     }
 }
 

@@ -21,15 +21,14 @@ const Voting: FC<IProps> = observer((props) => {
     const votingStore = useContext(VotingStore).room(roomId);
     const groupDetailStore = useContext(GroupStore).room(roomId);
 
-    if (groupDetailStore.data == null) return null;
-
     useEffect(() => {
         votingStore.updateItems();
+        groupDetailStore.update();
     }, []);
 
     // Polling for updates when there's no items left to swipe
     useEffect(() => {
-        if (votingStore.items.size > 0 || groupDetailStore.data?.completed) {
+        if (votingStore.items.size > 0 || groupDetailStore.data?.isCompleted) {
             return;
         }
 
@@ -39,7 +38,9 @@ const Voting: FC<IProps> = observer((props) => {
         }, 3000);
 
         return () => clearInterval(interval);
-    }, [votingStore.items.size, groupDetailStore.data.completed]);
+    }, [votingStore.items.size, groupDetailStore.data?.isCompleted]);
+
+    if (groupDetailStore.data == null) return null;
 
     const onCardLeftScreen = (direction: string, item: string) => {
         votingStore.vote(item, direction == "left" ? "like" : "dislike");
@@ -60,7 +61,7 @@ const Voting: FC<IProps> = observer((props) => {
                     </div>
             )}
         </div>;
-    } else if (groupDetailStore.data.completed) {
+    } else if (groupDetailStore.data.isCompleted) {
         content = <div className="message">Placeholder for real matching result</div>
     } else {
         const message = votingStore.voted ?
@@ -76,7 +77,7 @@ const Voting: FC<IProps> = observer((props) => {
                 <IconButton> <AddOutlinedIcon/> </IconButton>,
                 <IconButton> <EditOutlinedIcon/> </IconButton>
             ]}>
-                {groupDetailStore.data.displayName}
+                {groupDetailStore.data.roomName}
             </Header>
             {content}
         </Fragment>
