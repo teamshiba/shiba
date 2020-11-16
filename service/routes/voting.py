@@ -7,8 +7,8 @@ from utils.exceptions import InvalidQueryParams, InvalidRequestBody
 
 voting = Blueprint('voting', __name__)
 
-user_ref = db.collection(u'Users')
-group_ref = db.collection(u'Groups')
+user_ref: CollectionReference = db.collection(u'Users')
+group_ref: CollectionReference = db.collection(u'Groups')
 voting_ref: CollectionReference = db.collection(u'Votings')
 
 
@@ -20,8 +20,18 @@ def put_a_vote():
     gid = request_body.get("groupId")
     item_id = request_body.get("itemId")
     v_type = request_body.get("type")
+    if uid is None:
+        raise InvalidRequestBody("userId is required.")
+    if gid is None:
+        raise InvalidRequestBody("groupId is required.")
+    if item_id is None:
+        raise InvalidRequestBody("itemId is required.")
+    if v_type is None:
+        raise InvalidRequestBody("type is required.")
     fb_obj = Voting(gid, uid, item_id, v_type)
     resp = voting_ref.add(fb_obj.to_dict())
+    doc_group = group_ref.document(gid)
+    doc_group.get("items")
     return {
         "roomTotal": 0,
         "items": []
