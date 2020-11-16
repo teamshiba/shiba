@@ -4,7 +4,7 @@ from firebase_admin import firestore
 from uuid import uuid4
 from enum import Enum
 import json
-from typing import TypedDict
+from mypy_extensions import TypedDict
 from .connections import ref_items, ref_groups, ref_votes
 from utils.exceptions import DataModelException
 

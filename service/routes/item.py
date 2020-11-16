@@ -1,7 +1,5 @@
 from firebase_admin import firestore
-from google.cloud.firestore import CollectionReference
 from flask import Blueprint, request
-from utils import db
 from models.connections import ref_groups, ref_votes
 from models.voting import Voting
 from models.item import filter_items
@@ -10,7 +8,8 @@ from utils.exceptions import InvalidQueryParams, InvalidRequestBody, DataModelEx
 router_item = Blueprint('item', __name__)
 
 
-@router_item.route('/item/list')
+# GET /api/item/list
+@router_item.route('/item/list', methods=['GET'])
 def get_group_item_list(auth_uid=None):
     params: dict = request.args.to_dict()
     try:
