@@ -9,6 +9,7 @@ import EditOutlinedIcon from '@material-ui/icons/EditOutlined';
 import AddOutlinedIcon from '@material-ui/icons/AddOutlined';
 import TinderCard from 'react-tinder-card'
 import VotingStore from "../../stores/voting-store";
+import GroupStore from "../../stores/group-store";
 import './index.css'
 import {observer} from "mobx-react";
 import {RouteComponentProps} from "react-router";
@@ -18,10 +19,27 @@ type IProps = RouteComponentProps<{ id: string }>
 const Voting: FC<IProps> = observer((props) => {
     const roomId = props.match.params["id"];
     const votingStore = useContext(VotingStore).room(roomId);
+    const groupDetailStore = useContext(GroupStore).room(roomId);
+
+    if (groupDetailStore.data == null) return null;
 
     useEffect(() => {
         votingStore.updateItems();
     }, []);
+
+    // Polling for updates when there's no items left to swipe
+    useEffect(() => {
+        if (votingStore.items.size > 0 || groupDetailStore.data?.completed) {
+            return;
+        }
+
+        const interval = setInterval(() => {
+            votingStore.updateItems();
+            groupDetailStore.update();
+        }, 3000);
+
+        return () => clearInterval(interval);
+    }, [votingStore.items.size, groupDetailStore.data.completed]);
 
     const onCardLeftScreen = (direction: string, item: string) => {
         votingStore.vote(item, direction == "left" ? "like" : "dislike");
@@ -32,7 +50,7 @@ const Voting: FC<IProps> = observer((props) => {
         content = <div className="cardContainer">
             {[...votingStore.items].map((item
                 ) =>
-                    <div className="swipe">
+                    <div className="swipe" key={item.id}>
                         <TinderCard onCardLeftScreen={(dir) => onCardLeftScreen(dir, item.id)}
                                     preventSwipe={['up', 'down']}>
                             <div style={{backgroundImage: 'url(' + item.imgURL + ')'}} className='card'>
@@ -42,10 +60,13 @@ const Voting: FC<IProps> = observer((props) => {
                     </div>
             )}
         </div>;
+    } else if (groupDetailStore.data.completed) {
+        content = <div className="message">Placeholder for real matching result</div>
     } else {
         const message = votingStore.voted ?
             "Wait for other people to finished or click add button to add more items" :
             "Click add button to add more items";
+
         content = <div className="message">{message}</div>;
     }
 
@@ -55,7 +76,7 @@ const Voting: FC<IProps> = observer((props) => {
                 <IconButton> <AddOutlinedIcon/> </IconButton>,
                 <IconButton> <EditOutlinedIcon/> </IconButton>
             ]}>
-                Group Name
+                {groupDetailStore.data.displayName}
             </Header>
             {content}
         </Fragment>

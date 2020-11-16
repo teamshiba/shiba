@@ -3,18 +3,21 @@ import {createContext} from "react";
 import {VotingItem} from "../domain/voting-item";
 
 class VotingStore {
-    private votings: { [room_id: string]: RoomVotingStore } = {}
+    private votings = new Map<string, RoomVotingStore>();
 
     constructor() {
         makeAutoObservable(this);
     }
 
     room(id: string): RoomVotingStore {
-        if (this.votings[id]) {
-            return this.votings[id];
+        const store = this.votings.get(id)
+        if (store) {
+            return store;
         }
 
-        return this.votings[id] = new RoomVotingStore(id);
+        const newStore = new RoomVotingStore(id);
+        this.votings.set(id, newStore);
+        return newStore;
     }
 }
 

@@ -88,7 +88,7 @@ const RoomList: FC<IRoomListProps> = (props) => {
 
     return <List>
         {props.groups.map(group =>
-            <ListItem className={classes.listItem} key={group.groupId.toString()} button>
+            <ListItem className={classes.listItem} key={group.groupId} button>
                 <ListItemIcon>
                     <InboxIcon/>
                 </ListItemIcon>
