@@ -8,6 +8,7 @@ import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import IconButton from '@material-ui/core/IconButton';
 import ArrowBackIosIcon from '@material-ui/icons/ArrowBackIos';
+import {browserHistory} from "../common/utils";
 
 interface IProps {
     hasBackButton?: boolean;
@@ -21,6 +22,7 @@ const useStyles = makeStyles((theme) => ({
     },
     backButton: {
         marginRight: theme.spacing(2),
+        zIndex: 1,
     },
     title: {
         position: "absolute",
@@ -42,7 +44,8 @@ const Header: FC<IProps> = (props) => {
     return (<AppBar position="static" color="secondary">
         <Toolbar>
             {props.hasBackButton && (
-                <IconButton edge="start" className={classes.backButton}>
+                <IconButton edge="start" className={classes.backButton}
+                            onClick={() => browserHistory.goBack()}>
                     <ArrowBackIosIcon/>
                 </IconButton>)}
             <div className={classes.title}>
