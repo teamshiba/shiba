@@ -3,6 +3,7 @@ from google.cloud.firestore import CollectionReference
 from flask import Blueprint, request
 from utils import db
 from models.voting import Voting
+from models.item import filter_items
 from utils.exceptions import InvalidQueryParams, InvalidRequestBody
 
 voting = Blueprint('voting', __name__)
@@ -30,9 +31,8 @@ def put_a_vote():
         raise InvalidRequestBody("type is required.")
     fb_obj = Voting(gid, uid, item_id, v_type)
     resp = voting_ref.add(fb_obj.to_dict())
-    doc_group = group_ref.document(gid)
-    doc_group.get("items")
-    return {
-        "roomTotal": 0,
-        "items": []
-    }
+
+    return filter_items({
+        "gid": gid,
+        "unvoted_by": uid
+    })
