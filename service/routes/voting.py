@@ -1,25 +1,26 @@
-from firebase_admin import firestore
 from flask import Blueprint, request
+
 from models.connections import ref_votes, ref_groups
-from models.voting import Voting
+from models.group import Group
 from models.item import filter_items
-from utils.exceptions import InvalidQueryParams, InvalidRequestBody
+from models.voting import Voting
+from utils.exceptions import UnauthorizedRequest, InvalidRequestBody
 
 voting = Blueprint('voting', __name__)
 
 
 # PUT /api/voting
 @voting.route('/voting', methods=['PUT'])
-def put_a_vote(auth_uid=None):
+def put_a_vote(auth_uid: str = None):
     request_body: dict = request.get_json()
-    uid = request_body.get("userId")
-    gid = request_body.get("groupId")
+    uid: str = auth_uid or ""
+    gid: str = request_body.get("groupId")
     item_id = request_body.get("itemId")
     v_type = request_body.get("type")
-    if uid is None:
-        raise InvalidRequestBody("userId is required.")
     if gid is None:
         raise InvalidRequestBody("groupId is required.")
+    if Group.validate_user_role(uid, gid) < 1:
+        raise UnauthorizedRequest("Not a member of target group.")
     if item_id is None:
         raise InvalidRequestBody("itemId is required.")
     if v_type is None:  # check type

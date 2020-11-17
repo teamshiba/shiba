@@ -49,7 +49,7 @@ const Voting: FC<IProps> = observer((props) => {
     let content;
     if (votingStore.items.size > 0) {
         content = <div className="cardContainer">
-            {[...votingStore.items].map((item
+            {[...votingStore.items.values()].map((item
                 ) =>
                     <div className="swipe" key={item.id}>
                         <TinderCard onCardLeftScreen={(dir) => onCardLeftScreen(dir, item.id)}

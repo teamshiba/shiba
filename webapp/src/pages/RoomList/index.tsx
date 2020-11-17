@@ -13,7 +13,6 @@ import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 import {ListItemIcon} from "@material-ui/core";
-import InboxIcon from '@material-ui/icons/Inbox';
 import {makeStyles} from "@material-ui/core/styles";
 import TextField from '@material-ui/core/TextField';
 import Dialog from '@material-ui/core/Dialog';
@@ -23,6 +22,7 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 import Button from '@material-ui/core/Button';
 import {Group} from "../../domain/group";
 import {browserHistory} from "../../common/utils";
+import Avatar from "@material-ui/core/Avatar";
 
 
 const useStyles = makeStyles(() => ({
@@ -84,6 +84,14 @@ interface IRoomListProps {
     groups: Group[]
 }
 
+const roomAvatarName = (name: string): string => {
+    const letters = name.split(" ")
+        .filter(w => w.length > 0)
+        .map(w => w.charAt(0));
+
+    return letters.join("");
+}
+
 const RoomList: FC<IRoomListProps> = (props) => {
     const classes = useStyles();
 
@@ -92,9 +100,9 @@ const RoomList: FC<IRoomListProps> = (props) => {
             <ListItem className={classes.listItem} key={group.groupId} button
                       onClick={() => browserHistory.push(`/room/${group.groupId}`)}>
                 <ListItemIcon>
-                    <InboxIcon/>
+                    <Avatar>{roomAvatarName(group.roomName)}</Avatar>
                 </ListItemIcon>
-                <ListItemText primary={group.displayName}/>
+                <ListItemText primary={group.roomName}/>
             </ListItem>
         )}
     </List>

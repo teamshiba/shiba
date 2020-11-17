@@ -1,7 +1,6 @@
-from firebase_admin import firestore
 from flask import Blueprint, request
-from models.connections import ref_groups, ref_votes,ref_items
-from models.voting import Voting
+
+from models.connections import ref_items
 from models.item import filter_items
 from utils.exceptions import InvalidQueryParams, InvalidRequestBody, DataModelException
 

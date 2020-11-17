@@ -1,5 +1,4 @@
 from werkzeug.exceptions import HTTPException
-import json
 
 
 class InvalidQueryParams(HTTPException):
@@ -13,6 +12,12 @@ class InvalidRequestBody(HTTPException):
         self.code = 400
         self.description = desc
 
+    @staticmethod
+    def raise_key_error(e: KeyError):
+        raise InvalidRequestBody(
+            "Field '{}' is required.".format(e.args[0])
+        )
+
 
 class InvalidRequestHeader(HTTPException):
     def __init__(self, desc=""):
@@ -23,6 +28,12 @@ class InvalidRequestHeader(HTTPException):
 class UnauthorizedRequest(HTTPException):
     def __init__(self, desc=""):
         self.code = 403
+        self.description = desc
+
+
+class LoginRequired(HTTPException):
+    def __init__(self, desc=""):
+        self.code = 401
         self.description = desc
 
 
@@ -45,11 +56,3 @@ def handle_http_exception(e: HTTPException):
         "name": e.name,
         "msg": e.description
     }, e.code
-    response = e.get_response()
-    response.data = json.dumps({
-        "code": e.code,
-        "name": e.name,
-        "msg": e.description
-    })
-    response.content_type = "application/json"
-    return response, e.code

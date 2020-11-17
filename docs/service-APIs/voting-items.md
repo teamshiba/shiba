@@ -15,7 +15,7 @@ GET /api/item/list
 | Attribute | Type     | Required | Description   |
 | :--------: | :--------: | :--------: | :-------------- |
 | `gid` | string | yes | Target matching room ID. |
-| `voted_by` | string | no | If applied, include only items voted by that user. |
+| `voted_by` | string | no | If applied, inclroomTotalude only items voted by that user. |
 | `unvoted_by` | string | no | If applied, include only items not voted by that user. |
 | `offset` | integer | no | Starting position in the table. By default: `0`. |
 | `limit` | integer | no | Max size of response data. By default: `100`. |
@@ -54,7 +54,6 @@ PUT /api/voting
 
 | Attribute | Type | Required | Description |
 | :------: | :-----: | :-----: | :--------- |
-| `userId` | string | yes | User ID. |
 | `groupId` | string | yes | Target matching room ID. |
 | `itemId` | string | yes | Global item ID. |
 | `type` | integer | yes | Thumb up: `1`; thumb down: `-1`. |
