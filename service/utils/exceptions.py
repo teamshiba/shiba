@@ -14,6 +14,18 @@ class InvalidRequestBody(HTTPException):
         self.description = desc
 
 
+class InvalidRequestHeader(HTTPException):
+    def __init__(self, desc=""):
+        self.code = 400
+        self.description = desc
+
+
+class UnauthorizedRequest(HTTPException):
+    def __init__(self, desc=""):
+        self.code = 401
+        self.description = desc
+
+
 def handle_http_exception(e: HTTPException):
     """Return JSON instead of HTML for HTTP errors."""
     return {

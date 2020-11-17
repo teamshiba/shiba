@@ -1,6 +1,6 @@
 from flask import Flask
 from room.routes import room
-from votings.routes import voting
+from routes.voting import voting
 from werkzeug.exceptions import HTTPException
 from utils.exceptions import handle_http_exception
 
