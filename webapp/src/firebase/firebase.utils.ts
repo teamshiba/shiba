@@ -41,7 +41,7 @@ export const generateUserDocument = async (user: firebase.User | null,
 const getUserDocument = async (uid: string): Promise<User | null> => {
     if (!uid) return null;
     try {
-        const userDocument = await firestore.doc(`users/${uid}`).get();
+        const userDocument = await firestore.doc(`Users/${uid}`).get();
 
         return {
             uid,
