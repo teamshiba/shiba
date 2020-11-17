@@ -2,7 +2,7 @@ from firebase_admin import firestore
 from flask import Blueprint, request
 from utils import db
 from utils.exceptions import InvalidQueryParams, InvalidRequestBody, UnauthorizedRequest
-from room.fb_objects import Group
+from models.group import Group
 from utils.decorators import check_token
 
 room = Blueprint('room', __name__)
@@ -24,7 +24,12 @@ def group_data_to_dict(record):
 @room.route('/room/list', methods=['GET'])
 @check_token
 def get_group_list(uid):
+    # user_id = request.args.get('uid')
     user_id = uid
+    if user_id is None:
+        raise InvalidQueryParams("uid is required.")
+    # if user_id != uid:
+    #     raise UnauthorizedRequest("id_token not corresponding with uid param")
     offset = request.args.get('offset') if 'offset' in request.args else 0
     limit = request.args.get('limit') if 'limit' in request.args else 100
     filter_completed = request.args.get('state') if 'state' in request.args else False
@@ -59,7 +64,7 @@ def get_group_profile(uid):
     group_doc = group_ref.document(group_id)
     raw_group = group_doc.get().to_dict()
     list_uid = raw_group["members"]
-    members = list()
+    members = list_uid
 
     # validate request user
     if uid not in members:

@@ -16,6 +16,16 @@ The matching room.
 
 ## User
 
+The collection of users.
+
+| Field path | Data type     | Description   |
+| :--------: | :--------: | :-------------- |
+| `creationTime` | timestamp | The creation time. |
+| `displayTime` | string | The user name. |
+| `email` | string | The email address. |
+| `photoUrl` | string | The URL that links to the user's avatar. |
+| `userId` | string | The user ID (auto-generated when signing up). |
+
 ## Item
 
 The collection of items.

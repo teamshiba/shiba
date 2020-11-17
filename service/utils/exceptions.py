@@ -22,8 +22,20 @@ class InvalidRequestHeader(HTTPException):
 
 class UnauthorizedRequest(HTTPException):
     def __init__(self, desc=""):
-        self.code = 401
+        self.code = 403
         self.description = desc
+
+
+class DataModelException(Exception):
+    description: str = None
+
+    def __init__(self, msg=""):
+        super(DataModelException, self).__init__()
+        self.description = msg
+
+    def __repr__(self):
+        return "<empty exception>" if self.description is None \
+            else self.description
 
 
 def handle_http_exception(e: HTTPException):

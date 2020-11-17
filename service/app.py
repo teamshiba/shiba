@@ -1,8 +1,7 @@
 from flask import Flask
 from flask_cors import CORS
 from werkzeug.exceptions import HTTPException
-
-from room.routes import room
+from routes.room import room
 from routes.voting import voting
 from utils.exceptions import handle_http_exception
 
