@@ -12,6 +12,31 @@ import Voting from "./pages/Voting";
 import {createMuiTheme, ThemeProvider} from '@material-ui/core/styles';
 import {Shadows} from "@material-ui/core/styles/shadows";
 import UserProfile from "./pages/UserProfile";
+import axios from "axios";
+import AuthSynchronizer from "./components/AuthSynchronizer";
+
+axios.interceptors.request.use((config) => {
+    const accessToken = localStorage.getItem("auth_token");
+    if (accessToken == null) {
+        return config;
+    }
+
+    config.headers = {...config.headers, id_token: accessToken};
+
+    return config;
+}, function (error) {
+    return Promise.reject(error);
+});
+
+axios.interceptors.response.use((config) => {
+    return config;
+}, (error) => {
+    if (error.response && 401 === error.response.status) {
+        browserHistory.push('/auth/');
+    }
+
+    return Promise.reject(error);
+});
 
 const theme = createMuiTheme({
     palette: {
@@ -27,27 +52,29 @@ const theme = createMuiTheme({
 
 ReactDOM.render(
     <React.StrictMode>
-        <ThemeProvider theme={theme}>
-            <Router history={browserHistory}>
-                <Switch>
-                    <Route path="/" component={App} exact={true}/>
-                    <Route path="/404" component={App}/>
-                    <Route path="/auth/" component={Authentication}/>
-                    <Layout>
-                        <Route path="/room">
-                            <Switch>
-                                <Route path="/room/active" component={ActiveRoomList}/>
-                                <Route path="/room/history" component={HistoryRoomList}/>
-                                <Route path="/room/:id" component={Voting}/>
-                            </Switch>
-                        </Route>
-                        <Route path="/user/">
-                            <Route path="/user/profile" component={UserProfile}/>
-                        </Route>
-                    </Layout>
-                </Switch>
-            </Router>
-        </ThemeProvider>
+        <AuthSynchronizer>
+            <ThemeProvider theme={theme}>
+                <Router history={browserHistory}>
+                    <Switch>
+                        <Route path="/" component={App} exact={true}/>
+                        <Route path="/404" component={App}/>
+                        <Route path="/auth/" component={Authentication}/>
+                        <Layout>
+                            <Route path="/room">
+                                <Switch>
+                                    <Route path="/room/active" component={ActiveRoomList}/>
+                                    <Route path="/room/history" component={HistoryRoomList}/>
+                                    <Route path="/room/:id" component={Voting}/>
+                                </Switch>
+                            </Route>
+                            <Route path="/user/">
+                                <Route path="/user/profile" component={UserProfile}/>
+                            </Route>
+                        </Layout>
+                    </Switch>
+                </Router>
+            </ThemeProvider>
+        </AuthSynchronizer>
     </React.StrictMode>,
     document.getElementById('root')
 );

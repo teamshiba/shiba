@@ -5,6 +5,7 @@ import {User} from "../domain/user";
 
 class UserStore {
     user: User | null = null;
+    initialized = false;
 
     constructor() {
         makeAutoObservable(this);
@@ -17,12 +18,12 @@ class UserStore {
             // We put uid into local storage so that we don't need to wait for firebase to initialize before sending
             // requests to the server. This is especially important if we want to use interceptors to add Authorization
             // header and handle signing in.
-            localStorage.setItem("uid", this.user.uid);
-        });
-    }
+            if (userAuth) {
+                localStorage.setItem("auth_token", await userAuth.getIdToken());
+            }
 
-    get currentUid(): string | null {
-        return localStorage.getItem("uid");
+            this.initialized = true;
+        });
     }
 }
 
