@@ -21,7 +21,7 @@ axios.interceptors.request.use((config) => {
         return config;
     }
 
-    config.headers = {...config.headers, id_token: accessToken};
+    config.headers = {...config.headers, Authorization: "Bearer " + accessToken};
 
     return config;
 }, function (error) {

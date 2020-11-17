@@ -1,5 +1,5 @@
 export interface Group {
-    groupId: number
+    groupId: string,
     displayName: string,
 }
 

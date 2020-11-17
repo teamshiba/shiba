@@ -4,7 +4,7 @@ from enum import Enum
 import json
 
 
-class FieldPath(Enum):
+class FieldPath(str, Enum):
     creation_time = "creationTime"
     group_id = "groupId"
     item_id = "itemId"
@@ -28,11 +28,11 @@ class Voting:
 
     def to_dict(self):
         return {
-            FieldPath.creation_time: self.creation_time,
-            FieldPath.group_id: self.group_id,
-            FieldPath.item_id: self.item_id,
-            FieldPath.user_id: self.user_id,
-            FieldPath.vote_type: self.vote_type
+            "creationTime": str(self.creation_time),
+            "groupId": self.group_id,
+            "itemId": self.item_id,
+            "userId": self.user_id,
+            "type": self.vote_type
         }
 
     def __repr__(self):
