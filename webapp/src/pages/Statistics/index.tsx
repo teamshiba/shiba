@@ -32,7 +32,7 @@ const Statistics: FC<IProps> = observer((props) => {
     const roomId = props.match.params['id'];
     const statisticsStore = useContext(StatisticsStore).room(roomId);
     const groupDetailStore = useContext(GroupStore).room(roomId);
-    const groupSize = groupDetailStore.data;
+    const groupSize = groupDetailStore.data?.members.length;
 
     useEffect(() => {
         statisticsStore.updateStatistics();
@@ -45,14 +45,20 @@ const Statistics: FC<IProps> = observer((props) => {
                 { groupDetailStore.data?.roomName }
             </Header>
 
-            <h3>Group picks</h3>
+            <h3>Top picks</h3>
             {
                 statisticsStore.statistics.map(stat => {
-                    const progress = stat.like // ;
+                    let progress = 0;
+                    if (groupSize != undefined && groupSize > 0) {
+                        progress = stat.like / groupSize * 100;
+                    }
 
                     return (
                         <p>
-                            {stat.item.name}
+                            <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                                <div>{stat.item.name}</div>
+                                { progress == 100 && (<div style={{ color: '#FFBC6F' }}>Match!</div>) }
+                            </div>
                             <BorderLinearProgress variant="determinate" value={progress}/>
                         </p>
                     )

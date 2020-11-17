@@ -45,7 +45,7 @@ class StatisticsDetailStore {
                 }
             },
             {
-                "like": 4,
+                "like": 2,
                 "dislike" : 0,
                 "item": {
                   "name": "The MOON", "itemId":  "2"
