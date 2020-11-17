@@ -22,8 +22,16 @@ def put_a_vote(auth_uid=None):
         raise InvalidRequestBody("groupId is required.")
     if item_id is None:
         raise InvalidRequestBody("itemId is required.")
-    if v_type is None:
+    if v_type is None:  # check type
         raise InvalidRequestBody("type is required.")
+    if v_type not in [1, -1]:
+        raise InvalidRequestBody("type must be 1 or -1.")
+    query_vote = ref_votes.where("groupId", '==', gid).where(
+        'userId', '==', uid
+    ).where('itemId', '==', item_id)
+    gen_votes = query_vote.stream()
+    if (len(list(gen_votes))) > 0:
+        raise InvalidRequestBody("duplicated vote.")
     group_snap = ref_groups.document(gid).get()
     item_list = group_snap.get("itemList")
     members = group_snap.get('members')

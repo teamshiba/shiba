@@ -22,7 +22,7 @@ class InvalidRequestHeader(HTTPException):
 
 class UnauthorizedRequest(HTTPException):
     def __init__(self, desc=""):
-        self.code = 401
+        self.code = 403
         self.description = desc
 
 

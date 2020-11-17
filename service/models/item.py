@@ -4,7 +4,7 @@ from firebase_admin import firestore
 from uuid import uuid4
 from enum import Enum
 import json
-from mypy_extensions import TypedDict
+from typing import TypedDict
 from .connections import ref_items, ref_groups, ref_votes
 from utils.exceptions import DataModelException
 
@@ -62,12 +62,12 @@ def filter_items(params: ItemFilter):
     if voted_by is not None and unvoted_by is not None:
         raise DataModelException('cannot applied conditions: '
                                  'voted & unvoted simultaneously.')
-    set_item_ids: Set = set(ref_groups.document(group_id).get().get("itemList"))
+    set_item_ids: set = ref_groups.document(group_id).get().get("itemList")
     if voted_by or unvoted_by:
         target_uid = voted_by if voted_by else unvoted_by
         stream_voted = ref_votes.where('groupId', '==', group_id).where(
             'userId', '==', target_uid
-        ).select('itemId').stream()
+        ).select('itemId').get()
         set_voted = set(stream_voted)
         if voted_by:
             set_item_ids = set_item_ids.intersection(set_voted)
@@ -79,3 +79,11 @@ def filter_items(params: ItemFilter):
         "roomTotal": len(set_item_ids),
         "items": list(stream)
     }
+
+
+def add_item_to_store(params: Item):
+    item_id = params.item_id
+    if item_id is None:
+        raise DataModelException("itemId is required.")
+    resp = ref_items.document(item_id).set(params.to_dict())
+    return resp

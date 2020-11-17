@@ -1,6 +1,6 @@
 from firebase_admin import firestore
 from flask import Blueprint, request
-from models.connections import ref_groups, ref_votes
+from models.connections import ref_groups, ref_votes,ref_items
 from models.voting import Voting
 from models.item import filter_items
 from utils.exceptions import InvalidQueryParams, InvalidRequestBody, DataModelException
@@ -16,3 +16,17 @@ def get_group_item_list(auth_uid=None):
         return filter_items(params)
     except DataModelException as e:
         raise InvalidQueryParams(e.description)
+
+
+# POST /api/item
+# TODO fix
+@router_item.route('/item')
+def add_item():
+    request_body: dict = request.get_json()
+    item_id = request_body.get("itemId")
+    if item_id is None:
+        raise InvalidRequestBody("itemId is required.")
+    resp = ref_items.document(item_id).set(request_body)
+    return {
+        "resp": resp
+    }
