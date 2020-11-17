@@ -4,3 +4,8 @@ export interface VotingItem {
     imgURL: string
     location: string
 }
+
+export interface VotingItemResponse {
+    roomTotal: number;
+    items: VotingItem[];
+}

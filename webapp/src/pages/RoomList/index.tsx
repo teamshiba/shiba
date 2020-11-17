@@ -13,7 +13,6 @@ import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 import {ListItemIcon} from "@material-ui/core";
-import InboxIcon from '@material-ui/icons/Inbox';
 import {makeStyles} from "@material-ui/core/styles";
 import TextField from '@material-ui/core/TextField';
 import Dialog from '@material-ui/core/Dialog';
@@ -101,9 +100,9 @@ const RoomList: FC<IRoomListProps> = (props) => {
             <ListItem className={classes.listItem} key={group.groupId} button
                       onClick={() => browserHistory.push(`/room/${group.groupId}`)}>
                 <ListItemIcon>
-                    <Avatar>{roomAvatarName(group.displayName)}</Avatar>
+                    <Avatar>{roomAvatarName(group.roomName)}</Avatar>
                 </ListItemIcon>
-                <ListItemText primary={group.displayName}/>
+                <ListItemText primary={group.roomName}/>
             </ListItem>
         )}
     </List>
