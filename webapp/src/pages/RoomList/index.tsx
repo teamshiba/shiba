@@ -13,7 +13,6 @@ import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 import {ListItemIcon} from "@material-ui/core";
-import InboxIcon from '@material-ui/icons/Inbox';
 import {makeStyles} from "@material-ui/core/styles";
 import TextField from '@material-ui/core/TextField';
 import Dialog from '@material-ui/core/Dialog';
@@ -22,6 +21,7 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import Button from '@material-ui/core/Button';
 import {Group} from "../../domain/group";
+import Avatar from "@material-ui/core/Avatar";
 
 
 const useStyles = makeStyles(() => ({
@@ -83,14 +83,22 @@ interface IRoomListProps {
     groups: Group[]
 }
 
+const roomAvatarName = (name: string): string => {
+    const letters = name.split(" ")
+        .filter(w => w.length > 0)
+        .map(w => w.charAt(0));
+
+    return letters.join("");
+}
+
 const RoomList: FC<IRoomListProps> = (props) => {
     const classes = useStyles();
 
     return <List>
         {props.groups.map(group =>
-            <ListItem className={classes.listItem} key={group.groupId.toString()} button>
+            <ListItem className={classes.listItem} key={group.groupId} button>
                 <ListItemIcon>
-                    <InboxIcon/>
+                    <Avatar>{roomAvatarName(group.displayName)}</Avatar>
                 </ListItemIcon>
                 <ListItemText primary={group.displayName}/>
             </ListItem>

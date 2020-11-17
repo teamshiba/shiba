@@ -14,18 +14,15 @@ class GroupStore {
     }
 
     async updateActiveGroups() {
-        const uid = localStorage.getItem("uid");
-        this.activeGroups = unwrap((await axios.get<Message<Group[]>>(`${serverPrefix}/room/list?uid=${uid}`)).data);
+        this.activeGroups = unwrap((await axios.get<Message<Group[]>>(`${serverPrefix}/room/list`)).data);
     }
 
     async updateHistoryGroups() {
-        const uid = localStorage.getItem("uid");
-        this.historyGroups = unwrap((await axios.get<Message<Group[]>>(`${serverPrefix}/room/list?uid=${uid}&state=true`)).data);
+        this.historyGroups = unwrap((await axios.get<Message<Group[]>>(`${serverPrefix}/room/list?state=true`)).data);
     }
 
     async createGroup(name: string) {
         await axios.post(`${serverPrefix}/room`, {
-            "userId": localStorage.getItem("uid"),
             "displayName": name,
         });
 

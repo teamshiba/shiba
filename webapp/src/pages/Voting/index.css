@@ -1,0 +1,33 @@
+.swipe {
+    position: absolute;
+    height: inherit;
+}
+
+.swipe div {
+    height: inherit;
+}
+
+.cardContainer {
+    height: 70vh;
+    display: flex;
+    justify-content: center;
+}
+
+.card {
+    position: relative;
+    background-color: #fff;
+    width: 80vw;
+    max-width: 300px;
+    height: 100%;
+    box-shadow: 0px 10px 40px 0px rgba(0, 0, 0, 0.30);
+    border-radius: 20px;
+    background-size: cover;
+    background-position: center;
+}
+
+.card h3 {
+    position: absolute;
+    bottom: 0;
+    margin: 10px;
+    color: #fff;
+}
