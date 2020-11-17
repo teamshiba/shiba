@@ -1,18 +1,17 @@
 from firebase_admin import firestore
 from flask import Blueprint, request
-from utils import db
-from utils.exceptions import InvalidQueryParams, InvalidRequestBody, UnauthorizedRequest
+
+from models.connections import ref_groups, ref_users
 from models.group import Group
 from utils.decorators import check_token
+from utils.exceptions import InvalidQueryParams, InvalidRequestBody, UnauthorizedRequest
 
 room = Blueprint('room', __name__)
-
-user_ref = db.collection(u'Users')
-group_ref = db.collection(u'Groups')
 
 
 def group_data_to_dict(record):
     gid, data = record
+    # TODO this format is not the same as in models/group.py
     return {
         "groupId": gid,
         "displayName": data.get('roomName'),
@@ -23,17 +22,15 @@ def group_data_to_dict(record):
 
 @room.route('/room/list', methods=['GET'])
 @check_token
-def get_group_list(uid):
-    # user_id = request.args.get('uid')
-    user_id = uid
+def get_group_list(auth_uid=None):
+    user_id = auth_uid or request.args.get('uid')
     if user_id is None:
         raise InvalidQueryParams("uid is required.")
-    # if user_id != uid:
-    #     raise UnauthorizedRequest("id_token not corresponding with uid param")
+
     offset = request.args.get('offset') if 'offset' in request.args else 0
     limit = request.args.get('limit') if 'limit' in request.args else 100
     filter_completed = request.args.get('state') if 'state' in request.args else False
-    query = group_ref.where(u'members', u'array_contains', user_id)
+    query = ref_groups.where(u'members', u'array_contains', user_id)
     if filter_completed is not None:
         query = query.where(u'isCompleted', u'==', filter_completed)
     results = query.stream()
@@ -46,93 +43,102 @@ def get_group_list(uid):
 
 @room.route('/room', methods=['POST'])
 @check_token
-def create_group(uid):
-    organizer_id = uid
-    display_name = request.get_json()["displayName"]
-    group = Group(organizer_id=organizer_id, room_name=display_name)
-    create_group_response = group_ref.add(group.to_dict())
-    return {
-        "status": "success",
-        "data": create_group_response[1].get().to_dict()
-    }
+def create_group(auth_uid=None):
+    organizer_id = auth_uid
+    request_body = request.get_json()
+    try:
+        display_name = request_body['displayName']
+        group = Group(organizer_id=organizer_id, room_name=display_name)
+        create_time, doc_ref = ref_groups.add(group.to_dict())
+        return {
+            "msg": "success",
+            "creationTime": str(create_time),
+            "data": doc_ref.get().to_dict()
+        }
+    except KeyError as e:
+        InvalidRequestBody.raise_key_error(e)
 
 
-@room.route('/room', methods=['GET'])
+@room.route('/room/<string:group_id>', methods=['GET'])
 @check_token
-def get_group_profile(uid):
-    group_id = request.args.get('gid')
-    group_doc = group_ref.document(group_id)
-    raw_group = group_doc.get().to_dict()
-    list_uid = raw_group["members"]
-    members = list_uid
+def get_group_profile(auth_uid=None, group_id=None):
+    group_id = group_id or request.args.get('gid') or ''
+    group_doc = ref_groups.document(group_id)
+    snap = group_doc.get()
+    if not snap.exists:
+        raise InvalidQueryParams("Group id does not exist.")
+    rv = snap.to_dict()
+    list_uid = rv.get("members")
+    members = list_uid or []
 
     # validate request user
-    if uid not in members:
+    if auth_uid not in members:
         raise UnauthorizedRequest("You are not authorized to access the group profile")
 
-    for user_id in list_uid:
-        members.append(user_ref.document(user_id).get().to_dict())
-    raw_group["members"] = members
+    for user_id in members:
+        members.append(ref_users.document(user_id).get().to_dict())
+    rv["members"] = members
+
     return {
         "status": "success",
-        "data": raw_group
+        "data": rv
     }
 
 
-@room.route('/room', methods=['PUT'])
+@room.route('/room/<string:group_id>', methods=['PUT'])
 @check_token
-def update_group_profile(uid):
+def update_group_profile(auth_uid=None, group_id=None):
     request_body = request.get_json()
 
-    if 'groupId' not in request_body:
+    if 'groupId' not in request_body and group_id is None:
         raise InvalidRequestBody('No groupId provided')
 
     # validate group_id
-    group_id = request_body['groupId']
-    if not group_ref.document(group_id).get().exists:
+    group_id = group_id or request_body['groupId']
+    if not ref_groups.document(group_id).get().exists:
         raise InvalidRequestBody('Invalid groupId provided')
 
-    group_doc = group_ref.document(group_id)
-    group_members = group_doc.get().todict()['members']
+    group_doc = ref_groups.document(group_id)
+    doc_dict: dict = group_doc.get().to_dict()
+    group_members = doc_dict.get("members") or []
+    current_organizer = doc_dict.get("organizerUid") or ""
 
+    # TODO use Group.validate_user_role instead.
     # validate request user_id
-    if uid not in group_members:
+    if auth_uid not in group_members:
         raise UnauthorizedRequest("You are not authorized to access the group profile")
 
-    display_name = request_body['displayName'] if 'displayName' in request_body else ''
-    access_link = request_body['link'] if 'link' in request_body else ''
-    organizer_uid = request_body['organizer'] if 'organizer' in request_body else ''
+    dict_to_update = Group.update_from_dict(request_body)
+    if current_organizer != auth_uid and (
+            'isCompleted' in dict_to_update or 'organizerUid' in dict_to_update
+    ):
+        raise UnauthorizedRequest("Only the organizer can modify 'status' and change the room host.")
 
-    if display_name: group_doc.update({u'roomName': display_name})
-    if access_link: group_doc.update({u'accessLink': access_link})
-    if organizer_uid: group_doc.update({u'organizerUid': organizer_uid})
+    if len(dict_to_update) > 0:
+        group_doc.update(dict_to_update)
 
     return {
-        "status": "success",
+        "msg": "success",
         "data": group_doc.get().to_dict()
     }
 
 
-@room.route('/room/join', methods=['PUT'])
+@room.route('/room/<group_id>/member', methods=['PUT'])
 @check_token
-def join_group(uid):
-    request_body = request.get_json()
+def join_group(auth_uid=None, group_id=""):
+    user_id = auth_uid  # the login user joins a target group.
 
-    user_id = uid
-    group_id = request_body['groupId']
-
-    # validate group_id
-    if not group_ref.document(group_id).get().exists:
+    if not ref_groups.document(group_id).get().exists:
         raise InvalidRequestBody('Invalid groupId provided')
 
     # validate user_id
-    if not user_ref.document(user_id).get().exists:
+    if not ref_users.document(user_id).get().exists:
         raise InvalidRequestBody('Invalid userId provided')
 
-    group_ref.document(group_id).update({u'members': firestore.ArrayUnion([user_id])})
+    ref_groups.document(group_id).update({u'members': firestore.ArrayUnion([user_id])})
 
     return {
         "status": "success",
-        "data": group_ref.document(group_id).get().to_dict()
+        "data": ref_groups.document(group_id).get().to_dict()
     }
 
