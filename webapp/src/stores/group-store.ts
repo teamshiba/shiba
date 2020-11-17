@@ -1,6 +1,6 @@
 import {makeAutoObservable} from "mobx";
 import {createContext} from "react";
-import {Group} from "../domain/group";
+import {Group, GroupDetail} from "../domain/group";
 import axios from 'axios';
 import {serverPrefix} from "../common/config";
 import {Message, unwrap} from "../domain/message";
@@ -8,6 +8,7 @@ import {Message, unwrap} from "../domain/message";
 class GroupStore {
     activeGroups: Group[] = [];
     historyGroups: Group[] = [];
+    groupDetails = new Map<string, GroupDetailStore>();
 
     constructor() {
         makeAutoObservable(this);
@@ -27,6 +28,29 @@ class GroupStore {
         });
 
         await this.updateActiveGroups();
+    }
+
+    room(id: string): GroupDetailStore {
+        const store = this.groupDetails.get(id)
+        if (store) {
+            return store;
+        }
+
+        const newStore = new GroupDetailStore(id);
+        this.groupDetails.set(id, newStore);
+        return newStore;
+    }
+}
+
+class GroupDetailStore {
+    data: GroupDetail | null = null;
+
+    constructor(public groupId: string) {
+        makeAutoObservable(this);
+    }
+
+    async update() {
+        this.data = unwrap((await axios.get<Message<GroupDetail>>(`${serverPrefix}/room?gid=${this.groupId}`)).data);
     }
 }
 

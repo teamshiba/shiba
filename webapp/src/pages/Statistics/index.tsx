@@ -2,20 +2,21 @@
  * @desc the results of a matching process.
  */
 
-import React, {FC, Fragment, useState} from "react";
+import React, {FC, Fragment, useContext, useState} from "react";
 import Header from "../../components/Header";
-import IconButton from '@material-ui/core/IconButton';
-import EditOutlinedIcon from '@material-ui/icons/EditOutlined';
-import TinderCard from 'react-tinder-card'
+import GroupStore from "../../stores/group-store";
+import {RouteComponentProps} from "react-router";
+import {observer} from "mobx-react";
 
 
+type IProps = RouteComponentProps<{ id: string }>
 
-const Statistics: FC = () => {
+const Statistics: FC<IProps> = observer((props) => {
+    const roomId = props.match.params['id'];
+    const groupDetailStore = useContext(GroupStore).room(roomId);
     return (
         <Fragment>
-            <Header hasBackButton buttons={[
-                <IconButton> <EditOutlinedIcon/> </IconButton>
-            ]}>
+            <Header hasBackButton>
                 Group Name
             </Header>
 
@@ -23,6 +24,6 @@ const Statistics: FC = () => {
 
         </Fragment>
     )
-}
+})
 
 export default Statistics;
