@@ -14,7 +14,7 @@ def group_data_to_dict(record):
     # TODO this format is not the same as in models/group.py
     return {
         "groupId": gid,
-        "displayName": data.get('roomName'),
+        "roomName": data.get('roomName'),
         "organizer": data.get('organizerUid'),
         "isCompleted": data.get('isCompleted')
     }
@@ -47,7 +47,7 @@ def create_group(auth_uid=None):
     organizer_id = auth_uid
     request_body = request.get_json()
     try:
-        display_name = request_body['displayName']
+        display_name = request_body['roomName']
         group = Group(organizer_id=organizer_id, room_name=display_name)
         create_time, doc_ref = ref_groups.add(group.to_dict())
         return {
@@ -70,14 +70,15 @@ def get_group_profile(auth_uid=None, group_id=None):
     rv = snap.to_dict()
     list_uid = rv.get("members")
     members = list_uid or []
+    return_members = []
 
     # validate request user
     if auth_uid not in members:
         raise UnauthorizedRequest("You are not authorized to access the group profile")
 
     for user_id in members:
-        members.append(ref_users.document(user_id).get().to_dict())
-    rv["members"] = members
+        return_members.append(ref_users.document(user_id).get().to_dict())
+    rv["members"] = return_members
 
     return {
         "status": "success",

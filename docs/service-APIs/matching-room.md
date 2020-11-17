@@ -28,7 +28,7 @@ GET /api/room/list
   "data" : [
     {
       "groupId" : "<string>[matching room id]",
-      "displayName" : "<string>[display name of the room]",
+      "roomName" : "<string>[display name of the room]",
       "isCompleted": "<boolean>[whether the match is completed or not]",
       "organizer": "<string>[organizer's user ID]"
     }
@@ -66,7 +66,7 @@ POST /api/room
 
 ```json
 {
-    "displayName": "[initial display name of the matching group]"
+    "roomName": "[initial display name of the matching group]"
 }
 ```
 
@@ -143,7 +143,7 @@ PUT /api/room/<group_id>
 
 | Attribute | Type     | Required | Description   |
 | :--------: | :--------: | :--------: | :-------------- |
-| `displayName` | string | no   | Display name of the room. |
+| `roomName` | string | no   | Display name of the room. |
 | `isCompleted` | boolean | no | State of that matching process. |
 | `organizerUid` | string | no | organizer's user ID.|
 

@@ -1,7 +1,7 @@
 import json
 from datetime import datetime
 from enum import Enum
-from typing import TypedDict
+from mypy_extensions import TypedDict
 from uuid import uuid4
 
 from utils.exceptions import DataModelException

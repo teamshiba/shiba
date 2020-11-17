@@ -42,13 +42,13 @@ class Group(object):
     @staticmethod
     def create_from_dict(params: dict):
         return Group(organizer_id=params.get("organizer", ""),
-                     room_name=params.get("displayName", "New matching room"))
+                     room_name=params.get("roomName", "New matching room"))
 
     @staticmethod
     def update_from_dict(params: dict):
         dict_to_update = dict()
-        if 'displayName' in params:
-            dict_to_update['roomName'] = params.get('displayName')
+        if 'roomName' in params:
+            dict_to_update['roomName'] = params.get('roomName')
         if 'organizerUid' in params:
             dict_to_update['organizerUid'] = params.get('organizerUid')
         if 'isCompleted' in params:
@@ -56,7 +56,7 @@ class Group(object):
         return dict_to_update
 
     @staticmethod
-    def validate_user_role(uid: str, group_id: str) -> Union[0, 1, 2]:
+    def validate_user_role(uid: str, group_id: str):
         """
         Validate a user's membership in a matching room.
         :param uid:
