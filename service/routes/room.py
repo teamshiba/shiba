@@ -23,8 +23,9 @@ def group_data_to_dict(record):
 
 @room.route('/room/list', methods=['GET'])
 @check_token
-def get_group_list(uid=''):
-    user_id = request.args.get('uid')
+def get_group_list(uid):
+    # user_id = request.args.get('uid')
+    user_id = uid
     if user_id is None:
         raise InvalidQueryParams("uid is required.")
     # if user_id != uid:
@@ -63,7 +64,7 @@ def get_group_profile(uid):
     group_doc = group_ref.document(group_id)
     raw_group = group_doc.get().to_dict()
     list_uid = raw_group["members"]
-    members = list()
+    members = list_uid
 
     # validate request user
     if uid not in members:

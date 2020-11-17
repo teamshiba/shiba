@@ -62,7 +62,7 @@ def filter_items(params: ItemFilter):
     if voted_by is not None and unvoted_by is not None:
         raise DataModelException('cannot applied conditions: '
                                  'voted & unvoted simultaneously.')
-    set_item_ids: Set = ref_groups.document(group_id).get("itemList")
+    set_item_ids: Set = set(ref_groups.document(group_id).get().get("itemList"))
     if voted_by or unvoted_by:
         target_uid = voted_by if voted_by else unvoted_by
         stream_voted = ref_votes.where('groupId', '==', group_id).where(
