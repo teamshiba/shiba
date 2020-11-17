@@ -54,7 +54,6 @@ PUT /api/voting
 
 | Attribute | Type | Required | Description |
 | :------: | :-----: | :-----: | :--------- |
-| `userId` | string | yes | User ID. |
 | `groupId` | string | yes | Target matching room ID. |
 | `itemId` | string | yes | Global item ID. |
 | `type` | integer | yes | Thumb up: `1`; thumb down: `-1`. |

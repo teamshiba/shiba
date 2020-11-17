@@ -1,12 +1,11 @@
-from datetime import datetime
-from typing import Set
-from firebase_admin import firestore
-from uuid import uuid4
-from enum import Enum
 import json
+from datetime import datetime
+from enum import Enum
 from mypy_extensions import TypedDict
-from .connections import ref_items, ref_groups, ref_votes
+from uuid import uuid4
+
 from utils.exceptions import DataModelException
+from .connections import ref_items, ref_groups, ref_votes
 
 
 class FieldPath(str, Enum):

@@ -4,19 +4,20 @@ from firebase_admin import auth
 from firebase_admin.auth import ExpiredIdTokenError, RevokedIdTokenError, InvalidIdTokenError
 from flask import request
 
-from utils.exceptions import UnauthorizedRequest
+from utils.exceptions import LoginRequired
 
 
 def check_token(f):
     @wraps(f)
     def wrap(*args, **kwargs):
-        if not request.headers.get('Authorization') and not request.headers['Authorization'].startswith("Bearer"):
-            raise UnauthorizedRequest('No token provided')
+        auth_token = request.headers.get('Authorization')
+        if auth_token is None or not auth_token.startswith("Bearer"):
+            raise LoginRequired('No auth token provided')
         try:
-            user = auth.verify_id_token(request.headers['Authorization'].split()[1])
-        except (ValueError, AssertionError, InvalidIdTokenError, ExpiredIdTokenError, RevokedIdTokenError):
-            raise UnauthorizedRequest('Invalid token provided')
-        kwargs.update({"uid": user["user_id"]})
+            user = auth.verify_id_token(auth_token.split()[1])
+        except (ValueError, IndexError, InvalidIdTokenError, ExpiredIdTokenError, RevokedIdTokenError):
+            raise LoginRequired('Invalid token provided')
+        kwargs.update({"auth_uid": user["user_id"]})
         return f(*args, **kwargs)
     return wrap
 
