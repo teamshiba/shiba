@@ -3,3 +3,4 @@ gunicorn==20.0.4
 mypy_extensions
 firebase_admin
 flask-cors
+pytest
