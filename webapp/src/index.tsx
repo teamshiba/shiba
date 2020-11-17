@@ -9,6 +9,7 @@ import reportWebVitals from './reportWebVitals';
 import {browserHistory} from './common/utils';
 import {ActiveRoomList, HistoryRoomList} from "./pages/RoomList";
 import Voting from "./pages/Voting";
+import Statistics from "./pages/Statistics";
 import {createMuiTheme, ThemeProvider} from '@material-ui/core/styles';
 import {Shadows} from "@material-ui/core/styles/shadows";
 import UserProfile from "./pages/UserProfile";
@@ -64,7 +65,8 @@ ReactDOM.render(
                                 <Switch>
                                     <Route path="/room/active" component={ActiveRoomList}/>
                                     <Route path="/room/history" component={HistoryRoomList}/>
-                                    <Route path="/room/:id" component={Voting}/>
+                                    <Route exact path="/room/:id" component={Voting}/>
+                                    <Route exact path="/room/:id/statistics" component={Statistics}/>
                                 </Switch>
                             </Route>
                             <Route path="/user/">

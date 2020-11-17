@@ -1,4 +1,10 @@
 export interface Group {
-    groupId: string,
-    displayName: string,
+    groupId: number
+    roomName: string,
+    isCompleted: boolean,
+    members: [{
+        userId: string,
+        displayName: string,
+        avatarUrl: string
+    }]
 }
