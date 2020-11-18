@@ -26,7 +26,7 @@ const useStyles = makeStyles(() => ({
 const Layout: FC<IProps> = (props) => {
     const classes = useStyles();
 
-    return <Container className={classes.container}>
+    return <Container className={classes.container} maxWidth="xs">
         <div className={classes.content}>
             {props.children}
         </div>
