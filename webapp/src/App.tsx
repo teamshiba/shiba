@@ -32,9 +32,9 @@ function App() {
           <ShibaLogo />
         </div>
 
-        <h1>Find your soul</h1>
+        <h1 className={'catch'}>Find your soul</h1>
 
-        <p>
+        <p className={'desc'}>
           Easily find a restaurant or hotel for your group.
         </p>
 
