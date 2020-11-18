@@ -32,26 +32,8 @@ class StatisticsDetailStore {
     }
 
     async updateStatistics() {
-        // this.statistics = unwrap((await axios.get<Message<Statistics[]>>(
-        //     `${serverPrefix}/room/${this.roomId}/stats`)).data);
-
-        // For testing purpose
-        this.statistics = [
-            {
-                "like": 1,
-                "dislike" : 2,
-                "item": {
-                  "name": "Ginza Kyubey", "itemId":  "1"
-                }
-            },
-            {
-                "like": 2,
-                "dislike" : 0,
-                "item": {
-                  "name": "The MOON", "itemId":  "2"
-                }
-            }
-        ]
+        this.statistics = unwrap((await axios.get<Message<Statistics[]>>(
+            `${serverPrefix}/room/${this.roomId}/stats`)).data);
     }
 
 }
