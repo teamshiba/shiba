@@ -16,6 +16,7 @@ import UserProfile from "./pages/UserProfile";
 import axios from "axios";
 import AuthSynchronizer from "./components/AuthSynchronizer";
 import RoomProfile from "./pages/RoomProfile";
+import Invitation from "./pages/Invitation";
 
 axios.interceptors.request.use((config) => {
     const accessToken = localStorage.getItem("auth_token");
@@ -74,6 +75,7 @@ ReactDOM.render(
                             <Route path="/user/">
                                 <Route path="/user/profile" component={UserProfile}/>
                             </Route>
+                            <Route path="/join/:id" component={Invitation}/>
                         </Layout>
                     </Switch>
                 </Router>

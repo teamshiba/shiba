@@ -7,7 +7,6 @@ import {RouteComponentProps} from "react-router";
 import GroupStore from "../../stores/group-store";
 import Header from "../../components/Header";
 import {observer} from "mobx-react";
-import Avatar from "@material-ui/core/Avatar";
 import Card from "../../components/Card";
 import makeStyles from "@material-ui/core/styles/makeStyles";
 import {Button} from "@material-ui/core";
@@ -17,26 +16,11 @@ import Input from "@material-ui/core/Input";
 import FileCopyIcon from '@material-ui/icons/FileCopy';
 import EditInput from "../../components/EditInput";
 import {copyToClipboard} from "../../common/utils";
+import AvatarList from "../../components/AvatarList";
 
 type IProps = RouteComponentProps<{ id: string }>
 
 const useStyles = makeStyles(() => ({
-    avatarList: {
-        display: "flex",
-    },
-    avatar: {
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
-        margin: "0.5em",
-        "& *": {
-            margin: "0.5em",
-        },
-        "& span": {
-            fontSize: "0.75em",
-            fontFamily: "sans-serif",
-        }
-    },
     endButton: {
         width: "100%",
         color: "#ff0000",
@@ -62,14 +46,7 @@ const RoomProfile: FC<IProps> = observer((props) => {
     return <Fragment>
         <Header hasBackButton>{groupProfileStore.data.roomName}</Header>
         <Card title="Members">
-            <div className={classes.avatarList}>
-                {groupProfileStore.data.members.map(member =>
-                    <div className={classes.avatar}>
-                        <Avatar src={member.photoURL}/>
-                        <span>{member.displayName}</span>
-                    </div>
-                )}
-            </div>
+            <AvatarList members={groupProfileStore.data.members}/>
         </Card>
         <Card title="Group Name">
             <EditInput className={classes.textField}

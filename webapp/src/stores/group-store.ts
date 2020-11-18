@@ -61,6 +61,11 @@ class GroupProfileStore {
         this.update();
     }
 
+    async join() {
+        await axios.put(`${serverPrefix}/room/${this.groupId}/member`);
+        this.update();
+    }
+
     async endMatch() {
         await axios.put(`${serverPrefix}/room/${this.groupId}`, {
             isCompleted: true
