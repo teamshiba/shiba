@@ -1,3 +1,20 @@
+.screen {
+    display: flex;
+    flex-direction: column;
+    height: 85vh;
+    justify-content: space-between;
+}
+
+.voting-buttons {
+    display: flex;
+    justify-content: space-around;
+    size: 24px;
+}
+
+.voting-button {
+    font-size: 40px;
+}
+
 .swipe {
     position: absolute;
     height: inherit;
