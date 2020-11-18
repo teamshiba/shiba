@@ -24,7 +24,7 @@ class GroupStore {
 
     async createGroup(name: string) {
         await axios.post(`${serverPrefix}/room`, {
-            "displayName": name,
+            "roomName": name,
         });
 
         await this.updateActiveGroups();
