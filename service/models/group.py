@@ -1,8 +1,7 @@
 import datetime
-from typing import Union
 
+from utils.connections import ref_groups
 from utils.exceptions import InvalidRequestBody
-from .connections import ref_groups
 
 
 class Group(object):

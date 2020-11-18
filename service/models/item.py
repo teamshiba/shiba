@@ -1,11 +1,12 @@
 import json
 from datetime import datetime
 from enum import Enum
-from mypy_extensions import TypedDict
 from uuid import uuid4
 
+from mypy_extensions import TypedDict
+
+from utils.connections import ref_items, ref_groups, ref_votes
 from utils.exceptions import DataModelException
-from .connections import ref_items, ref_groups, ref_votes
 
 
 class FieldPath(str, Enum):

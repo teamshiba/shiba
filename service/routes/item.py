@@ -1,7 +1,7 @@
 from flask import Blueprint, request
 
-from models.connections import ref_items
 from models.item import filter_items
+from utils.connections import ref_items
 from utils.exceptions import InvalidQueryParams, InvalidRequestBody, DataModelException
 
 router_item = Blueprint('item', __name__)

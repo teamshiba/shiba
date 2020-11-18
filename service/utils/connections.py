@@ -1,4 +1,5 @@
 from google.cloud.firestore import CollectionReference
+
 from utils import db
 
 ref_users: CollectionReference = db.collection(u'Users')
