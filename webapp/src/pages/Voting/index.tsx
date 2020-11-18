@@ -114,7 +114,11 @@ const Voting: FC<IProps> = observer((props) => {
             {content}
             <div className="voting-buttons">
                 <div className={classes.votingButtonBgContainer}>
-                    <IconButton className={classes.votingButtonBg}> <Equalizer className={`${classes.statsButton} ${classes.votingButton}`}/> </IconButton>
+                    <IconButton className={classes.votingButtonBg}>
+                        <Equalizer
+                            className={`${classes.statsButton} ${classes.votingButton}`}
+                            onClick={() => browserHistory.push(`/room/${roomId}/stats`)}/>
+                    </IconButton>
                 </div>
                 <div className={classes.votingButtonBgContainer}>
                     <IconButton className={classes.votingButtonBg}> <Clear className={`${classes.dislikeButton} ${classes.votingButton}`}/> </IconButton>
