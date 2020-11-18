@@ -11,3 +11,12 @@ Fixtures are functions, which will run before each test function to which it is 
 def client():
     app = create_app()
     return app.test_client()
+
+
+@pytest.fixture(scope="session", autouse=True)
+def before_all_tests():
+    """
+    This would run before all tests.
+    :return:
+    """
+    pass
