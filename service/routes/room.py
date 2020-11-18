@@ -143,3 +143,26 @@ def join_group(auth_uid=None, group_id=""):
         "data": ref_groups.document(group_id).get().to_dict()
     }
 
+
+@room.route('/room/<string:group_id>/stats', methods=['GET'])
+@check_token
+def get_stats(auth_uid=None, group_id=""):
+    snap = ref_groups.document(group_id).get()
+
+    role = Group.validate_user_role(auth_uid, group_snap=snap)
+
+    if role < 1:
+        UnauthorizedRequest.raise_no_membership()
+
+    # query_items_res = Item.get_list_by_group(snap.get('itemList'))
+
+    return {
+        "data": [{
+            "like": 1,
+            "dislike": 2,
+            "item": {
+                "name": "", "itemId": ""
+            }
+        }],
+        "isCompleted": snap.get('isCompleted')
+    }
