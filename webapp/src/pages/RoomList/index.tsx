@@ -89,7 +89,7 @@ const roomAvatarName = (name: string): string => {
         .filter(w => w.length > 0)
         .map(w => w.charAt(0));
 
-    return letters.join("");
+    return letters.slice(0, 3).join("");
 }
 
 const RoomList: FC<IRoomListProps> = (props) => {
