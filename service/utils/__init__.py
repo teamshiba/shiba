@@ -2,11 +2,27 @@ import json
 
 import firebase_admin
 from firebase_admin import credentials, firestore
+from flask import Flask
 from google.cloud.firestore import CollectionReference
+from werkzeug.exceptions import HTTPException
+
+from routes.room import room
+from routes.voting import voting
+from utils.exceptions import handle_http_exception
 
 cred = credentials.Certificate('fbConfigs.json')
 firebase = firebase_admin.initialize_app(cred)
 db = firestore.client()
+
+
+def create_app():
+    _app = Flask(__name__)
+
+    _app.register_blueprint(room)
+    _app.register_blueprint(voting)
+    _app.register_error_handler(HTTPException, handle_http_exception)
+
+    return _app
 
 
 def delete_collection(coll_ref: CollectionReference, batch_size=50):
