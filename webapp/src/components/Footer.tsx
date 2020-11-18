@@ -4,7 +4,7 @@
 
 import React, {FC} from "react";
 import {History} from "history";
-import {BottomNavigation} from "@material-ui/core";
+import BottomNavigation from "@material-ui/core/BottomNavigation";
 import BottomNavigationAction from "@material-ui/core/BottomNavigationAction";
 import PeopleIcon from '@material-ui/icons/People';
 import PeopleOutlineIcon from '@material-ui/icons/PeopleOutline';
