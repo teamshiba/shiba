@@ -1,3 +1,6 @@
+/*noinspection CssUnknownTarget*/
+@import url('https://fonts.googleapis.com/css2?family=Baloo+Bhai+2:wght@700&display=swap');
+
 .App {
   text-align: center;
 }
@@ -8,18 +11,20 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  font-size: calc(10px + 2vmin);
 }
 
-.App-link {
-  color: #61dafb;
+.title {
+  font-size: 3.5rem;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+h1 {
+  margin-bottom: 0;
+  font-family: 'Baloo Bhai 2', cursive;
+  font-size: 3rem;
+  color: #FFBC6F;
+}
+
+p {
+  margin: 0 2.5rem 5rem 2.5rem;
+  font-size: 1.2rem;
 }

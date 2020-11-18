@@ -1,13 +1,11 @@
 import React from 'react';
-import logo from './logo.svg';
 import './App.css';
 import ShibaLogo from "./components/ShibaLogo";
-import Authentication from "./pages/Authentication";
-import {Route} from "react-router";
-import {Button} from "@material-ui/core";
-import withStyles from "@material-ui/core/styles/withStyles";
+import {Button, createStyles, Theme} from "@material-ui/core";
+import { Link } from 'react-router-dom'
+import {makeStyles} from "@material-ui/core/styles";
 
-const ColorButton = withStyles((theme) => ({
+const styles = makeStyles((theme: Theme) => createStyles({
   root: {
     color: 'white',
     backgroundColor: '#FFBC6F',
@@ -20,12 +18,16 @@ const ColorButton = withStyles((theme) => ({
     fontSize: '24px',
     fontWeight: "bold",
   },
-}))(Button);
+}));
 
 function App() {
+  const classes = styles();
+
   return (
     <div className="App">
       <header className="App-header">
+        <h1 className={'title'}>Shiba Match</h1>
+
         <div style={{ height: '200px' }}>
           <ShibaLogo />
         </div>
@@ -36,10 +38,9 @@ function App() {
           Easily find a restaurant or hotel for your group.
         </p>
 
-        <ColorButton variant="contained" color="primary" disableElevation>
+        <Button component={Link} to={'/auth'} className={classes.root} variant="contained" disableElevation>
           Log In
-        </ColorButton>
-
+        </Button>
 
       </header>
     </div>
