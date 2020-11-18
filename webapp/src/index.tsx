@@ -69,7 +69,7 @@ ReactDOM.render(
                                     <Route path="/room/active" component={ActiveRoomList}/>
                                     <Route path="/room/history" component={HistoryRoomList}/>
                                     <Route path="/room/:id/profile" component={RoomProfile}/>
-                                    <Route path="/room/:id/statistics" component={Statistics}/>
+                                    <Route path="/room/:id/stats" component={Statistics}/>
                                     <Route path="/room/:id" component={Voting}/>
                                 </Switch>
                             </Route>
