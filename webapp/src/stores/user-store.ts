@@ -1,6 +1,5 @@
 import {makeAutoObservable} from "mobx";
 import {auth, firestore, generateUserDocument} from "../firebase/firebase.utils";
-import {createContext} from "react";
 import {User} from "../domain/user";
 
 class UserStore {
@@ -36,5 +35,3 @@ class UserStore {
 }
 
 export const userStore = new UserStore();
-
-export default createContext(userStore);
