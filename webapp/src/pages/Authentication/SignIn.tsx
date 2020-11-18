@@ -22,7 +22,7 @@ const uiConfig = {
 const SignIn: FC = () => {
     return (
         <Container>
-            <h1 style={{color: "#FFBC6F", fontSize: "30px", fontWeight: 800}}>Sign In</h1>
+            <h1 style={{color: "#FFBC6F", fontSize: "30px", fontWeight: 800, marginTop: 0}}>Sign In</h1>
             <StyledFirebaseAuth uiConfig={uiConfig} firebaseAuth={firebase.auth()} />
         </Container>
     );
