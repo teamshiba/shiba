@@ -68,7 +68,7 @@ def filter_items(params: ItemFilter):
     if voted_by is not None and unvoted_by is not None:
         raise DataModelException('cannot applied conditions: '
                                  'voted & unvoted simultaneously.')
-    set_item_ids: set = ref_groups.document(group_id).get().get("itemList")
+    set_item_ids: set = set(ref_groups.document(group_id).get().to_dict()["itemList"])
     if voted_by or unvoted_by:
         target_uid = voted_by if voted_by else unvoted_by
         stream_voted = ref_votes.where('groupId', '==', group_id).where(
@@ -79,11 +79,13 @@ def filter_items(params: ItemFilter):
             set_item_ids = set_item_ids.intersection(set_voted)
         else:
             set_item_ids = set_item_ids.difference(set_voted)
-    query = ref_items.where('itemId', 'in', list(set_item_ids))
-    stream = query.stream()
+    stream = ref_items.where(u'itemId', u'in', list(set_item_ids)).stream()
+    list_stream = list()
+    for doc in stream:
+        list_stream.append(doc.to_dict())
     return {
         "roomTotal": len(set_item_ids),
-        "items": list(stream)
+        "items": list_stream
     }
 
 
