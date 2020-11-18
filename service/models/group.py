@@ -1,5 +1,6 @@
 import datetime
-from typing import Union
+
+from google.cloud.firestore import DocumentSnapshot
 
 from utils.exceptions import InvalidRequestBody
 from .connections import ref_groups
@@ -56,14 +57,16 @@ class Group(object):
         return dict_to_update
 
     @staticmethod
-    def validate_user_role(uid: str, group_id: str):
+    def validate_user_role(uid: str, group_id: str = None,
+                           group_snap: DocumentSnapshot = None):
         """
         Validate a user's membership in a matching room.
+        :param group_snap: snapshot of a document
         :param uid:
         :param group_id:
         :return: didn't join -> 0, a member -> 1, organizer -> 2
         """
-        snap = ref_groups.document(group_id).get()
+        snap = group_snap or ref_groups.document(group_id).get()
         if not snap.exists:
             raise InvalidRequestBody('Invalid groupId provided')
         data = snap.to_dict()
