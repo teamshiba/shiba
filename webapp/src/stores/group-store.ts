@@ -52,6 +52,27 @@ class GroupProfileStore {
     async update() {
         this.data = unwrap((await axios.get<Message<Group>>(`${serverPrefix}/room/${this.groupId}`)).data);
     }
+
+    async setGroupName(name: string) {
+        await axios.put(`${serverPrefix}/room/${this.groupId}`, {
+            roomName: name
+        });
+
+        this.update();
+    }
+
+    async join() {
+        await axios.put(`${serverPrefix}/room/${this.groupId}/member`);
+        this.update();
+    }
+
+    async endMatch() {
+        await axios.put(`${serverPrefix}/room/${this.groupId}`, {
+            isCompleted: true
+        });
+
+        this.update();
+    }
 }
 
 export const groupStore = new GroupStore();
