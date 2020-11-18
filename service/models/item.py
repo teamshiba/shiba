@@ -84,7 +84,6 @@ def filter_items(params: ItemFilter):
     list_stream = list()
     if set_item_ids:
         query = ref_items.where(u'itemId', u'in', list(set_item_ids))
-        print('---', query.get())
         if query.get():
             stream = query.stream()
             for doc in stream:
