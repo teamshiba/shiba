@@ -1,8 +1,10 @@
 import json
 from datetime import datetime
 from enum import Enum
-from mypy_extensions import TypedDict
+from typing import List
 from uuid import uuid4
+
+from mypy_extensions import TypedDict
 
 from utils.exceptions import DataModelException
 from .connections import ref_items, ref_groups, ref_votes
@@ -40,6 +42,11 @@ class Item:
 
     def __repr__(self):
         return json.dumps(self.to_dict())
+
+    @staticmethod
+    def get_list_by_group(list_ids: List[str]):
+        # TODO
+        raise NotImplemented
 
 
 class ItemFilter(TypedDict, total=False):
