@@ -14,6 +14,42 @@ import './index.css'
 import {observer} from "mobx-react";
 import {RouteComponentProps} from "react-router";
 import {browserHistory} from "../../common/utils";
+import {Clear, Equalizer, Favorite} from "@material-ui/icons";
+import {makeStyles} from "@material-ui/core/styles";
+
+const useStyles = makeStyles(theme => ({
+    votingButtonBgContainer: {
+        width: '60px',
+        height: '60px',
+        borderRadius: '50%',
+        backgroundColor: '#F0F0F0',
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center'
+    },
+    votingButtonBg: {
+        width: '50px',
+        height: '50px',
+        borderRadius: '50%',
+        backgroundColor: 'white',
+    },
+    votingButton: {
+        fontSize: '30px',
+        borderRadius: '50%'
+    },
+    statsButton: {
+      color: '#6FCF97'
+    },
+    dislikeButton: {
+      color: '#EB5757'
+    },
+    likeButton: {
+      color: '#F2994A'
+    },
+    addButton: {
+      color: '#2F80ED'
+    }
+}));
 
 type IProps = RouteComponentProps<{ id: string }>
 
@@ -21,6 +57,7 @@ const Voting: FC<IProps> = observer((props) => {
     const roomId = props.match.params["id"];
     const votingStore = useContext(VotingStore).room(roomId);
     const groupProfileStore = useContext(GroupStore).room(roomId);
+    const classes = useStyles();
 
     useEffect(() => {
         votingStore.updateItems();
@@ -72,10 +109,28 @@ const Voting: FC<IProps> = observer((props) => {
         content = <div className="message">{message}</div>;
     }
 
+    content =
+        <div className="screen">
+            {content}
+            <div className="voting-buttons">
+                <div className={classes.votingButtonBgContainer}>
+                    <IconButton className={classes.votingButtonBg}> <Equalizer className={`${classes.statsButton} ${classes.votingButton}`}/> </IconButton>
+                </div>
+                <div className={classes.votingButtonBgContainer}>
+                    <IconButton className={classes.votingButtonBg}> <Clear className={`${classes.dislikeButton} ${classes.votingButton}`}/> </IconButton>
+                </div>
+                <div className={classes.votingButtonBgContainer}>
+                    <IconButton className={classes.votingButtonBg}> <Favorite className={`${classes.likeButton} ${classes.votingButton}`}/> </IconButton>
+                </div>
+                <div className={classes.votingButtonBgContainer}>
+                    <IconButton className={classes.votingButtonBg}> <AddOutlinedIcon className={`${classes.addButton} ${classes.votingButton}`}/> </IconButton>
+                </div>
+            </div>
+        </div>
+
     return (
         <Fragment>
             <Header hasBackButton buttons={[
-                <IconButton> <AddOutlinedIcon/> </IconButton>,
                 <IconButton>
                     <EditOutlinedIcon onClick={() => browserHistory.push(`/room/${roomId}/profile`)}/>
                 </IconButton>
