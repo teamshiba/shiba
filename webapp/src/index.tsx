@@ -15,6 +15,7 @@ import {Shadows} from "@material-ui/core/styles/shadows";
 import UserProfile from "./pages/UserProfile";
 import axios from "axios";
 import AuthSynchronizer from "./components/AuthSynchronizer";
+import RoomProfile from "./pages/RoomProfile";
 
 axios.interceptors.request.use((config) => {
     const accessToken = localStorage.getItem("auth_token");
@@ -65,8 +66,9 @@ ReactDOM.render(
                                 <Switch>
                                     <Route path="/room/active" component={ActiveRoomList}/>
                                     <Route path="/room/history" component={HistoryRoomList}/>
-                                    <Route exact path="/room/:id" component={Voting}/>
-                                    <Route exact path="/room/:id/statistics" component={Statistics}/>
+                                    <Route path="/room/:id/profile" component={RoomProfile}/>
+                                    <Route path="/room/:id/statistics" component={Statistics}/>
+                                    <Route path="/room/:id" component={Voting}/>
                                 </Switch>
                             </Route>
                             <Route path="/user/">

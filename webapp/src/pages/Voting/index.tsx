@@ -13,34 +13,35 @@ import GroupStore from "../../stores/group-store";
 import './index.css'
 import {observer} from "mobx-react";
 import {RouteComponentProps} from "react-router";
+import {browserHistory} from "../../common/utils";
 
 type IProps = RouteComponentProps<{ id: string }>
 
 const Voting: FC<IProps> = observer((props) => {
     const roomId = props.match.params["id"];
     const votingStore = useContext(VotingStore).room(roomId);
-    const groupDetailStore = useContext(GroupStore).room(roomId);
+    const groupProfileStore = useContext(GroupStore).room(roomId);
 
     useEffect(() => {
         votingStore.updateItems();
-        groupDetailStore.update();
+        groupProfileStore.update();
     }, []);
 
     // Polling for updates when there's no items left to swipe
     useEffect(() => {
-        if (votingStore.items.size > 0 || groupDetailStore.data?.isCompleted) {
+        if (votingStore.items.size > 0 || groupProfileStore.data?.isCompleted) {
             return;
         }
 
         const interval = setInterval(() => {
             votingStore.updateItems();
-            groupDetailStore.update();
+            groupProfileStore.update();
         }, 3000);
 
         return () => clearInterval(interval);
-    }, [votingStore.items.size, groupDetailStore.data?.isCompleted]);
+    }, [votingStore.items.size, groupProfileStore.data?.isCompleted]);
 
-    if (groupDetailStore.data == null) return null;
+    if (groupProfileStore.data == null) return null;
 
     const onCardLeftScreen = (direction: string, item: string) => {
         votingStore.vote(item, direction == "left" ? "like" : "dislike");
@@ -51,17 +52,17 @@ const Voting: FC<IProps> = observer((props) => {
         content = <div className="cardContainer">
             {[...votingStore.items.values()].map((item
                 ) =>
-                    <div className="swipe" key={item.id}>
-                        <TinderCard onCardLeftScreen={(dir) => onCardLeftScreen(dir, item.id)}
-                                    preventSwipe={['up', 'down']}>
-                            <div style={{backgroundImage: 'url(' + item.imgURL + ')'}} className='card'>
-                                <h3>{item.name}</h3>
-                            </div>
-                        </TinderCard>
-                    </div>
+                <div className="swipe" key={item.id}>
+                    <TinderCard onCardLeftScreen={(dir) => onCardLeftScreen(dir, item.id)}
+                                preventSwipe={['up', 'down']}>
+                        <div style={{backgroundImage: 'url(' + item.imgURL + ')'}} className='card'>
+                            <h3>{item.name}</h3>
+                        </div>
+                    </TinderCard>
+                </div>
             )}
         </div>;
-    } else if (groupDetailStore.data.isCompleted) {
+    } else if (groupProfileStore.data.isCompleted) {
         content = <div className="message">Placeholder for real matching result</div>
     } else {
         const message = votingStore.voted ?
@@ -75,9 +76,11 @@ const Voting: FC<IProps> = observer((props) => {
         <Fragment>
             <Header hasBackButton buttons={[
                 <IconButton> <AddOutlinedIcon/> </IconButton>,
-                <IconButton> <EditOutlinedIcon/> </IconButton>
+                <IconButton>
+                    <EditOutlinedIcon onClick={() => browserHistory.push(`/room/${roomId}/profile`)}/>
+                </IconButton>
             ]}>
-                {groupDetailStore.data.roomName}
+                {groupProfileStore.data.roomName}
             </Header>
             {content}
         </Fragment>

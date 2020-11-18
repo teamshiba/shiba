@@ -1,10 +1,8 @@
+import {User} from "./user";
+
 export interface Group {
     groupId: number
     roomName: string,
-    isCompleted: boolean,
-    members: [{
-        userId: string,
-        displayName: string,
-        avatarUrl: string
-    }]
+    isCompleted: boolean;
+    members: User[];
 }
