@@ -40,6 +40,7 @@ const UserProfile: FC = observer(() => {
 
     const handleSignout = () => {
         firebase.auth().signOut();
+        localStorage.removeItem("auth_token");
         browserHistory.push("/auth/");
     }
 

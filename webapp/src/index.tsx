@@ -35,6 +35,7 @@ axios.interceptors.response.use((config) => {
     return config;
 }, (error) => {
     if (error.response && 401 === error.response.status) {
+        localStorage.removeItem("auth_token");
         browserHistory.push('/auth/');
     }
 
