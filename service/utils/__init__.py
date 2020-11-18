@@ -1,7 +1,9 @@
+from utils.db import init_db
+
+db = init_db()
+
 import json
 
-import firebase_admin
-from firebase_admin import credentials, firestore
 from flask import Flask
 from google.cloud.firestore import CollectionReference
 from werkzeug.exceptions import HTTPException
@@ -10,9 +12,6 @@ from routes.room import room
 from routes.voting import voting
 from utils.exceptions import handle_http_exception
 
-cred = credentials.Certificate('fbConfigs.json')
-firebase = firebase_admin.initialize_app(cred)
-db = firestore.client()
 
 
 def create_app():
@@ -60,3 +59,4 @@ def load_collection(coll_ref: CollectionReference,
             coll_ref.document(record['id_key']).set(record)
         else:
             coll_ref.add(record)
+

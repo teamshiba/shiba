@@ -26,6 +26,10 @@ class Voting:
         self.user_id = user_id
         self.vote_type = vote_type
 
+    # TODO
+    def from_dict(self, source):
+        pass
+
     def to_dict(self):
         return {
             "creationTime": str(self.creation_time),

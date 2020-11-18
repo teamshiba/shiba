@@ -5,14 +5,21 @@ from utils.exceptions import InvalidRequestBody
 
 
 class Group(object):
-    def __init__(self, organizer_id, room_name='', is_completed=False):
+    def __init__(self, organizer_id='', room_name='', is_completed=False):
         self.organizer_uid = organizer_id
         self.is_completed = is_completed
         self.item_list = []
         self.members = [organizer_id]
         self.room_name = room_name
         self.created_time = datetime.datetime.now()
-        self.access_link = ''
+
+    def from_dict(self, source):
+        self.organizer_uid = source["organizerUid"]
+        self.is_completed = source["isCompleted"]
+        self.item_list = source["itemList"]
+        self.members = source["members"]
+        self.room_name = source["roomName"]
+        self.created_time = source["creationTime"]
 
     def to_dict(self):
         return {
@@ -21,8 +28,7 @@ class Group(object):
             "itemList": self.item_list,
             "members": self.members,
             "roomName": self.room_name,
-            "creationTime": self.created_time,
-            "accessLink": self.access_link
+            "creationTime": self.created_time
         }
 
     def __repr__(self):
@@ -34,7 +40,6 @@ class Group(object):
                         members={self.members}, \
                         roomName={self.room_name}, \
                         creationTime={self.created_time}, \
-                        accessLink={self.access_link}, \
                     )'
         )
 
