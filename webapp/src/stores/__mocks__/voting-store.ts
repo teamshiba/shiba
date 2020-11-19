@@ -31,17 +31,21 @@ class RoomVotingStore {
         this.updated = true;
 
         const items = [{
-            id: "item1",
+            itemId: "item1",
             name: "Item 1",
         } as VotingItem];
 
         for (const item of items) {
-            this.items.set(item.id, item);
+            this.items.set(item.itemId, item);
         }
     }
 
     async vote(itemId: string) {
         this.items.delete(itemId);
+    }
+
+    async addItem(item: VotingItem): Promise<void> {
+        this.items.set(item.itemId, item);
     }
 
 }
