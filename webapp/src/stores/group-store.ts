@@ -45,7 +45,6 @@ class GroupProfileStore {
 
     async update() {
         this.data = unwrap((await axios.get<Message<Group>>(`${serverPrefix}/room/${this.groupId}`)).data);
-        console.log(this.data?.members[0].userId)
     }
 
     async setGroupName(name: string) {
