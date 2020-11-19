@@ -74,10 +74,6 @@ def get_group_profile(auth_uid=None, group_id=None):
     members = list_uid or []
     return_members = []
 
-    # validate request user
-    if auth_uid not in members:
-        raise UnauthorizedRequest("You are not authorized to access the group profile")
-
     for user_id in members:
         user_dict = ref_users.document(user_id).get().to_dict()
         user_dict['userId'] = user_id
