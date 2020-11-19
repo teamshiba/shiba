@@ -1,8 +1,9 @@
 import {makeAutoObservable} from "mobx";
-import {auth, firestore, generateUserDocument} from "../firebase/firebase.utils";
+import {auth, firestore} from "../firebase";
+import {generateUserDocument} from "../firebase/firebase.utils";
 import {User} from "../domain/user";
 
-class UserStore {
+export class UserStore {
     user: User | null = null;
     initialized = false;
 
@@ -25,7 +26,7 @@ class UserStore {
         });
     }
 
-    async rename(name: string) {
+    async rename(name: string): Promise<void> {
         if (this.user == null) return;
 
         const userRef = firestore.doc(`Users/${this.user.uid}`);

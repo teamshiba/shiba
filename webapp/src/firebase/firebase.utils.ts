@@ -1,17 +1,5 @@
-import firebase from "./index";
-import "firebase/firestore";
-import "firebase/auth";
+import firebase, {firestore} from "./index";
 import {User} from "../domain/user";
-
-export const auth = firebase.auth();
-export const firestore = firebase.firestore();
-
-const provider = new firebase.auth.GoogleAuthProvider();
-
-// eslint-disable-next-line
-export const signInWithGoogle = () => {
-    auth.signInWithPopup(provider);
-};
 
 // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
 export const generateUserDocument = async (user: firebase.User | null,
