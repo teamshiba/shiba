@@ -8,7 +8,7 @@ Fixtures are functions, which will run before each test function to which it is 
 """
 
 
-class TestConnection:
+class ConnHelper:
     token: str
     uid: str
 
@@ -35,7 +35,7 @@ def connection():
     load_result = 'success' if load_to_db() else 'failed'
     print("\nBefore all testcases.\nLoading mock data: " + load_result)
 
-    yield TestConnection(uid="test-user-1")
+    yield ConnHelper(uid="test-user-1")
 
     clear_result = 'success' if clear_db() else 'failed'
     print("\nAfter all testcases.\nDeleting mock data: " + clear_result)
