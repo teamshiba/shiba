@@ -2,6 +2,7 @@ from firebase_admin import firestore
 from flask import Blueprint, request
 
 from models.group import Group
+from models.item import filter_items
 from utils.connections import ref_groups, ref_users
 from utils.decorators import check_token
 from utils.exceptions import InvalidQueryParams, InvalidRequestBody, UnauthorizedRequest
@@ -29,9 +30,10 @@ def get_group_list(auth_uid=None):
 
     offset = request.args.get('offset') if 'offset' in request.args else 0
     limit = request.args.get('limit') if 'limit' in request.args else 100
-    filter_completed = request.args.get('state') if 'state' in request.args else False
+    state_text = request.args.get('state') or ''
+    filter_completed = state_text == 'true'
     query = ref_groups.where(u'members', u'array_contains', user_id)
-    if filter_completed is not None:
+    if state_text is not '':
         query = query.where(u'isCompleted', u'==', filter_completed)
     results = query.stream()
     data = map(lambda doc: (doc.id, doc.to_dict()), results)
@@ -154,6 +156,9 @@ def get_stats(auth_uid=None, group_id=""):
     if role < 1:
         UnauthorizedRequest.raise_no_membership()
 
+    res_items = filter_items({
+        'gid': group_id
+    })
     # query_items_res = Item.get_list_by_group(snap.get('itemList'))
 
     return {
