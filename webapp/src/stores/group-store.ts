@@ -1,11 +1,11 @@
 import {makeAutoObservable} from "mobx";
-import {createContext} from "react";
 import {Group} from "../domain/group";
 import axios from 'axios';
 import {serverPrefix} from "../common/config";
 import {Message, unwrap} from "../domain/message";
+import {getOrCreate} from "../common/utils";
 
-class GroupStore {
+export class GroupStore {
     activeGroups: Group[] = [];
     historyGroups: Group[] = [];
     groupDetails = new Map<string, GroupProfileStore>();
@@ -14,15 +14,15 @@ class GroupStore {
         makeAutoObservable(this);
     }
 
-    async updateActiveGroups() {
+    async updateActiveGroups(): Promise<void> {
         this.activeGroups = unwrap((await axios.get<Message<Group[]>>(`${serverPrefix}/room/list`)).data);
     }
 
-    async updateHistoryGroups() {
+    async updateHistoryGroups(): Promise<void> {
         this.historyGroups = unwrap((await axios.get<Message<Group[]>>(`${serverPrefix}/room/list?state=true`)).data);
     }
 
-    async createGroup(name: string) {
+    async createGroup(name: string): Promise<void> {
         await axios.post(`${serverPrefix}/room`, {
             "roomName": name,
         });
@@ -31,14 +31,8 @@ class GroupStore {
     }
 
     room(id: string): GroupProfileStore {
-        const store = this.groupDetails.get(id)
-        if (store) {
-            return store;
-        }
-
-        const newStore = new GroupProfileStore(id);
-        this.groupDetails.set(id, newStore);
-        return newStore;
+        return getOrCreate(this.groupDetails, id,
+            (id) => new GroupProfileStore(id));
     }
 }
 
@@ -76,5 +70,3 @@ class GroupProfileStore {
 }
 
 export const groupStore = new GroupStore();
-
-export default createContext(groupStore);

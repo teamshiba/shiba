@@ -1,11 +1,11 @@
 import {makeAutoObservable} from "mobx";
-import {createContext} from "react";
 import {VotingItem, VotingItemResponse} from "../domain/voting-item";
 import axios from "axios";
 import {serverPrefix} from "../common/config";
 import {userStore} from "./user-store";
+import {getOrCreate} from "../common/utils";
 
-class VotingStore {
+export class VotingStore {
     private votings = new Map<string, RoomVotingStore>();
 
     constructor() {
@@ -13,14 +13,8 @@ class VotingStore {
     }
 
     room(id: string): RoomVotingStore {
-        const store = this.votings.get(id)
-        if (store) {
-            return store;
-        }
-
-        const newStore = new RoomVotingStore(id);
-        this.votings.set(id, newStore);
-        return newStore;
+        return getOrCreate(this.votings, id,
+            (id) => new RoomVotingStore(id));
     }
 }
 
@@ -55,7 +49,7 @@ class RoomVotingStore {
 
     private mergeItems(response: VotingItemResponse) {
         this.totalCount = response.roomTotal;
-        this.unvotedCount = this.totalCount - response.items.length;
+        this.unvotedCount = response.items.length;
 
         for (const item of response.items) {
             this.items.set(item.id, item);
@@ -65,4 +59,3 @@ class RoomVotingStore {
 
 export const votingStore = new VotingStore();
 
-export default createContext(votingStore);

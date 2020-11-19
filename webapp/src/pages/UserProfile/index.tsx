@@ -2,9 +2,8 @@
  * @desc user profile. users can edit their own profile. they can also log out here.
  */
 
-import React, {FC, Fragment, useContext} from "react";
+import React, {FC, Fragment} from "react";
 import {observer} from "mobx-react";
-import UserStore from "../../stores/user-store";
 import Avatar from "@material-ui/core/Avatar";
 import makeStyles from "@material-ui/core/styles/makeStyles";
 import firebase from "../../firebase";
@@ -12,6 +11,7 @@ import {browserHistory} from "../../common/utils";
 import Card from "../../components/Card";
 import EditInput from "../../components/EditInput";
 import Button from "@material-ui/core/Button";
+import {userStore} from "../../stores/user-store";
 
 const useStyles = makeStyles(() => ({
     avatar: {
@@ -31,7 +31,6 @@ const useStyles = makeStyles(() => ({
 
 const UserProfile: FC = observer(() => {
     const classes = useStyles();
-    const userStore = useContext(UserStore);
     if (userStore.user == null) return null;
 
     const handleRename = (newName: string) => {

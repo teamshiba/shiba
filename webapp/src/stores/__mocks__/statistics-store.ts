@@ -1,11 +1,8 @@
 import {makeAutoObservable} from "mobx";
-import {Statistics} from "../domain/statistics";
-import {Message, unwrap} from "../domain/message";
-import axios from "axios";
-import {serverPrefix} from "../common/config";
-import {getOrCreate} from "../common/utils";
+import {Statistics} from "../../domain/statistics";
+import {getOrCreate} from "../../common/utils";
 
-export class StatisticsStore {
+class StatisticsStore {
     statisticsDetail = new Map<string, StatisticsDetailStore>();
 
     constructor() {
@@ -26,8 +23,14 @@ class StatisticsDetailStore {
     }
 
     async updateStatistics() {
-        this.statistics = unwrap((await axios.get<Message<Statistics[]>>(
-            `${serverPrefix}/room/${this.roomId}/stats`)).data);
+        this.statistics = [{
+            item: {
+                itemId: "mock1",
+                name: "Mock Item 1"
+            },
+            like: 1,
+            dislike: 2,
+        }];
     }
 
 }
