@@ -2,7 +2,8 @@ from firebase_admin import firestore
 from flask import Blueprint, request
 
 from models.group import Group
-from utils.connections import ref_groups, ref_users
+from models.item import filter_items
+from utils.connections import ref_groups, ref_users, ref_votes
 from utils.decorators import check_token
 from utils.exceptions import InvalidQueryParams, InvalidRequestBody, UnauthorizedRequest
 
@@ -157,18 +158,31 @@ def get_stats(auth_uid=None, group_id=""):
     if role < 1:
         UnauthorizedRequest.raise_no_membership()
 
-    # res_items = filter_items({
-    #     'gid': group_id
-    # })
-    # query_items_res = Item.get_list_by_group(snap.get('itemList'))
+    res_items = filter_items({
+        'gid': group_id
+    })
+    list_items = res_items.get('items')
+    rv_data = list()
+    for it in list_items:
+        item_id = it.get('itemId')
+        if not item_id:
+            raise InvalidRequestBody("Item ID not found.")
+        q = ref_votes.where('groupId', '==', group_id).where('itemId', '==', item_id)
+        stream = q.stream()
+        cnt_like, cnt_hate = 0, 0
+        for doc in stream:
+            vt = doc.to_dict().get('type')
+            if vt > 0:
+                cnt_like += 1
+            elif vt < 0:
+                cnt_hate += 1
+        rv_data.append({
+            'like': cnt_like,
+            'dislike': cnt_hate,
+            'items': it
+        })
 
     return {
-        "data": [{
-            "like": 1,
-            "dislike": 2,
-            "item": {
-                "name": "mock response to be implemented", "itemId": "mock"
-            }
-        }],
+        "data": rv_data,
         "isCompleted": snap.get('isCompleted')
     }
