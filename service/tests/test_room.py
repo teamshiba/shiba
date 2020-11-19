@@ -1,6 +1,6 @@
 from flask.testing import FlaskClient
 
-from tests.fixture import TestConnection
+from tests.fixture import TestConnection, client, connection  # noqa
 from utils import format_headers
 
 

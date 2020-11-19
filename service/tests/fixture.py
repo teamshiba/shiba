@@ -13,8 +13,11 @@ Fixtures are functions, which will run before each test function to which it is 
 class TestConnection:
     token: str
 
-    def __init__(self, token):
-        self.token = token
+    def __init__(self, token: bytes):
+        if type(token) is str:
+            self.token = token
+        else:
+            self.token = token.decode()
 
 
 @pytest.fixture(scope="module", autouse=True)

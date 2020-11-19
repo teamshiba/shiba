@@ -69,4 +69,5 @@ def load_collection(coll_ref: CollectionReference,
 
 def format_headers(token=""):
     return {
-        'Authorization': 'Bearer {}'.format(token)}
+        'Authorization': 'Bearer {}'.format(token)
+    }
