@@ -1,6 +1,6 @@
 import json
 
-from flask import Flask
+from flask import Flask, g, session
 from google.cloud.firestore import CollectionReference
 from werkzeug.exceptions import HTTPException
 
@@ -14,6 +14,9 @@ def create_app(test_mode=False):
     global db
     if test_mode:
         db = init_db('fbConfigs_test.json')
+        with _app.app_context():
+            g.is_testing = True
+            session['is_testing'] = True
     else:
         db = init_db('fbConfigs.json')
 

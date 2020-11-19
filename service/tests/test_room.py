@@ -10,7 +10,7 @@ class TestRoomRoutes:
         with client:
             results = client.get(
                 '/room/list',
-                headers=format_headers(connection.token),
+                headers=format_headers(connection.auth),
                 follow_redirects=True
             ).get_json()
             assert "data" in results
@@ -20,7 +20,7 @@ class TestRoomRoutes:
         with client:
             results: dict = client.get(
                 '/room/list',
-                headers=format_headers(connection.token),
+                headers=format_headers(connection.auth),
                 follow_redirects=True
             ).get_json()
             assert results.get('code') == 401

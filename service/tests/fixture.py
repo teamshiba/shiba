@@ -1,8 +1,5 @@
-import firebase_admin
 import pytest
-from firebase_admin import auth
 
-from tests.modify_mockdata import load_to_db, clear_db
 from utils import create_app
 
 """
@@ -12,12 +9,18 @@ Fixtures are functions, which will run before each test function to which it is 
 
 class TestConnection:
     token: str
+    uid: str
 
-    def __init__(self, token: bytes):
+    def __init__(self, token="", uid=""):
+        self.uid = uid
         if type(token) is str:
             self.token = token
         else:
             self.token = token.decode()
+
+    @property
+    def auth(self):
+        return self.token or self.uid
 
 
 @pytest.fixture(scope="module", autouse=True)
@@ -28,15 +31,15 @@ def connection():
     :return:
     """
     create_app(test_mode=True)
-    load_result = 'success' if load_to_db() else 'failed'
-    print("\nBefore all testcases.\nLoading mock data: " + load_result)
-    app = firebase_admin.get_app("Shiba")
-    token = auth.create_custom_token(uid="test-user-1", app=app)
+    # load_result = 'success' if load_to_db() else 'failed'
+    # print("\nBefore all testcases.\nLoading mock data: " + load_result)
+    # app = firebase_admin.get_app("Shiba")
+    # token = auth.create_custom_token(uid="test-user-1", app=app)
 
-    yield TestConnection(token=token)
+    yield TestConnection(uid="test-user-1")
 
-    clear_result = 'success' if clear_db() else 'failed'
-    print("\nAfter all testcases.\nDeleting mock data: " + clear_result)
+    # clear_result = 'success' if clear_db() else 'failed'
+    # print("\nAfter all testcases.\nDeleting mock data: " + clear_result)
 
 
 @pytest.fixture
