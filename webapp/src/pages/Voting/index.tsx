@@ -76,13 +76,6 @@ const Voting: FC<IProps> = observer((props) => {
         groupProfileStore.update();
     }, []);
 
-    // Jump to stats page if finished
-    useEffect(() => {
-        if (groupProfileStore.data?.isCompleted) {
-            browserHistory.push(`/room/${roomId}/stats`);
-        }
-    }, [groupProfileStore.data?.isCompleted])
-
     // Polling for updates when there's no items left to swipe
     useEffect(() => {
         if (roomVotingStore.items.size > 0 || groupProfileStore.data?.isCompleted) {
@@ -120,10 +113,10 @@ const Voting: FC<IProps> = observer((props) => {
             )}
         </div>;
     } else if (groupProfileStore.data.isCompleted) {
-        content = <div className="message">Placeholder for real matching result</div>
+        content = <div className="message">This group is finished, click statistics button to see the result</div>
     } else {
         const message = roomVotingStore.voted ?
-            "Wait for other people to finished or click add button to add more items" :
+            "Wait for other people to finish or click add button to add more items" :
             "Click add button to add more items";
 
         content = <div className="message">{message}</div>;
