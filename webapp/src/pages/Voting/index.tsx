@@ -2,13 +2,13 @@
  * @desc when user need to add items to the list for voting.
  */
 
-import React, {FC, Fragment, useContext, useEffect} from "react";
+import React, {FC, Fragment, useEffect} from "react";
 import Header from "../../components/Header";
 import IconButton from '@material-ui/core/IconButton';
 import EditOutlinedIcon from '@material-ui/icons/EditOutlined';
 import AddOutlinedIcon from '@material-ui/icons/AddOutlined';
 import TinderCard from 'react-tinder-card'
-import VotingStore from "../../stores/voting-store";
+import {votingStore} from "../../stores/voting-store"
 import './index.css'
 import {observer} from "mobx-react";
 import {RouteComponentProps} from "react-router";
@@ -55,39 +55,39 @@ type IProps = RouteComponentProps<{ id: string }>
 
 const Voting: FC<IProps> = observer((props) => {
     const roomId = props.match.params["id"];
-    const votingStore = useContext(VotingStore).room(roomId);
+    const roomVotingStore = votingStore.room(roomId);
     const groupProfileStore = groupStore.room(roomId);
     const classes = useStyles();
 
     useEffect(() => {
-        votingStore.updateItems();
+        roomVotingStore.updateItems();
         groupProfileStore.update();
     }, []);
 
     // Polling for updates when there's no items left to swipe
     useEffect(() => {
-        if (votingStore.items.size > 0 || groupProfileStore.data?.isCompleted) {
+        if (roomVotingStore.items.size > 0 || groupProfileStore.data?.isCompleted) {
             return;
         }
 
         const interval = setInterval(() => {
-            votingStore.updateItems();
+            roomVotingStore.updateItems();
             groupProfileStore.update();
         }, 3000);
 
         return () => clearInterval(interval);
-    }, [votingStore.items.size, groupProfileStore.data?.isCompleted]);
+    }, [roomVotingStore.items.size, groupProfileStore.data?.isCompleted]);
 
     if (groupProfileStore.data == null) return null;
 
     const onCardLeftScreen = (direction: string, item: string) => {
-        votingStore.vote(item, direction == "left" ? "like" : "dislike");
+        roomVotingStore.vote(item, direction == "left" ? "like" : "dislike");
     }
 
     let content;
-    if (votingStore.items.size > 0) {
+    if (roomVotingStore.items.size > 0) {
         content = <div className="cardContainer">
-            {[...votingStore.items.values()].map((item
+            {[...roomVotingStore.items.values()].map((item
                 ) =>
                     <div className="swipe" key={item.id}>
                         <TinderCard onCardLeftScreen={(dir) => onCardLeftScreen(dir, item.id)}
@@ -102,7 +102,7 @@ const Voting: FC<IProps> = observer((props) => {
     } else if (groupProfileStore.data.isCompleted) {
         content = <div className="message">Placeholder for real matching result</div>
     } else {
-        const message = votingStore.voted ?
+        const message = roomVotingStore.voted ?
             "Wait for other people to finished or click add button to add more items" :
             "Click add button to add more items";
 
@@ -114,10 +114,9 @@ const Voting: FC<IProps> = observer((props) => {
             {content}
             <div className="voting-buttons">
                 <div className={classes.votingButtonBgContainer}>
-                    <IconButton className={classes.votingButtonBg}>
-                        <Equalizer
-                            className={`${classes.statsButton} ${classes.votingButton}`}
-                            onClick={() => browserHistory.push(`/room/${roomId}/stats`)}/>
+                    <IconButton className={classes.votingButtonBg}
+                                onClick={() => browserHistory.push(`/room/${roomId}/stats`)}>
+                        <Equalizer className={`${classes.statsButton} ${classes.votingButton}`}/>
                     </IconButton>
                 </div>
                 <div className={classes.votingButtonBgContainer}>
@@ -137,11 +136,11 @@ const Voting: FC<IProps> = observer((props) => {
 
     return (
         <Fragment>
-            <Header hasBackButton buttons={[
-                <IconButton>
-                    <EditOutlinedIcon onClick={() => browserHistory.push(`/room/${roomId}/profile`)}/>
+            <Header hasBackButton buttons={
+                <IconButton onClick={() => browserHistory.push(`/room/${roomId}/profile`)}>
+                    <EditOutlinedIcon/>
                 </IconButton>
-            ]}>
+            }>
                 {groupProfileStore.data.roomName}
             </Header>
             {content}

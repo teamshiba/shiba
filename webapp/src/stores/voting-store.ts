@@ -1,5 +1,4 @@
 import {makeAutoObservable} from "mobx";
-import {createContext} from "react";
 import {VotingItem, VotingItemResponse} from "../domain/voting-item";
 import axios from "axios";
 import {serverPrefix} from "../common/config";
@@ -65,4 +64,3 @@ class RoomVotingStore {
 
 export const votingStore = new VotingStore();
 
-export default createContext(votingStore);
