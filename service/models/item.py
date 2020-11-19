@@ -41,9 +41,9 @@ class Item:
         if type(source) is not dict:
             raise DataModelException('Not a dict.')
         return Item(item_id=source.get('itemId'),
-                    img_url=source.get('imgUrl'),
+                    img_url=source.get('imgURL'),
                     name=source.get('name'),
-                    item_url=source.get('itemUrl'))
+                    item_url=source.get('itemURL'))
 
     def to_dict(self):
         rv = dict()
@@ -84,7 +84,7 @@ def db_add_item(item: Item):
         return res.update_time
 
 
-def filter_items(params: ItemFilter):
+def filter_items(params):
     group_id = params.get("gid") if 'gid' in params else params.get("group_id")
     voted_by = params.get("voted_by")
     unvoted_by = params.get("unvoted_by")
@@ -98,10 +98,15 @@ def filter_items(params: ItemFilter):
     room_total = len(set_item_ids)
     if voted_by or unvoted_by:
         target_uid = voted_by if voted_by else unvoted_by
-        stream_voted = ref_votes.where('groupId', '==', group_id).where(
+        query_voted = ref_votes.where('groupId', '==', group_id).where(
             'userId', '==', target_uid
-        ).select('itemId').get()
-        set_voted = set(stream_voted)
+        )
+        list_voted = list()
+        if query_voted:
+            stream_voted = query_voted.stream()
+            for doc in stream_voted:
+                list_voted.append(doc.to_dict()["itemId"])
+        set_voted = set(list_voted)
         if voted_by:
             set_item_ids = set_item_ids.intersection(set_voted)
         else:

@@ -3,6 +3,7 @@ from flask import Blueprint, request
 from models.group import Group
 from models.item import filter_items
 from models.voting import Voting
+from utils.decorators import check_token
 from utils.connections import ref_votes, ref_groups
 from utils.exceptions import UnauthorizedRequest, InvalidRequestBody
 
@@ -11,6 +12,7 @@ voting = Blueprint('voting', __name__)
 
 # PUT /api/voting
 @voting.route('/voting', methods=['PUT'])
+@check_token
 def put_a_vote(auth_uid: str = None):
     request_body: dict = request.get_json()
     uid: str = auth_uid or ""

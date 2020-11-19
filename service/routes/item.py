@@ -21,6 +21,7 @@ def get_group_item_list(auth_uid=None):
 
 # POST /api/item
 @router_item.route('/item', methods=['POST', 'PUT'])
+@check_token
 def add_item(auth_uid=None):
     request_body: dict = request.get_json()
     group_id = request_body.get('groupId')
