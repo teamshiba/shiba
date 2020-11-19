@@ -15,8 +15,8 @@ def get_group_item_list(auth_uid=None):
     params: dict = request.args.to_dict()
     try:
         return filter_items(params)
-    except DataModelException as e:
-        raise InvalidQueryParams(e.description)
+    except DataModelException as error:
+        raise InvalidQueryParams(error.description)
 
 
 # POST /api/item
