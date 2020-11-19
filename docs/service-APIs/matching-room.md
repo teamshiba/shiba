@@ -112,16 +112,16 @@ GET /api/room/<group id>
 - **Code** : `200 OK`
 - **Body** :  
 
-```json
+```json5
 {
   "groupId": "<string>[doc id of that matching room]",
   "roomName": "<string>[display name of that matching room",
   "isCompleted": "<boolean>[whether the match is completed or not]",
   "organizerUid": "<string>[organizer's user ID]",
   "members": [{
-    "userId": "", "displayName": "", "avatarUrl": ""
+    "userId": "", "displayName": "", "photoURL": ""
   }],
-  "items": [{"name": "", "itemUrl":  ""}]
+  "items": [{"name": "", "itemURL":  ""}] // Not implemented; use '/item/list' instead.
 }
 ```
 

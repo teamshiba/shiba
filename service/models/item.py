@@ -84,7 +84,7 @@ def db_add_item(item: Item):
         return res.update_time
 
 
-def filter_items(params: ItemFilter):
+def filter_items(params):
     group_id = params.get("gid") if 'gid' in params else params.get("group_id")
     voted_by = params.get("voted_by")
     unvoted_by = params.get("unvoted_by")

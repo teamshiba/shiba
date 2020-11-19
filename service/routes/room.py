@@ -2,7 +2,6 @@ from firebase_admin import firestore
 from flask import Blueprint, request
 
 from models.group import Group
-from models.item import filter_items
 from utils.connections import ref_groups, ref_users
 from utils.decorators import check_token
 from utils.exceptions import InvalidQueryParams, InvalidRequestBody, UnauthorizedRequest
@@ -79,7 +78,9 @@ def get_group_profile(auth_uid=None, group_id=None):
         raise UnauthorizedRequest("You are not authorized to access the group profile")
 
     for user_id in members:
-        return_members.append(ref_users.document(user_id).get().to_dict())
+        user_dict = ref_users.document(user_id).get().to_dict()
+        user_dict['userId'] = user_id
+        return_members.append(user_dict)
     rv["members"] = return_members
 
     return {
@@ -156,9 +157,9 @@ def get_stats(auth_uid=None, group_id=""):
     if role < 1:
         UnauthorizedRequest.raise_no_membership()
 
-    res_items = filter_items({
-        'gid': group_id
-    })
+    # res_items = filter_items({
+    #     'gid': group_id
+    # })
     # query_items_res = Item.get_list_by_group(snap.get('itemList'))
 
     return {
