@@ -35,7 +35,7 @@ const AvatarList: FC<IProps> = (props) => {
 
     return <div className={classes.avatarList}>
         {props.members.map(member =>
-            <div className={classes.avatar} key={member.uid}>
+            <div className={classes.avatar} key={member.userId}>
                 <Avatar src={member.photoURL}/>
                 <span>{member.displayName}</span>
             </div>

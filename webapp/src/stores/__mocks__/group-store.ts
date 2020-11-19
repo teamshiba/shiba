@@ -68,7 +68,7 @@ class GroupProfileStore {
             roomName: `Test Group ${this.groupId}`,
             isCompleted: false,
             members: [{
-                uid: "1234",
+                userId: "1234",
                 displayName: `User in ${this.groupId}`,
             } as User],
         };
