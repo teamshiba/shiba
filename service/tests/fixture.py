@@ -1,6 +1,8 @@
 import pytest
 
 from utils import create_app
+from tests.modify_mockdata import load_to_db, clear_db
+
 
 """
 Fixtures are functions, which will run before each test function to which it is applied.
@@ -14,7 +16,16 @@ def before_all_tests():
     Add mock data to firestore.
     :return:
     """
-    print("\n\n\nrun before all.\n\n\n")
+    create_app(test_mode=True)
+    load_result = 'success' if load_to_db() else 'failed'
+    print("\n\n\nrun before all.\n\n\nload result: " + load_result)
+
+    yield
+
+    clear_result = 'success' if clear_db() else 'failed'
+    print("\n\n\nrun after all.\n\n\ndelete result: " + clear_result)
+
+
 
 
 @pytest.fixture
