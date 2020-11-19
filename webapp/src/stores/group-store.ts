@@ -3,6 +3,7 @@ import {Group} from "../domain/group";
 import axios from 'axios';
 import {serverPrefix} from "../common/config";
 import {Message, unwrap} from "../domain/message";
+import {getOrCreate} from "../common/utils";
 
 export class GroupStore {
     activeGroups: Group[] = [];
@@ -30,14 +31,8 @@ export class GroupStore {
     }
 
     room(id: string): GroupProfileStore {
-        const store = this.groupDetails.get(id)
-        if (store) {
-            return store;
-        }
-
-        const newStore = new GroupProfileStore(id);
-        this.groupDetails.set(id, newStore);
-        return newStore;
+        return getOrCreate(this.groupDetails, id,
+            (id) => new GroupProfileStore(id));
     }
 }
 

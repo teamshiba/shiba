@@ -20,4 +20,15 @@ export const copyToClipboard = (text: string): void => {
     textField.remove()
 }
 
+export function getOrCreate<K, V>(map: Map<K, V>, key: K, factory: (key: K) => V): V {
+    const value = map.get(key);
+    if (value) {
+        return value;
+    }
+
+    const newValue = factory(key);
+    map.set(key, newValue);
+    return newValue;
+}
+
 export {browserHistory}

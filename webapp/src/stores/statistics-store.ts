@@ -3,6 +3,7 @@ import {Statistics} from "../domain/statistics";
 import {Message, unwrap} from "../domain/message";
 import axios from "axios";
 import {serverPrefix} from "../common/config";
+import {getOrCreate} from "../common/utils";
 
 class StatisticsStore {
     statisticsDetail = new Map<string, StatisticsDetailStore>();
@@ -12,14 +13,8 @@ class StatisticsStore {
     }
 
     room(id: string): StatisticsDetailStore {
-        const store = this.statisticsDetail.get(id)
-        if (store) {
-            return store;
-        }
-
-        const newStore = new StatisticsDetailStore(id);
-        this.statisticsDetail.set(id, newStore);
-        return newStore;
+        return getOrCreate(this.statisticsDetail, id,
+            (id) => new StatisticsDetailStore(id));
     }
 }
 

@@ -1,6 +1,7 @@
 import {makeAutoObservable} from "mobx";
 import {Group} from "../../domain/group";
 import {User} from "../../domain/user";
+import {getOrCreate} from "../../common/utils";
 
 class GroupStore {
     activeGroups: Group[] = [];
@@ -49,14 +50,8 @@ class GroupStore {
     }
 
     room(id: string): GroupProfileStore {
-        const store = this.groupDetails.get(id)
-        if (store) {
-            return store;
-        }
-
-        const newStore = new GroupProfileStore(id);
-        this.groupDetails.set(id, newStore);
-        return newStore;
+        return getOrCreate(this.groupDetails, id,
+            (id) => new GroupProfileStore(id));
     }
 }
 
