@@ -1,3 +1,6 @@
+"""
+voting related api doc
+"""
 from flask import Blueprint, request
 
 from models.group import Group
@@ -14,6 +17,14 @@ voting = Blueprint('voting', __name__)
 @voting.route('/voting', methods=['PUT'])
 @check_token
 def put_a_vote(auth_uid: str = None):
+    """
+    :param auth_uid: valid user_id
+    :return:
+    {
+        "roomTotal": room_total,
+        "items": item detailed info
+    }
+    """
     request_body: dict = request.get_json()
     uid: str = auth_uid or ""
     gid: str = request_body.get("groupId")
@@ -44,7 +55,7 @@ def put_a_vote(auth_uid: str = None):
         raise InvalidRequestBody("that user not in this group.")
     fb_obj = Voting(gid, uid, item_id, v_type)
     data = fb_obj.to_dict()
-    resp = ref_votes.add(data)
+    ref_votes.add(data)
 
     # Response are the same format as "PUT /api/item/list"
     return filter_items({
