@@ -1,22 +1,5 @@
-from flask import Flask
 from flask_cors import CORS
-from werkzeug.exceptions import HTTPException
-from routes.room import room
-from routes.voting import voting
-from routes.item import router_item
-from utils.exceptions import handle_http_exception
-
-
-def create_app():
-    _app = Flask(__name__)
-
-    _app.register_blueprint(room)
-    _app.register_blueprint(voting)
-    _app.register_blueprint(router_item)
-    _app.register_error_handler(HTTPException, handle_http_exception)
-
-    return _app
-
+from utils import create_app
 
 # This line must be outside of `if __name__ == "__main__"` so that
 # gunicorn can use it

@@ -3,18 +3,20 @@ from datetime import datetime
 from enum import Enum
 from typing import List
 from uuid import uuid4
-
 from mypy_extensions import TypedDict
 
+
+from utils.connections import ref_items, ref_groups, ref_votes
+
 from utils.exceptions import DataModelException
-from .connections import ref_items, ref_groups, ref_votes
 
 
 class FieldPath(str, Enum):
     creation_time = "creationTime"
     item_id = "itemId"
-    item_url = "itemUrl"
+    item_url = "itemURL"
     name = "name"
+    img_url = "imgURL"
 
 
 class Item:
@@ -22,8 +24,9 @@ class Item:
     item_id: str
     item_url: str
     name: str
+    img_url: str
 
-    def __init__(self, item_id=None, name="", item_url=""):
+    def __init__(self, item_id=None, name="", item_url="", img_url=""):
         self.creation_time = datetime.now()
         if item_id is None:
             self.item_id = str(uuid4())
@@ -31,6 +34,11 @@ class Item:
             self.item_id = item_id
         self.name = name
         self.item_url = item_url
+        self.img_url = img_url
+
+    # TODO
+    def from_dict(self, source):
+        pass
 
     def to_dict(self):
         rv = dict()
@@ -38,6 +46,7 @@ class Item:
         rv[FieldPath.item_id.value] = self.item_id
         rv[FieldPath.item_url.value] = self.item_url
         rv[FieldPath.name.value] = self.name
+        rv[FieldPath.img_url.value] = self.img_url
         return rv
 
     def __repr__(self):

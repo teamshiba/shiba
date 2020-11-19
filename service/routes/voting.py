@@ -1,9 +1,9 @@
 from flask import Blueprint, request
 
-from models.connections import ref_votes, ref_groups
 from models.group import Group
 from models.item import filter_items
 from models.voting import Voting
+from utils.connections import ref_votes, ref_groups
 from utils.exceptions import UnauthorizedRequest, InvalidRequestBody
 
 voting = Blueprint('voting', __name__)

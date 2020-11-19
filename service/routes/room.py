@@ -1,8 +1,8 @@
 from firebase_admin import firestore
 from flask import Blueprint, request
 
-from models.connections import ref_groups, ref_users
 from models.group import Group
+from utils.connections import ref_groups, ref_users
 from utils.decorators import check_token
 from utils.exceptions import InvalidQueryParams, InvalidRequestBody, UnauthorizedRequest
 
