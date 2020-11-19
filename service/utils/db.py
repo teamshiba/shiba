@@ -1,3 +1,8 @@
+"""
+database init
+delete collections
+load collections
+"""
 import json
 
 import firebase_admin
@@ -15,8 +20,8 @@ def init_db(config):
         app = firebase_admin.get_app("Shiba")
     except ValueError:
         app = firebase_admin.initialize_app(cred, name="Shiba")
-    db = firestore.client(app)
-    return db
+    database = firestore.client(app)
+    return database
 
 
 def delete_collection(coll_ref: CollectionReference, batch_size=50):
@@ -36,6 +41,8 @@ def delete_collection(coll_ref: CollectionReference, batch_size=50):
 
     if deleted >= batch_size:
         return delete_collection(coll_ref, batch_size)
+
+    return "delete collection successful"
 
 
 def load_collection(coll_ref: CollectionReference,
