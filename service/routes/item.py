@@ -20,7 +20,7 @@ def get_group_item_list(auth_uid=None):
 
 
 # POST /api/item
-@router_item.route('/item', methods=['POST'])
+@router_item.route('/item', methods=['POST', 'PUT'])
 def add_item(auth_uid=None):
     request_body: dict = request.get_json()
     group_id = request_body.get('groupId')
@@ -30,7 +30,8 @@ def add_item(auth_uid=None):
     data = Item.from_dict(item)
     _ = db_add_item(data)
 
-    Group.append_item_list(uid=auth_uid, group_id=group_id, item_id=data.item_id)
+    if group_id is not None:
+        Group.append_item_list(uid=auth_uid, group_id=group_id, item_id=data.item_id)
     return {
         "msg": "success"
     }
