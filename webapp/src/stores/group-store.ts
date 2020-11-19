@@ -1,5 +1,4 @@
 import {makeAutoObservable} from "mobx";
-import {createContext} from "react";
 import {Group} from "../domain/group";
 import axios from 'axios';
 import {serverPrefix} from "../common/config";
@@ -76,5 +75,3 @@ class GroupProfileStore {
 }
 
 export const groupStore = new GroupStore();
-
-export default createContext(groupStore);

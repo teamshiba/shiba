@@ -2,14 +2,14 @@
  * @desc the results of a matching process.
  */
 
-import React, {FC, Fragment, useContext, useEffect, useState} from "react";
+import React, {FC, Fragment, useContext, useEffect} from "react";
 import Header from "../../components/Header";
 import StatisticsStore from "../../stores/statistics-store";
-import GroupStore from "../../stores/group-store";
 import {RouteComponentProps} from "react-router";
 import {observer} from "mobx-react";
 import LinearProgress from '@material-ui/core/LinearProgress';
 import withStyles from "@material-ui/core/styles/withStyles";
+import {groupStore} from "../../stores/group-store";
 
 const BorderLinearProgress = withStyles((theme) => ({
   root: {
@@ -31,7 +31,7 @@ type IProps = RouteComponentProps<{ id: string }>
 const Statistics: FC<IProps> = observer((props) => {
     const roomId = props.match.params['id'];
     const statisticsStore = useContext(StatisticsStore).room(roomId);
-    const groupDetailStore = useContext(GroupStore).room(roomId);
+    const groupDetailStore = groupStore.room(roomId);
     const groupSize = groupDetailStore.data?.members.length;
 
     useEffect(() => {

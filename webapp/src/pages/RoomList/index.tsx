@@ -2,12 +2,11 @@
  * @desc Homepage. List of matching rooms.
  */
 
-import React, {FC, Fragment, useContext, useEffect, useState} from "react";
+import React, {FC, Fragment, useEffect, useState} from "react";
 import Header from "../../components/Header";
 import ShibaLogo from "../../components/ShibaLogo";
 import IconButton from '@material-ui/core/IconButton';
 import AddIcon from '@material-ui/icons/Add';
-import GroupStore from "../../stores/group-store";
 import {observer} from "mobx-react";
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
@@ -23,6 +22,7 @@ import Button from '@material-ui/core/Button';
 import {Group} from "../../domain/group";
 import {browserHistory} from "../../common/utils";
 import Avatar from "@material-ui/core/Avatar";
+import {groupStore} from "../../stores/group-store";
 
 
 const useStyles = makeStyles(() => ({
@@ -37,7 +37,6 @@ interface IModalProps {
 }
 
 const CreateGroupModal: FC<IModalProps> = ((props) => {
-    const groupStore = useContext(GroupStore);
     const [groupName, setGroupName] = useState("");
 
     return (
@@ -109,7 +108,6 @@ const RoomList: FC<IRoomListProps> = (props) => {
 }
 
 export const ActiveRoomList: FC = observer(() => {
-    const groupStore = useContext(GroupStore);
     const [isOpen, setOpen] = useState(false);
 
     useEffect(() => {
@@ -126,8 +124,6 @@ export const ActiveRoomList: FC = observer(() => {
 })
 
 export const HistoryRoomList: FC = observer(() => {
-    const groupStore = useContext(GroupStore);
-
     useEffect(() => {
         groupStore.updateHistoryGroups();
     }, []);

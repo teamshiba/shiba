@@ -9,15 +9,15 @@ import EditOutlinedIcon from '@material-ui/icons/EditOutlined';
 import AddOutlinedIcon from '@material-ui/icons/AddOutlined';
 import TinderCard from 'react-tinder-card'
 import VotingStore from "../../stores/voting-store";
-import GroupStore from "../../stores/group-store";
 import './index.css'
 import {observer} from "mobx-react";
 import {RouteComponentProps} from "react-router";
 import {browserHistory} from "../../common/utils";
 import {Clear, Equalizer, Favorite} from "@material-ui/icons";
 import {makeStyles} from "@material-ui/core/styles";
+import {groupStore} from "../../stores/group-store";
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles(() => ({
     votingButtonBgContainer: {
         width: '60px',
         height: '60px',
@@ -38,16 +38,16 @@ const useStyles = makeStyles(theme => ({
         borderRadius: '50%'
     },
     statsButton: {
-      color: '#6FCF97'
+        color: '#6FCF97'
     },
     dislikeButton: {
-      color: '#EB5757'
+        color: '#EB5757'
     },
     likeButton: {
-      color: '#F2994A'
+        color: '#F2994A'
     },
     addButton: {
-      color: '#2F80ED'
+        color: '#2F80ED'
     }
 }));
 
@@ -56,7 +56,7 @@ type IProps = RouteComponentProps<{ id: string }>
 const Voting: FC<IProps> = observer((props) => {
     const roomId = props.match.params["id"];
     const votingStore = useContext(VotingStore).room(roomId);
-    const groupProfileStore = useContext(GroupStore).room(roomId);
+    const groupProfileStore = groupStore.room(roomId);
     const classes = useStyles();
 
     useEffect(() => {
@@ -89,14 +89,14 @@ const Voting: FC<IProps> = observer((props) => {
         content = <div className="cardContainer">
             {[...votingStore.items.values()].map((item
                 ) =>
-                <div className="swipe" key={item.id}>
-                    <TinderCard onCardLeftScreen={(dir) => onCardLeftScreen(dir, item.id)}
-                                preventSwipe={['up', 'down']}>
-                        <div style={{backgroundImage: 'url(' + item.imgURL + ')'}} className='card'>
-                            <h3>{item.name}</h3>
-                        </div>
-                    </TinderCard>
-                </div>
+                    <div className="swipe" key={item.id}>
+                        <TinderCard onCardLeftScreen={(dir) => onCardLeftScreen(dir, item.id)}
+                                    preventSwipe={['up', 'down']}>
+                            <div style={{backgroundImage: 'url(' + item.imgURL + ')'}} className='card'>
+                                <h3>{item.name}</h3>
+                            </div>
+                        </TinderCard>
+                    </div>
             )}
         </div>;
     } else if (groupProfileStore.data.isCompleted) {
@@ -121,13 +121,16 @@ const Voting: FC<IProps> = observer((props) => {
                     </IconButton>
                 </div>
                 <div className={classes.votingButtonBgContainer}>
-                    <IconButton className={classes.votingButtonBg}> <Clear className={`${classes.dislikeButton} ${classes.votingButton}`}/> </IconButton>
+                    <IconButton className={classes.votingButtonBg}> <Clear
+                        className={`${classes.dislikeButton} ${classes.votingButton}`}/> </IconButton>
                 </div>
                 <div className={classes.votingButtonBgContainer}>
-                    <IconButton className={classes.votingButtonBg}> <Favorite className={`${classes.likeButton} ${classes.votingButton}`}/> </IconButton>
+                    <IconButton className={classes.votingButtonBg}> <Favorite
+                        className={`${classes.likeButton} ${classes.votingButton}`}/> </IconButton>
                 </div>
                 <div className={classes.votingButtonBgContainer}>
-                    <IconButton className={classes.votingButtonBg}> <AddOutlinedIcon className={`${classes.addButton} ${classes.votingButton}`}/> </IconButton>
+                    <IconButton className={classes.votingButtonBg}> <AddOutlinedIcon
+                        className={`${classes.addButton} ${classes.votingButton}`}/> </IconButton>
                 </div>
             </div>
         </div>

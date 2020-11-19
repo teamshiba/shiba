@@ -2,9 +2,8 @@
  * @desc user can read or modify the information of a matching room here.
  */
 
-import React, {FC, Fragment, useContext, useEffect} from "react";
+import React, {FC, Fragment, useEffect} from "react";
 import {RouteComponentProps} from "react-router";
-import GroupStore from "../../stores/group-store";
 import Header from "../../components/Header";
 import {observer} from "mobx-react";
 import Card from "../../components/Card";
@@ -17,6 +16,7 @@ import FileCopyIcon from '@material-ui/icons/FileCopy';
 import EditInput from "../../components/EditInput";
 import {copyToClipboard} from "../../common/utils";
 import AvatarList from "../../components/AvatarList";
+import {groupStore} from "../../stores/group-store";
 
 type IProps = RouteComponentProps<{ id: string }>
 
@@ -33,7 +33,7 @@ const useStyles = makeStyles(() => ({
 const RoomProfile: FC<IProps> = observer((props) => {
     const classes = useStyles();
     const roomId = props.match.params["id"];
-    const groupProfileStore = useContext(GroupStore).room(roomId);
+    const groupProfileStore = groupStore.room(roomId);
 
     useEffect(() => {
         groupProfileStore.update();
