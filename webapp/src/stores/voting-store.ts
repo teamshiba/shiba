@@ -29,7 +29,7 @@ class RoomVotingStore {
     }
 
     async updateItems() {
-        const endpoint = `${serverPrefix}/item/list?gid=${this.roomId}&voted_by=${userStore.user?.userId}`
+        const endpoint = `${serverPrefix}/item/list?gid=${this.roomId}&unvoted_by=${userStore.user?.userId}`
         const response = (await axios.get<VotingItemResponse>(endpoint)).data;
         this.mergeItems(response);
     }
