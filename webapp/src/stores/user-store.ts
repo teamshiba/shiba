@@ -29,7 +29,7 @@ export class UserStore {
     async rename(name: string): Promise<void> {
         if (this.user == null) return;
 
-        const userRef = firestore.doc(`Users/${this.user.uid}`);
+        const userRef = firestore.doc(`Users/${this.user.userId}`);
         await userRef.update({displayName: name});
         this.user.displayName = name;
     }

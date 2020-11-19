@@ -11,9 +11,10 @@ export const generateUserDocument = async (user: firebase.User | null,
     const snapshot = await userRef.get();
 
     if (!snapshot.exists) {
-        const {email, displayName, photoURL} = user;
+        const {uid, email, displayName, photoURL} = user;
         try {
             await userRef.set({
+                uid,
                 displayName,
                 email,
                 photoURL,
@@ -32,7 +33,7 @@ const getUserDocument = async (uid: string): Promise<User | null> => {
         const userDocument = await firestore.doc(`Users/${uid}`).get();
 
         return {
-            uid,
+            'userId': uid,
             ...userDocument.data()
         } as User;
     } catch (error) {
