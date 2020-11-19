@@ -26,7 +26,7 @@ class GroupStore {
     }
 
     async updateHistoryGroups() {
-        this.activeGroups = [{
+        this.historyGroups = [{
             groupId: "groupId3",
             roomName: "Test Group 3",
             isCompleted: true,
