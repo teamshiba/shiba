@@ -2,7 +2,8 @@ from firebase_admin import firestore
 from flask import Blueprint, request
 
 from models.group import Group
-from utils.connections import ref_groups, ref_users
+from models.item import filter_items
+from utils.connections import ref_groups, ref_users, ref_votes
 from utils.decorators import check_token
 from utils.exceptions import InvalidQueryParams, InvalidRequestBody, UnauthorizedRequest
 
@@ -29,9 +30,10 @@ def get_group_list(auth_uid=None):
 
     offset = request.args.get('offset') if 'offset' in request.args else 0
     limit = request.args.get('limit') if 'limit' in request.args else 100
-    filter_completed = request.args.get('state') if 'state' in request.args else False
+    state_text = request.args.get('state') or ''
+    filter_completed = state_text == 'true'
     query = ref_groups.where(u'members', u'array_contains', user_id)
-    if filter_completed is not None:
+    if state_text is not '':
         query = query.where(u'isCompleted', u'==', filter_completed)
     results = query.stream()
     data = map(lambda doc: (doc.id, doc.to_dict()), results)
@@ -72,12 +74,10 @@ def get_group_profile(auth_uid=None, group_id=None):
     members = list_uid or []
     return_members = []
 
-    # validate request user
-    if auth_uid not in members:
-        raise UnauthorizedRequest("You are not authorized to access the group profile")
-
     for user_id in members:
-        return_members.append(ref_users.document(user_id).get().to_dict())
+        user_dict = ref_users.document(user_id).get().to_dict()
+        user_dict['userId'] = user_id
+        return_members.append(user_dict)
     rv["members"] = return_members
 
     return {
@@ -154,15 +154,31 @@ def get_stats(auth_uid=None, group_id=""):
     if role < 1:
         UnauthorizedRequest.raise_no_membership()
 
-    # query_items_res = Item.get_list_by_group(snap.get('itemList'))
+    res_items = filter_items({
+        'gid': group_id
+    })
+    list_items = res_items.get('items')
+    rv_data = list()
+    for it in list_items:
+        item_id = it.get('itemId')
+        if not item_id:
+            raise InvalidRequestBody("Item ID not found.")
+        q = ref_votes.where('groupId', '==', group_id).where('itemId', '==', item_id)
+        stream = q.stream()
+        cnt_like, cnt_hate = 0, 0
+        for doc in stream:
+            vt = doc.to_dict().get('type')
+            if vt > 0:
+                cnt_like += 1
+            elif vt < 0:
+                cnt_hate += 1
+        rv_data.append({
+            'like': cnt_like,
+            'dislike': cnt_hate,
+            'items': it
+        })
 
     return {
-        "data": [{
-            "like": 1,
-            "dislike": 2,
-            "item": {
-                "name": "mock response to be implemented", "itemId": "mock"
-            }
-        }],
+        "data": rv_data,
         "isCompleted": snap.get('isCompleted')
     }

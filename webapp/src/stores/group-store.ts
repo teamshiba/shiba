@@ -15,7 +15,7 @@ export class GroupStore {
     }
 
     async updateActiveGroups(): Promise<void> {
-        this.activeGroups = unwrap((await axios.get<Message<Group[]>>(`${serverPrefix}/room/list`)).data);
+        this.activeGroups = unwrap((await axios.get<Message<Group[]>>(`${serverPrefix}/room/list?state=false`)).data);
     }
 
     async updateHistoryGroups(): Promise<void> {

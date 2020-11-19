@@ -3,11 +3,11 @@ from datetime import datetime
 from enum import Enum
 from typing import List
 from uuid import uuid4
+
+from google.cloud.firestore import DocumentReference, types
 from mypy_extensions import TypedDict
 
-
 from utils.connections import ref_items, ref_groups, ref_votes
-
 from utils.exceptions import DataModelException
 
 
@@ -36,9 +36,14 @@ class Item:
         self.item_url = item_url
         self.img_url = img_url
 
-    # TODO
-    def from_dict(self, source):
-        pass
+    @staticmethod
+    def from_dict(source: dict):
+        if type(source) is not dict:
+            raise DataModelException('Not a dict.')
+        return Item(item_id=source.get('itemId'),
+                    img_url=source.get('imgURL'),
+                    name=source.get('name'),
+                    item_url=source.get('itemURL'))
 
     def to_dict(self):
         rv = dict()
@@ -67,7 +72,19 @@ class ItemFilter(TypedDict, total=False):
     limit: int
 
 
-def filter_items(params: ItemFilter):
+def db_add_item(item: Item):
+    if item.item_id is None:
+        t, doc = ref_items.add(item.to_dict())
+        doc: DocumentReference = doc
+        item_id = doc.id
+        doc.update({'itemId': item_id})
+        return t
+    else:
+        res: types.WriteResult = ref_items.document(item.item_id).set(item.to_dict())
+        return res.update_time
+
+
+def filter_items(params):
     group_id = params.get("gid") if 'gid' in params else params.get("group_id")
     voted_by = params.get("voted_by")
     unvoted_by = params.get("unvoted_by")
@@ -81,10 +98,15 @@ def filter_items(params: ItemFilter):
     room_total = len(set_item_ids)
     if voted_by or unvoted_by:
         target_uid = voted_by if voted_by else unvoted_by
-        stream_voted = ref_votes.where('groupId', '==', group_id).where(
+        query_voted = ref_votes.where('groupId', '==', group_id).where(
             'userId', '==', target_uid
-        ).select('itemId').get()
-        set_voted = set(stream_voted)
+        )
+        list_voted = list()
+        if query_voted:
+            stream_voted = query_voted.stream()
+            for doc in stream_voted:
+                list_voted.append(doc.to_dict()["itemId"])
+        set_voted = set(list_voted)
         if voted_by:
             set_item_ids = set_item_ids.intersection(set_voted)
         else:

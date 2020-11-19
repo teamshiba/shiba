@@ -15,7 +15,7 @@ GET /api/item/list
 | Attribute | Type     | Required | Description   |
 | :--------: | :--------: | :--------: | :-------------- |
 | `gid` | string | yes | Target matching room ID. |
-| `voted_by` | string | no | If applied, inclroomTotalude only items voted by that user. |
+| `voted_by` | string | no | If applied, include only items voted by that user. |
 | `unvoted_by` | string | no | If applied, include only items not voted by that user. |
 | `offset` | integer | no | Starting position in the table. By default: `0`. |
 | `limit` | integer | no | Max size of response data. By default: `100`. |
@@ -32,9 +32,9 @@ GET /api/item/list
   "roomTotal" : 0, // total number of items in that group.
   "items" : [
     {
-      "itemUrl" : "<string>[The URL that links to the resource webpage.]",
+      "itemURL" : "<string>[The URL that links to the resource webpage.]",
       "name" : "<string>[The display name of that item.]",
-      "imgUrl": "<string>[The URL that store the key picture of that item.]",
+      "imgURL": "<string>[The URL that store the key picture of that item.]",
     }
   ]
 }
@@ -93,5 +93,33 @@ PUT /api/voting
 }
 ```
 
+## (3) Add an item
 
+Used to add an item to cache, and optionally add it to a group's item list.
+
+```
+POST /api/item
+```
+
+**Auth required** : `YES`
+
+**Request body (JSON)** : 
+
+| Attribute | Type | Required | Description |
+| :------: | :-----: | :-----: | :--------- |
+| `itemId` | string | yes | Global item ID. |
+| `groupId` | string | yes | Target matching room ID. |
+| `type` | integer | yes | Thumb up: `1`; thumb down: `-1`. |
+
+```json5
+{
+  "groupId": "[optional, adding the item to group while caching that item.]",
+  "item": {
+    "itemId": "fixed-id",
+    "imgURL": "",
+    "name": ""  ,
+    "itemURL": ""
+  }
+}
+```
 

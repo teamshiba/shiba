@@ -47,12 +47,19 @@ class RoomVotingStore {
         this.items.delete(itemId);
     }
 
-    private mergeItems(response: VotingItemResponse) {
+    async addItem(item: VotingItem): Promise<void> {
+        await axios.post(`${serverPrefix}/item`, {
+            groupId: this.roomId,
+            item
+        });
+    }
+
+    private mergeItems(response: VotingItemResponse): void {
         this.totalCount = response.roomTotal;
         this.unvotedCount = response.items.length;
 
         for (const item of response.items) {
-            this.items.set(item.id, item);
+            this.items.set(item.itemId, item);
         }
     }
 }

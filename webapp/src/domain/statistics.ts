@@ -1,7 +1,7 @@
 export interface Statistics {
     like: number,
     dislike: number,
-    item: {
+    items: {
         name: string,
         itemId: string
     }

@@ -1,8 +1,7 @@
 export interface VotingItem {
-    id: string
+    itemId: string
     name: string
     imgURL: string
-    location: string
 }
 
 export interface VotingItemResponse {

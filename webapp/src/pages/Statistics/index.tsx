@@ -54,9 +54,9 @@ const Statistics: FC<IProps> = observer((props) => {
                     }
 
                     return (
-                        <div key={stat.item.itemId}>
+                        <div key={stat.items.itemId}>
                             <div style={{display: 'flex', justifyContent: 'space-between'}}>
-                                <div>{stat.item.name}</div>
+                                <div>{stat.items.name}</div>
                                 {progress == 100 && (<div style={{color: '#FFBC6F'}}>Match!</div>)}
                             </div>
                             <BorderLinearProgress variant="determinate" value={progress}/>
