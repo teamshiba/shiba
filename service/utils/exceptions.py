@@ -30,6 +30,10 @@ class UnauthorizedRequest(HTTPException):
         self.code = 403
         self.description = desc
 
+    @staticmethod
+    def raise_no_membership():
+        raise UnauthorizedRequest('Not a member of target matching group.')
+
 
 class LoginRequired(HTTPException):
     def __init__(self, desc=""):

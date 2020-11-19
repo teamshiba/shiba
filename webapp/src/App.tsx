@@ -1,24 +1,47 @@
 import React from 'react';
-import logo from './logo.svg';
 import './App.css';
+import ShibaLogo from "./components/ShibaLogo";
+import {Button, createStyles, Theme} from "@material-ui/core";
+import { Link } from 'react-router-dom'
+import {makeStyles} from "@material-ui/core/styles";
+
+const styles = makeStyles((theme: Theme) => createStyles({
+  root: {
+    color: 'white',
+    backgroundColor: '#FFBC6F',
+    '&:hover': {
+      backgroundColor: '#ffb35a',
+    },
+    width: '250px',
+    height: '60px',
+    borderRadius: '15px',
+    fontSize: '24px',
+    fontWeight: "bold",
+  },
+}));
 
 function App() {
+  const classes = styles();
+
   return (
     <div className="App">
       <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
+        <h1 className={'title'}>Shiba Match</h1>
 
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
+        <div style={{ height: '200px' }}>
+          <ShibaLogo />
+        </div>
+
+        <h1 className={'catch'}>Find your soul</h1>
+
+        <p className={'desc'}>
+          Easily find a restaurant or hotel for your group.
         </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
+
+        <Button component={Link} to={'/auth'} className={classes.root} variant="contained" disableElevation>
+          Log In
+        </Button>
+
       </header>
     </div>
   );

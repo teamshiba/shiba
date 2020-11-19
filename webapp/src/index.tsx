@@ -9,11 +9,14 @@ import reportWebVitals from './reportWebVitals';
 import {browserHistory} from './common/utils';
 import {ActiveRoomList, HistoryRoomList} from "./pages/RoomList";
 import Voting from "./pages/Voting";
+import Statistics from "./pages/Statistics";
 import {createMuiTheme, ThemeProvider} from '@material-ui/core/styles';
 import {Shadows} from "@material-ui/core/styles/shadows";
 import UserProfile from "./pages/UserProfile";
 import axios from "axios";
 import AuthSynchronizer from "./components/AuthSynchronizer";
+import RoomProfile from "./pages/RoomProfile";
+import Invitation from "./pages/Invitation";
 
 axios.interceptors.request.use((config) => {
     const accessToken = localStorage.getItem("auth_token");
@@ -32,6 +35,7 @@ axios.interceptors.response.use((config) => {
     return config;
 }, (error) => {
     if (error.response && 401 === error.response.status) {
+        localStorage.removeItem("auth_token");
         browserHistory.push('/auth/');
     }
 
@@ -64,12 +68,15 @@ ReactDOM.render(
                                 <Switch>
                                     <Route path="/room/active" component={ActiveRoomList}/>
                                     <Route path="/room/history" component={HistoryRoomList}/>
+                                    <Route path="/room/:id/profile" component={RoomProfile}/>
+                                    <Route path="/room/:id/stats" component={Statistics}/>
                                     <Route path="/room/:id" component={Voting}/>
                                 </Switch>
                             </Route>
                             <Route path="/user/">
                                 <Route path="/user/profile" component={UserProfile}/>
                             </Route>
+                            <Route path="/join/:id" component={Invitation}/>
                         </Layout>
                     </Switch>
                 </Router>

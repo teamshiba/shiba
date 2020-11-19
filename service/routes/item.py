@@ -2,6 +2,8 @@ from flask import Blueprint, request
 
 from models.item import filter_items
 from utils.connections import ref_items
+from utils.decorators import check_token
+
 from utils.exceptions import InvalidQueryParams, InvalidRequestBody, DataModelException
 
 router_item = Blueprint('item', __name__)
@@ -9,6 +11,7 @@ router_item = Blueprint('item', __name__)
 
 # GET /api/item/list
 @router_item.route('/item/list', methods=['GET'])
+@check_token
 def get_group_item_list(auth_uid=None):
     params: dict = request.args.to_dict()
     try:

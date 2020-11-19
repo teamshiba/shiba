@@ -21,6 +21,7 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import Button from '@material-ui/core/Button';
 import {Group} from "../../domain/group";
+import {browserHistory} from "../../common/utils";
 import Avatar from "@material-ui/core/Avatar";
 
 
@@ -88,7 +89,7 @@ const roomAvatarName = (name: string): string => {
         .filter(w => w.length > 0)
         .map(w => w.charAt(0));
 
-    return letters.join("");
+    return letters.slice(0, 3).join("");
 }
 
 const RoomList: FC<IRoomListProps> = (props) => {
@@ -96,11 +97,12 @@ const RoomList: FC<IRoomListProps> = (props) => {
 
     return <List>
         {props.groups.map(group =>
-            <ListItem className={classes.listItem} key={group.groupId} button>
+            <ListItem className={classes.listItem} key={group.groupId} button
+                      onClick={() => browserHistory.push(`/room/${group.groupId}`)}>
                 <ListItemIcon>
-                    <Avatar>{roomAvatarName(group.displayName)}</Avatar>
+                    <Avatar>{roomAvatarName(group.roomName)}</Avatar>
                 </ListItemIcon>
-                <ListItemText primary={group.displayName}/>
+                <ListItemText primary={group.roomName}/>
             </ListItem>
         )}
     </List>

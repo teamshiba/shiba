@@ -8,6 +8,7 @@ import {Message, unwrap} from "../domain/message";
 class GroupStore {
     activeGroups: Group[] = [];
     historyGroups: Group[] = [];
+    groupDetails = new Map<string, GroupProfileStore>();
 
     constructor() {
         makeAutoObservable(this);
@@ -23,10 +24,54 @@ class GroupStore {
 
     async createGroup(name: string) {
         await axios.post(`${serverPrefix}/room`, {
-            "displayName": name,
+            "roomName": name,
         });
 
         await this.updateActiveGroups();
+    }
+
+    room(id: string): GroupProfileStore {
+        const store = this.groupDetails.get(id)
+        if (store) {
+            return store;
+        }
+
+        const newStore = new GroupProfileStore(id);
+        this.groupDetails.set(id, newStore);
+        return newStore;
+    }
+}
+
+class GroupProfileStore {
+    data: Group | null = null;
+
+    constructor(public groupId: string) {
+        makeAutoObservable(this);
+    }
+
+    async update() {
+        this.data = unwrap((await axios.get<Message<Group>>(`${serverPrefix}/room/${this.groupId}`)).data);
+    }
+
+    async setGroupName(name: string) {
+        await axios.put(`${serverPrefix}/room/${this.groupId}`, {
+            roomName: name
+        });
+
+        this.update();
+    }
+
+    async join() {
+        await axios.put(`${serverPrefix}/room/${this.groupId}/member`);
+        this.update();
+    }
+
+    async endMatch() {
+        await axios.put(`${serverPrefix}/room/${this.groupId}`, {
+            isCompleted: true
+        });
+
+        this.update();
     }
 }
 
