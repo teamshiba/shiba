@@ -19,12 +19,12 @@ class FieldPath(str, Enum):
 
 class Voting:
     """
-        Attributes:
-        creation_time (data time): creation_time.
-        group_id (str): group_id.
-        item_id (str): item_id.
-        user_id (str): user_id.
-        vote_type (int): like -> 1 ; dislike -> -1.
+    Attributes:
+    creation_time (data time): creation_time.
+    group_id (str): group_id.
+    item_id (str): item_id.
+    user_id (str): user_id.
+    vote_type (int): like -> 1 ; dislike -> -1.
     """
     creation_time: datetime
     group_id: str
@@ -51,8 +51,8 @@ class Voting:
 
     def to_dict(self):
         """
-        turn Group to dict
-        :return: a dictionaty
+        turn Voting to dict
+        :return: a dictionary
         """
         return {
             "creationTime": str(self.creation_time),

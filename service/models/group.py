@@ -1,4 +1,6 @@
-""" Group class related doc."""
+"""
+Group class related doc.
+"""
 
 import datetime
 
@@ -11,13 +13,13 @@ from utils.exceptions import InvalidRequestBody, UnauthorizedRequest
 
 class Group:
     """
-        Attributes:
-        organizer_uid (str): organizer_uid.
-        is_completed (bool): is_completed.
-        item_list (list): a list of item_id.
-        members (list): a list of user_id.
-        room_name (str): room_name.
-        created_time (data time): created_time.
+    Attributes:
+    organizer_uid (str): organizer_uid.
+    is_completed (bool): is_completed.
+    item_list (list): a list of item_id.
+    members (list): a list of user_id.
+    room_name (str): room_name.
+    created_time (data time): created_time.
     """
     def __init__(self, organizer_id='', room_name='', is_completed=False):
         self.organizer_uid = organizer_id
@@ -41,7 +43,7 @@ class Group:
     def to_dict(self):
         """
         turn Group to dict
-        :return: a dictionaty
+        :return: a dictionary
         """
         return {
             "organizerUid": self.organizer_uid,
