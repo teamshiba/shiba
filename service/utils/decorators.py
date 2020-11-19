@@ -3,8 +3,9 @@ from functools import wraps
 import firebase_admin
 from firebase_admin import auth
 from firebase_admin.auth import ExpiredIdTokenError, RevokedIdTokenError, InvalidIdTokenError
-from flask import request, g, session
+from flask import request
 
+from utils import config_g
 from utils.exceptions import LoginRequired
 
 
@@ -16,7 +17,8 @@ def check_token(f):
             raise LoginRequired('No auth token provided')
         try:
             _, token_body = auth_token.split()
-            if 'is_testing' in g or 'is_testing' in session:
+            # if 'is_testing' in g or 'is_testing' in session:
+            if config_g.is_testing:
                 user = {'user_id': token_body}
             else:
                 user = auth.verify_id_token(id_token=token_body,

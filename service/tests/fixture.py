@@ -1,6 +1,7 @@
 import pytest
 
 from utils import create_app
+from .data_mocks import load_to_db, clear_db
 
 """
 Fixtures are functions, which will run before each test function to which it is applied.
@@ -31,19 +32,17 @@ def connection():
     :return:
     """
     create_app(test_mode=True)
-    # load_result = 'success' if load_to_db() else 'failed'
-    # print("\nBefore all testcases.\nLoading mock data: " + load_result)
-    # app = firebase_admin.get_app("Shiba")
-    # token = auth.create_custom_token(uid="test-user-1", app=app)
+    load_result = 'success' if load_to_db() else 'failed'
+    print("\nBefore all testcases.\nLoading mock data: " + load_result)
 
     yield TestConnection(uid="test-user-1")
 
-    # clear_result = 'success' if clear_db() else 'failed'
-    # print("\nAfter all testcases.\nDeleting mock data: " + clear_result)
+    clear_result = 'success' if clear_db() else 'failed'
+    print("\nAfter all testcases.\nDeleting mock data: " + clear_result)
 
 
 @pytest.fixture
 def client():
     app = create_app(test_mode=True)
-    print("\nA test client ready.\n")
+    print("\nA test client is ready.\n")
     return app.test_client()

@@ -1,11 +1,11 @@
 import google
 
+from utils.db import delete_collection
 from utils.read_write import json_read
-from utils import delete_collection
 
 mock_groups = json_read("mocks/groups.json")["data"]
 mock_items = json_read("mocks/items.json")["data"]
-mock_votings = json_read("mocks/votings.json")["data"]
+mock_votes = json_read("mocks/votings.json")["data"]
 
 
 def load_to_db():
@@ -35,7 +35,7 @@ def load_to_db():
 
     structure_groups = create_structure_data(mock_groups, Group)
     structure_items = create_structure_data(mock_items, Item)
-    structure_votes = create_structure_data(mock_votings, Voting)
+    structure_votes = create_structure_data(mock_votes, Voting)
     print(structure_groups)
 
     try:
