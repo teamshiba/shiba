@@ -33,7 +33,7 @@ def get_group_list(auth_uid=None):
     state_text = request.args.get('state') or ''
     filter_completed = state_text == 'true'
     query = ref_groups.where(u'members', u'array_contains', user_id)
-    if state_text is not '':
+    if state_text != '':
         query = query.where(u'isCompleted', u'==', filter_completed)
     results = query.stream()
     data = map(lambda doc: (doc.id, doc.to_dict()), results)
