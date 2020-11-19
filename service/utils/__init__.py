@@ -1,10 +1,10 @@
-from utils.db import init_db
-
 import json
 
 from flask import Flask
 from google.cloud.firestore import CollectionReference
 from werkzeug.exceptions import HTTPException
+
+from utils.db import init_db
 
 db = None
 
@@ -66,3 +66,7 @@ def load_collection(coll_ref: CollectionReference,
         else:
             coll_ref.add(record)
 
+
+def format_headers(token=""):
+    return {
+        'Authorization': 'Bearer {}'.format(token)}

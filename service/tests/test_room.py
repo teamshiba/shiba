@@ -1,22 +1,26 @@
 from flask.testing import FlaskClient
 
-from tests.fixture import client, before_all_tests
+from tests.fixture import TestConnection
+from utils import format_headers
 
 
 class TestRoomRoutes:
 
-    def test_get_list(self, client: FlaskClient):
+    def test_get_list_suc(self, client: FlaskClient, connection: TestConnection):
         with client:
             results = client.get(
-                '/room/list', json={
-                    'roomName': 'test_name'}, follow_redirects=True
+                '/room/list',
+                headers=format_headers(connection.token),
+                follow_redirects=True
             ).get_json()
             assert "data" in results
+            assert len(results['data']) > 0
 
-    def test_get_list_1(self, client: FlaskClient):
+    def test_get_list_fail(self, client: FlaskClient, connection: TestConnection):
         with client:
-            results = client.get(
-                '/room/list', json={
-                    'roomName': 'test_name'}, follow_redirects=True
+            results: dict = client.get(
+                '/room/list',
+                headers=format_headers(connection.token),
+                follow_redirects=True
             ).get_json()
-            assert "data" in results
+            assert results.get('code') == 401
