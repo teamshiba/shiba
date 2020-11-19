@@ -1,0 +1,31 @@
+
+> shiba-webapp@0.1.0 test-all /home/yifei/shiba/webapp
+> react-scripts test --watchAll=false
+
+PASS src/pages/RoomProfile/index.test.tsx (12.287 s)
+PASS src/pages/Invitation/index.test.tsx (12.81 s)
+PASS src/pages/UserProfile/index.test.tsx
+PASS src/pages/Authentication/index.test.tsx
+PASS src/App.test.tsx
+PASS src/pages/RoomList/index.test.tsx
+PASS src/stores/user-store.test.ts
+PASS src/components/Layout.test.tsx
+PASS src/components/EditInput.test.tsx
+PASS src/pages/Statistics/index.test.tsx
+PASS src/components/AvatarList.test.tsx
+PASS src/components/Header.test.tsx
+PASS src/components/ShibaLogo.test.tsx
+PASS src/components/AuthSynchronizer.test.tsx
+PASS src/common/utils.test.ts
+PASS src/components/Footer.test.tsx
+PASS src/pages/Voting/index.test.tsx (27.709 s)
+PASS src/components/Card.test.tsx
+PASS src/stores/voting-store.test.ts
+PASS src/stores/statistics-store.test.ts
+PASS src/stores/group-store.test.ts
+
+Test Suites: 21 passed, 21 total
+Tests:       35 passed, 35 total
+Snapshots:   0 total
+Time:        32.92 s
+Ran all test suites.

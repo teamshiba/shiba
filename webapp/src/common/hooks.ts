@@ -1,4 +1,4 @@
 /**
  * @desc customized hooks.
  */
-export default {}
+export default {};
