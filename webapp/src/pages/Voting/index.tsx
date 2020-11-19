@@ -122,7 +122,7 @@ const Voting: FC<IProps> = observer((props) => {
         content = <div className="message">{message}</div>;
     }
 
-    const hasItem = items.length > 0;
+    const currItem: VotingItem | null = items.length > 0 ? items[items.length - 1] : null;
 
     const handleAdd = async () => {
         for (const item of fakeItems) {
@@ -144,16 +144,16 @@ const Voting: FC<IProps> = observer((props) => {
                 </div>
                 <div className={classes.votingButtonBgContainer}>
                     <IconButton className={classes.votingButtonBg}
-                                disabled={!hasItem}
-                                onClick={() => roomVotingStore.vote(items[0].itemId, "like")}>
-                        <Favorite className={`${hasItem && classes.likeButton} ${classes.votingButton}`}/>
+                                disabled={currItem == null}
+                                onClick={() => currItem && roomVotingStore.vote(currItem.itemId, "like")}>
+                        <Favorite className={`${currItem && classes.likeButton} ${classes.votingButton}`}/>
                     </IconButton>
                 </div>
                 <div className={classes.votingButtonBgContainer}>
                     <IconButton className={classes.votingButtonBg}
-                                disabled={!hasItem}
-                                onClick={() => roomVotingStore.vote(items[0].itemId, "dislike")}>
-                        <Clear className={`${hasItem && classes.dislikeButton} ${classes.votingButton}`}/>
+                                disabled={currItem == null}
+                                onClick={() => currItem && roomVotingStore.vote(currItem.itemId, "dislike")}>
+                        <Clear className={`${currItem && classes.dislikeButton} ${classes.votingButton}`}/>
                     </IconButton>
                 </div>
                 <div className={classes.votingButtonBgContainer}>
