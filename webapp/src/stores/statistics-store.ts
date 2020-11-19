@@ -5,7 +5,7 @@ import axios from "axios";
 import {serverPrefix} from "../common/config";
 import {getOrCreate} from "../common/utils";
 
-class StatisticsStore {
+export class StatisticsStore {
     statisticsDetail = new Map<string, StatisticsDetailStore>();
 
     constructor() {
