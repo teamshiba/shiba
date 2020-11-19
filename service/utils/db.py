@@ -8,7 +8,10 @@ def init_db(config):
     :return: db
     """
     cred = credentials.Certificate(config)
-    firebase_admin.initialize_app(cred)
-    db = firestore.client()
+    try:
+        app = firebase_admin.get_app("Shiba")
+    except ValueError:
+        app = firebase_admin.initialize_app(cred, name="Shiba")
+    db = firestore.client(app)
     return db
 
