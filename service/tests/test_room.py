@@ -1,11 +1,11 @@
 from flask.testing import FlaskClient
 
-from tests.fixture import client, app  # noqa
+from tests.fixture import client
 
 
 class TestRoomRoutes:
 
-    def test_get_list(self, client: FlaskClient):  # noqa
+    def test_get_list(self, client: FlaskClient):
         with client:
             results = client.get(
                 '/room/list', json={
