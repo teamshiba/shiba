@@ -4,7 +4,7 @@ import axios from 'axios';
 import {serverPrefix} from "../common/config";
 import {Message, unwrap} from "../domain/message";
 
-class GroupStore {
+export class GroupStore {
     activeGroups: Group[] = [];
     historyGroups: Group[] = [];
     groupDetails = new Map<string, GroupProfileStore>();
@@ -13,15 +13,15 @@ class GroupStore {
         makeAutoObservable(this);
     }
 
-    async updateActiveGroups() {
+    async updateActiveGroups(): Promise<void> {
         this.activeGroups = unwrap((await axios.get<Message<Group[]>>(`${serverPrefix}/room/list`)).data);
     }
 
-    async updateHistoryGroups() {
+    async updateHistoryGroups(): Promise<void> {
         this.historyGroups = unwrap((await axios.get<Message<Group[]>>(`${serverPrefix}/room/list?state=true`)).data);
     }
 
-    async createGroup(name: string) {
+    async createGroup(name: string): Promise<void> {
         await axios.post(`${serverPrefix}/room`, {
             "roomName": name,
         });
