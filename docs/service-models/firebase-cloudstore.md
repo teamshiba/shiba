@@ -33,9 +33,9 @@ The collection of items.
 | Field path | Data type     | Description   |
 | :--------: | :--------: | :-------------- |
 | `creationTime` | timestamp | The creation time. |
-| `imgUrl` | string | The URL that store the key picture of that item. |
+| `imgURL` | string | The URL that store the key picture of that item. |
 | `itemId` | string | The auto-generated item ID. |
-| `itemUrl` | string | The URL that links to the resource webpage. |
+| `itemURL` | string | The URL that links to the resource webpage. |
 | `name` | string | The display name of that item. |
 
 ## Voting
