@@ -205,6 +205,7 @@ ENV/
 env.bak/
 venv.bak/
 fbConfigs.json
+fbConfigs_test.json
 
 # Spyder project settings
 .spyderproject

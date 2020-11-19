@@ -9,7 +9,7 @@ Fixtures are functions, which will run before each test function to which it is 
 
 @pytest.fixture
 def client():
-    app = create_app()
+    app = create_app(test_mode=True)
     return app.test_client()
 
 

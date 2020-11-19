@@ -1,24 +1,30 @@
 from utils.db import init_db
 
-db = init_db()
-
 import json
 
 from flask import Flask
 from google.cloud.firestore import CollectionReference
 from werkzeug.exceptions import HTTPException
 
-from routes.room import room
-from routes.voting import voting
-from utils.exceptions import handle_http_exception
+db = None
 
 
-
-def create_app():
+def create_app(test_mode=False):
     _app = Flask(__name__)
+    global db
+    if test_mode:
+        db = init_db('fbConfigs_test.json')
+    else:
+        db = init_db('fbConfigs.json')
+
+    from routes.room import room
+    from routes.voting import voting
+    from routes.item import router_item
+    from utils.exceptions import handle_http_exception
 
     _app.register_blueprint(room)
     _app.register_blueprint(voting)
+    _app.register_blueprint(router_item)
     _app.register_error_handler(HTTPException, handle_http_exception)
 
     return _app
