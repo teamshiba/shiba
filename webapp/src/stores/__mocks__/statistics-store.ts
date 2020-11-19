@@ -24,7 +24,7 @@ class StatisticsDetailStore {
 
     async updateStatistics() {
         this.statistics = [{
-            item: {
+            items: {
                 itemId: "mock1",
                 name: "Mock Item 1"
             },
