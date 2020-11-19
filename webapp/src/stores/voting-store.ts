@@ -4,7 +4,7 @@ import axios from "axios";
 import {serverPrefix} from "../common/config";
 import {userStore} from "./user-store";
 
-class VotingStore {
+export class VotingStore {
     private votings = new Map<string, RoomVotingStore>();
 
     constructor() {
@@ -54,7 +54,7 @@ class RoomVotingStore {
 
     private mergeItems(response: VotingItemResponse) {
         this.totalCount = response.roomTotal;
-        this.unvotedCount = this.totalCount - response.items.length;
+        this.unvotedCount = response.items.length;
 
         for (const item of response.items) {
             this.items.set(item.id, item);
