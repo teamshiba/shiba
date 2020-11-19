@@ -16,6 +16,7 @@ import {browserHistory} from "../../common/utils";
 import {Clear, Equalizer, Favorite} from "@material-ui/icons";
 import {makeStyles} from "@material-ui/core/styles";
 import {groupStore} from "../../stores/group-store";
+import {VotingItem} from "../../domain/voting-item";
 
 const useStyles = makeStyles(() => ({
     votingButtonBgContainer: {
@@ -51,6 +52,16 @@ const useStyles = makeStyles(() => ({
     }
 }));
 
+const fakeItems: VotingItem[] = [{
+    itemId: "north-india-restaurant-san-francisco",
+    imgURL: "https://s3-media1.fl.yelpcdn.com/bphoto/howYvOKNPXU9A5KUahEXLA/o.jpg",
+    name: "North India Restaurant",
+}, {
+    itemId: "molinari-delicatessen-san-francisco",
+    imgURL: "http://s3-media4.fl.yelpcdn.com/bphoto/6He-NlZrAv2mDV-yg6jW3g/o.jpg",
+    name: "Molinari Delicatessen",
+}];
+
 type IProps = RouteComponentProps<{ id: string }>
 
 const Voting: FC<IProps> = observer((props) => {
@@ -59,6 +70,7 @@ const Voting: FC<IProps> = observer((props) => {
     const groupProfileStore = groupStore.room(roomId);
     const classes = useStyles();
 
+    // Always do an update when page loads
     useEffect(() => {
         roomVotingStore.updateItems();
         groupProfileStore.update();
@@ -85,12 +97,13 @@ const Voting: FC<IProps> = observer((props) => {
     }
 
     let content;
+    const items = [...roomVotingStore.items.values()];
     if (roomVotingStore.items.size > 0) {
         content = <div className="cardContainer">
-            {[...roomVotingStore.items.values()].map((item
+            {items.map((item
                 ) =>
-                    <div className="swipe" key={item.id}>
-                        <TinderCard onCardLeftScreen={(dir) => onCardLeftScreen(dir, item.id)}
+                    <div className="swipe" key={item.itemId}>
+                        <TinderCard onCardLeftScreen={(dir) => onCardLeftScreen(dir, item.itemId)}
                                     preventSwipe={['up', 'down']}>
                             <div style={{backgroundImage: 'url(' + item.imgURL + ')'}} className='card'>
                                 <h3>{item.name}</h3>
@@ -100,13 +113,23 @@ const Voting: FC<IProps> = observer((props) => {
             )}
         </div>;
     } else if (groupProfileStore.data.isCompleted) {
-        content = <div className="message">Placeholder for real matching result</div>
+        content = <div className="message">This group is finished, click statistics button to see the result</div>
     } else {
         const message = roomVotingStore.voted ?
-            "Wait for other people to finished or click add button to add more items" :
+            "Wait for other people to finish or click add button to add more items" :
             "Click add button to add more items";
 
         content = <div className="message">{message}</div>;
+    }
+
+    const currItem: VotingItem | null = items.length > 0 ? items[items.length - 1] : null;
+
+    const handleAdd = async () => {
+        for (const item of fakeItems) {
+            await roomVotingStore.addItem(item);
+        }
+
+        await roomVotingStore.updateItems();
     }
 
     content =
@@ -120,16 +143,23 @@ const Voting: FC<IProps> = observer((props) => {
                     </IconButton>
                 </div>
                 <div className={classes.votingButtonBgContainer}>
-                    <IconButton className={classes.votingButtonBg}> <Clear
-                        className={`${classes.dislikeButton} ${classes.votingButton}`}/> </IconButton>
+                    <IconButton className={classes.votingButtonBg}
+                                disabled={currItem == null}
+                                onClick={() => currItem && roomVotingStore.vote(currItem.itemId, "like")}>
+                        <Favorite className={`${currItem && classes.likeButton} ${classes.votingButton}`}/>
+                    </IconButton>
                 </div>
                 <div className={classes.votingButtonBgContainer}>
-                    <IconButton className={classes.votingButtonBg}> <Favorite
-                        className={`${classes.likeButton} ${classes.votingButton}`}/> </IconButton>
+                    <IconButton className={classes.votingButtonBg}
+                                disabled={currItem == null}
+                                onClick={() => currItem && roomVotingStore.vote(currItem.itemId, "dislike")}>
+                        <Clear className={`${currItem && classes.dislikeButton} ${classes.votingButton}`}/>
+                    </IconButton>
                 </div>
                 <div className={classes.votingButtonBgContainer}>
-                    <IconButton className={classes.votingButtonBg}> <AddOutlinedIcon
-                        className={`${classes.addButton} ${classes.votingButton}`}/> </IconButton>
+                    <IconButton className={classes.votingButtonBg} onClick={handleAdd}>
+                        <AddOutlinedIcon className={`${classes.addButton} ${classes.votingButton}`}/>
+                    </IconButton>
                 </div>
             </div>
         </div>
