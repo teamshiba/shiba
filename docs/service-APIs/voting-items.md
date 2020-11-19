@@ -93,5 +93,33 @@ PUT /api/voting
 }
 ```
 
+## (3) Add an item
 
+Used to add an item to cache, and optionally add it to a group's item list.
+
+```
+POST /api/item
+```
+
+**Auth required** : `YES`
+
+**Request body (JSON)** : 
+
+| Attribute | Type | Required | Description |
+| :------: | :-----: | :-----: | :--------- |
+| `itemId` | string | yes | Global item ID. |
+| `groupId` | string | yes | Target matching room ID. |
+| `type` | integer | yes | Thumb up: `1`; thumb down: `-1`. |
+
+```json5
+{
+  "groupId": "[optional, adding the item to group while caching that item.]",
+  "item": {
+    "itemId": "fixed-id",
+    "imgUrl": "",
+    "name": ""  ,
+    "itemUrl": ""
+  }
+}
+```
 

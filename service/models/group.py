@@ -1,8 +1,10 @@
 import datetime
+
+from firebase_admin import firestore
 from google.cloud.firestore import DocumentSnapshot
 
 from utils.connections import ref_groups
-from utils.exceptions import InvalidRequestBody
+from utils.exceptions import InvalidRequestBody, UnauthorizedRequest
 
 
 class Group(object):
@@ -82,3 +84,14 @@ class Group(object):
             return 1
         else:
             return 2
+
+    @staticmethod
+    def append_item_list(uid: str, group_id: str, item_id: str):
+        doc = ref_groups.document(group_id)
+        snap = doc.get()
+        if Group.validate_user_role(uid=uid, group_snap=snap) > 0:
+            doc.update({
+                'itemList': firestore.ArrayUnion([item_id])  # noqa
+            })
+        else:
+            raise UnauthorizedRequest.raise_no_membership()
