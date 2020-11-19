@@ -9,7 +9,7 @@ from utils.connections import ref_groups
 from utils.exceptions import InvalidRequestBody, UnauthorizedRequest
 
 
-class Group():
+class Group:
     """
         Attributes:
         organizer_uid (str): organizer_uid.

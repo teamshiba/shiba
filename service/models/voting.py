@@ -1,10 +1,15 @@
+"""
+ Voting class related doc.
+"""
 from datetime import datetime
-from uuid import uuid4
 from enum import Enum
 import json
 
 
 class FieldPath(str, Enum):
+    """
+    FieldPath
+    """
     creation_time = "creationTime"
     group_id = "groupId"
     item_id = "itemId"
@@ -13,6 +18,14 @@ class FieldPath(str, Enum):
 
 
 class Voting:
+    """
+        Attributes:
+        creation_time (data time): creation_time.
+        group_id (str): group_id.
+        item_id (str): item_id.
+        user_id (str): user_id.
+        vote_type (int): like -> 1 ; dislike -> -1.
+    """
     creation_time: datetime
     group_id: str
     item_id: str
@@ -26,11 +39,21 @@ class Voting:
         self.user_id = user_id
         self.vote_type = vote_type
 
-    # TODO
     def from_dict(self, source):
-        pass
+        """
+        :param source: parameter dictionary
+        """
+        self.creation_time = source["creationTime"]
+        self.group_id = source["groupId"]
+        self.item_id = source["itemId"]
+        self.user_id = source["userId"]
+        self.vote_type = source["type"]
 
     def to_dict(self):
+        """
+        turn Group to dict
+        :return: a dictionaty
+        """
         return {
             "creationTime": str(self.creation_time),
             "groupId": self.group_id,
