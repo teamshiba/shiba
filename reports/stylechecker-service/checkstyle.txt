@@ -1,0 +1,148 @@
+Report
+======
+471 statements analysed.
+
+Statistics by type
+------------------
+
++---------+-------+-----------+-----------+------------+---------+
+|type     |number |old number |difference |%documented |%badname |
++=========+=======+===========+===========+============+=========+
+|module   |14     |NC         |NC         |100.00      |0.00     |
++---------+-------+-----------+-----------+------------+---------+
+|class    |13     |NC         |NC         |100.00      |0.00     |
++---------+-------+-----------+-----------+------------+---------+
+|method   |25     |NC         |NC         |100.00      |0.00     |
++---------+-------+-----------+-----------+------------+---------+
+|function |22     |NC         |NC         |100.00      |0.00     |
++---------+-------+-----------+-----------+------------+---------+
+
+
+
+External dependencies
+---------------------
+::
+
+    firebase_admin (utils.db,utils.decorators)
+      \-auth (utils.decorators)
+      \-credentials (utils.db)
+      \-firestore (utils.db)
+    flask (routes.item,routes.room,routes.voting,utils,utils.decorators)
+    google
+      \-cloud
+        \-firestore (models.group,models.item,routes.room,utils.connections)
+        \-firestore_v1 (utils.db)
+    models
+      \-group (routes.item,routes.room,routes.voting)
+      \-item (routes.item,routes.room,routes.voting)
+      \-voting (routes.voting)
+    mypy_extensions (models.item)
+    routes
+      \-item (utils)
+      \-room (utils)
+      \-voting (utils)
+    utils
+      \-connections (models.group,models.item,routes.room,routes.voting)
+      \-decorators (routes.item,routes.room,routes.voting)
+      \-exceptions (models.group,models.item,routes.item,routes.room,routes.voting)
+    werkzeug
+      \-exceptions (utils,utils.exceptions)
+
+
+
+Raw metrics
+-----------
+
++----------+-------+------+---------+-----------+
+|type      |number |%     |previous |difference |
++==========+=======+======+=========+===========+
+|code      |559    |56.58 |NC       |NC         |
++----------+-------+------+---------+-----------+
+|docstring |266    |26.92 |NC       |NC         |
++----------+-------+------+---------+-----------+
+|comment   |14     |1.42  |NC       |NC         |
++----------+-------+------+---------+-----------+
+|empty     |149    |15.08 |NC       |NC         |
++----------+-------+------+---------+-----------+
+
+
+
+Duplication
+-----------
+
++-------------------------+------+---------+-----------+
+|                         |now   |previous |difference |
++=========================+======+=========+===========+
+|nb duplicated lines      |0     |NC       |NC         |
++-------------------------+------+---------+-----------+
+|percent duplicated lines |0.000 |NC       |NC         |
++-------------------------+------+---------+-----------+
+
+
+
+Messages by category
+--------------------
+
++-----------+-------+---------+-----------+
+|type       |number |previous |difference |
++===========+=======+=========+===========+
+|convention |0      |NC       |NC         |
++-----------+-------+---------+-----------+
+|refactor   |7      |NC       |NC         |
++-----------+-------+---------+-----------+
+|warning    |9      |NC       |NC         |
++-----------+-------+---------+-----------+
+|error      |0      |NC       |NC         |
++-----------+-------+---------+-----------+
+
+
+
+% errors / warnings by module
+-----------------------------
+
++-----------------+------+--------+---------+-----------+
+|module           |error |warning |refactor |convention |
++=================+======+========+=========+===========+
+|utils.exceptions |0.00  |55.56   |14.29    |0.00       |
++-----------------+------+--------+---------+-----------+
+|utils.decorators |0.00  |22.22   |42.86    |0.00       |
++-----------------+------+--------+---------+-----------+
+|utils            |0.00  |11.11   |14.29    |0.00       |
++-----------------+------+--------+---------+-----------+
+|routes.item      |0.00  |11.11   |0.00     |0.00       |
++-----------------+------+--------+---------+-----------+
+|models.item      |0.00  |0.00    |14.29    |0.00       |
++-----------------+------+--------+---------+-----------+
+|models.group     |0.00  |0.00    |14.29    |0.00       |
++-----------------+------+--------+---------+-----------+
+
+
+
+Messages
+--------
+
++-----------------------+------------+
+|message id             |occurrences |
++=======================+============+
+|super-init-not-called  |5           |
++-----------------------+------------+
+|raise-missing-from     |3           |
++-----------------------+------------+
+|cyclic-import          |3           |
++-----------------------+------------+
+|too-many-locals        |1           |
++-----------------------+------------+
+|too-few-public-methods |1           |
++-----------------------+------------+
+|super-with-arguments   |1           |
++-----------------------+------------+
+|no-else-return         |1           |
++-----------------------+------------+
+|global-statement       |1           |
++-----------------------+------------+
+
+
+
+
+------------------------------------------------------------------
+Your code has been rated at 9.66/10 (previous run: 9.41/10, +0.25)
