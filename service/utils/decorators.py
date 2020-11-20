@@ -1,3 +1,4 @@
+"""Decorators"""
 from functools import wraps
 
 import firebase_admin

@@ -4,7 +4,7 @@ Group class related doc.
 
 import datetime
 
-from firebase_admin import firestore
+from google.cloud.firestore import ArrayUnion
 from google.cloud.firestore import DocumentSnapshot
 
 from utils.connections import ref_groups
@@ -124,7 +124,7 @@ class Group:
         snap = doc.get()
         if Group.validate_user_role(uid=uid, group_snap=snap) > 0:
             doc.update({
-                'itemList': firestore.ArrayUnion([item_id]) # noqa
+                'itemList': ArrayUnion([item_id])
             })
         else:
             raise UnauthorizedRequest.error_no_membership()

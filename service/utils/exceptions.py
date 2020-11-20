@@ -1,5 +1,6 @@
-from werkzeug.exceptions import HTTPException
+"""Exceptions"""
 from typing import Union
+from werkzeug.exceptions import HTTPException
 
 
 class InvalidQueryParams(HTTPException):
@@ -25,7 +26,7 @@ class InvalidRequestBody(HTTPException):
         :return:
         """
         raise InvalidRequestBody(
-            "Field '{}' is required.".format(e.args[0] if type(e) is KeyError else e)
+            "Field '{}' is required.".format(e.args[0] if isinstance(e, KeyError) else e)
         )
 
 
@@ -59,6 +60,7 @@ class LoginRequired(HTTPException):
 
 
 class DataModelException(Exception):
+    """DataModelException"""
     description: str = None
 
     def __init__(self, msg=""):
