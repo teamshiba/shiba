@@ -1,10 +1,10 @@
 export interface VotingItem {
-    itemId: string
-    name: string
-    imgURL: string
+  itemId: string;
+  name: string;
+  imgURL: string;
 }
 
 export interface VotingItemResponse {
-    roomTotal: number;
-    items: VotingItem[];
+  roomTotal: number;
+  items: VotingItem[];
 }
