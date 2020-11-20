@@ -6,7 +6,7 @@
 # 3. Finally re-run this script with "fixed" as argument to obtain the result after fixing
 
 SCRIPT_DIR="$(readlink -f "$(dirname "$0")")"
-REPORT_DIRECTORY="$SCRIPT_DIR/report"
+REPORT_DIRECTORY="$SCRIPT_DIR/reports"
 
 SUFFIX="$1"
 shift
