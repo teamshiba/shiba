@@ -1,3 +1,6 @@
+"""
+app initialization.
+"""
 from flask import Flask
 from werkzeug.exceptions import HTTPException
 
