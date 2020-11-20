@@ -22,7 +22,7 @@ Install pylint suite. Run the pylint and generate a checkstyle report.
 
 ```shell script
 pip install pylint
-pylint --reports=y service
+pylint --reports=y --disable=import-outside-toplevel --msg-template="$FileDir$/{path}:{line}:{C}:({symbol}){msg}" service
 ``` 
 
 ## Buf finder report
