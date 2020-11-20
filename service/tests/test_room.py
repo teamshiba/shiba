@@ -16,7 +16,7 @@ class TestRoomRoutes:
             assert "data" in results
             assert len(results['data']) > 0
 
-    def test_get_list_fail(self, client: FlaskClient, connection: ConnHelper):
+    def test_get_list_fail(self, client: FlaskClient, connection: ConnHelper):  # noqa
         with client:
             results: dict = client.get(
                 '/room/list',

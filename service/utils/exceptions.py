@@ -3,40 +3,69 @@ from typing import Union
 
 
 class InvalidQueryParams(HTTPException):
+    """
+    Invalid query parameters.
+    """
+
     def __init__(self, desc=""):
         self.code = 400
         self.description = desc
 
 
 class InvalidRequestBody(HTTPException):
+    """
+    Invalid request body.
+    """
+
     def __init__(self, desc=""):
         self.code = 400
         self.description = desc
 
     @staticmethod
     def raise_key_error(e: Union[KeyError, str] = None):
+        """
+        Helper function for raising key error.
+        :param e:
+        :return:
+        """
         raise InvalidRequestBody(
             "Field '{}' is required.".format(e.args[0] if type(e) is KeyError else e)
         )
 
 
 class InvalidRequestHeader(HTTPException):
+    """
+    Invalid request header.
+    """
+
     def __init__(self, desc=""):
         self.code = 400
         self.description = desc
 
 
 class UnauthorizedRequest(HTTPException):
+    """
+    The user is not authorized for the intended action.
+    """
+
     def __init__(self, desc=""):
         self.code = 403
         self.description = desc
 
     @staticmethod
-    def raise_no_membership():
-        raise UnauthorizedRequest('Not a member of target matching group.')
+    def error_no_membership():
+        """
+        The user is not a member of this group.
+        :return:
+        """
+        return UnauthorizedRequest('Not a member of target matching group.')
 
 
 class LoginRequired(HTTPException):
+    """
+    The request is not sent from a login user.
+    """
+
     def __init__(self, desc=""):
         self.code = 401
         self.description = desc

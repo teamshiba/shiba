@@ -127,4 +127,4 @@ class Group:
                 'itemList': firestore.ArrayUnion([item_id])
             })
         else:
-            raise UnauthorizedRequest.raise_no_membership()
+            raise UnauthorizedRequest.error_no_membership()

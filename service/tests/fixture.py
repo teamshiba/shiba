@@ -15,7 +15,7 @@ class ConnHelper:
     token: str
     uid: str
 
-    def __init__(self, token: Union[str, bytes]="", uid=""):
+    def __init__(self, token: Union[str, bytes] = "", uid=""):
         self.uid = uid
         if isinstance(token, str):
             self.token = token

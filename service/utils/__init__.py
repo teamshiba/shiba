@@ -10,6 +10,9 @@ db = None
 
 
 class Config:
+    """
+    Global configuration object.
+    """
     is_testing: bool = False
 
 
@@ -17,6 +20,11 @@ config_g = Config()
 
 
 def create_app(test_mode=False):
+    """
+    Initialize the Flask app.
+    :param test_mode: where it's run from Pytest.
+    :return:
+    """
     _app = Flask(__name__)
     global db
     if test_mode:
@@ -42,6 +50,11 @@ def create_app(test_mode=False):
 
 
 def format_headers(token=""):
+    """
+    Format a HTTP request header with the auth information.
+    :param token:
+    :return:
+    """
     return {
         'Authorization': 'Bearer {}'.format(token)
     }

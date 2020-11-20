@@ -28,8 +28,8 @@ def get_group_list(auth_uid=None):
     if user_id is None:
         raise InvalidQueryParams("uid is required.")
 
-    offset = request.args.get('offset') if 'offset' in request.args else 0
-    limit = request.args.get('limit') if 'limit' in request.args else 100
+    # offset = request.args.get('offset') if 'offset' in request.args else 0
+    # limit = request.args.get('limit') if 'limit' in request.args else 100
     state_text = request.args.get('state') or ''
     filter_completed = state_text == 'true'
     query = ref_groups.where(u'members', u'array_contains', user_id)
@@ -58,7 +58,7 @@ def create_group(auth_uid=None):
             "data": doc_ref.get().to_dict()
         }
     except KeyError as e:
-        InvalidRequestBody.raise_key_error(e)
+        raise InvalidRequestBody.raise_key_error(e)
 
 
 @room.route('/room/<string:group_id>', methods=['GET'])
@@ -67,6 +67,8 @@ def get_group_profile(auth_uid=None, group_id=None):
     group_id = group_id or request.args.get('gid') or ''
     group_doc = ref_groups.document(group_id)
     snap = group_doc.get()
+    if Group.validate_user_role(auth_uid, group_snap=snap) < 1:
+        raise UnauthorizedRequest.error_no_membership()
     if not snap.exists:
         raise InvalidQueryParams("Group id does not exist.")
     rv = snap.to_dict()
@@ -152,7 +154,7 @@ def get_stats(auth_uid=None, group_id=""):
     role = Group.validate_user_role(auth_uid, group_snap=snap)
 
     if role < 1:
-        UnauthorizedRequest.raise_no_membership()
+        raise UnauthorizedRequest.error_no_membership()
 
     res_items = filter_items({
         'gid': group_id
