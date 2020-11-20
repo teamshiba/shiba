@@ -42,12 +42,12 @@ def load_to_db():
     print(structure_groups)
 
     try:
-        for one_group in structure_groups:
-            ref_groups.add(one_group)
-        for one_item in structure_items:
-            ref_items.add(one_item)
-        for one_voting in structure_votes:
-            ref_votes.add(one_voting)
+        for index, one_group in enumerate(structure_groups):
+            ref_groups.add(one_group, document_id=str(index))
+        for index, one_item in enumerate(structure_items):
+            ref_items.add(one_item, document_id=str(index))
+        for index, one_voting in enumerate(structure_votes):
+            ref_votes.add(one_voting, document_id=str(index))
         return True
     except google.cloud.exceptions.Conflict:
         return False

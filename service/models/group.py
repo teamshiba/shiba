@@ -7,7 +7,7 @@ import datetime
 from google.cloud.firestore import ArrayUnion
 from google.cloud.firestore import DocumentSnapshot
 
-from utils.connections import ref_groups
+
 from utils.exceptions import InvalidRequestBody, UnauthorizedRequest
 
 
@@ -72,14 +72,14 @@ class Group:
         :param params: a dictionary with params
         :return: a Group class
         """
-        return Group(organizer_id=params.get("organizer", ""),
+        return Group(organizer_id=params.get("organizerUid", ""),
                      room_name=params.get("roomName", "New matching room"))
 
     @staticmethod
     def update_from_dict(params: dict):
         """
         :param params: a dictionary with params
-        :return: a Group class
+        :return: a dictionary
         """
         dict_to_update = dict()
         if 'roomName' in params:
@@ -100,6 +100,7 @@ class Group:
         :param group_id:
         :return: didn't join -> 0, a member -> 1, organizer -> 2
         """
+        from utils.connections import ref_groups
         snap = group_snap or ref_groups.document(group_id).get()
         if not snap.exists:
             raise InvalidRequestBody('Invalid groupId provided')
@@ -120,11 +121,13 @@ class Group:
         :param group_id: group id
         :param item_id: item id
         """
+        from utils.connections import ref_groups
         doc = ref_groups.document(group_id)
         snap = doc.get()
         if Group.validate_user_role(uid=uid, group_snap=snap) > 0:
             doc.update({
                 'itemList': ArrayUnion([item_id])
             })
+            return 1
         else:
             raise UnauthorizedRequest.error_no_membership()

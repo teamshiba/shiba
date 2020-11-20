@@ -9,7 +9,7 @@ from uuid import uuid4
 from google.cloud.firestore import types
 from mypy_extensions import TypedDict
 
-from utils.connections import ref_items, ref_groups, ref_votes
+
 from utils.exceptions import DataModelException
 
 
@@ -96,6 +96,7 @@ def db_add_item(item: Item):
     :param item: item object
     :return: update time
     """
+    from utils.connections import ref_items
     if item.item_id is None:
         add_time, doc = ref_items.add(item.to_dict())
         item_id = doc.id
@@ -114,6 +115,7 @@ def filter_items(params):
         "items": item detailed info
     }
     """
+    from utils.connections import ref_items, ref_groups, ref_votes
     group_id = params.get("gid") if 'gid' in params else params.get("group_id")
     voted_by = params.get("voted_by")
     unvoted_by = params.get("unvoted_by")
@@ -161,6 +163,7 @@ def add_item_to_store(params: Item):
     :param params: Item obj
     :return: firestore add response
     """
+    from utils.connections import ref_items
     item_id = params.item_id
     if item_id is None:
         raise DataModelException("itemId is required.")
