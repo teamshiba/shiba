@@ -1,17 +1,22 @@
+"""
+Item class related doc.
+"""
 import json
 from datetime import datetime
 from enum import Enum
-from typing import List
 from uuid import uuid4
 
-from google.cloud.firestore import DocumentReference, types
+from google.cloud.firestore import types
 from mypy_extensions import TypedDict
 
-from utils.connections import ref_items, ref_groups, ref_votes
+
 from utils.exceptions import DataModelException
 
 
 class FieldPath(str, Enum):
+    """
+    FieldPath
+    """
     creation_time = "creationTime"
     item_id = "itemId"
     item_url = "itemURL"
@@ -20,6 +25,14 @@ class FieldPath(str, Enum):
 
 
 class Item:
+    """
+    Attributes:
+    creation_time (data time): creation_time.
+    item_id (str): item_id.
+    item_url (str): item_url.
+    name (str): name.
+    img_url (str): img_url.
+    """
     creation_time: datetime
     item_id: str
     item_url: str
@@ -38,7 +51,10 @@ class Item:
 
     @staticmethod
     def from_dict(source: dict):
-        if type(source) is not dict:
+        """
+        :param source: parameter dictionary
+        """
+        if not isinstance(source, dict):
             raise DataModelException('Not a dict.')
         return Item(item_id=source.get('itemId'),
                     img_url=source.get('imgURL'),
@@ -46,24 +62,26 @@ class Item:
                     item_url=source.get('itemURL'))
 
     def to_dict(self):
-        rv = dict()
-        rv[FieldPath.creation_time.value] = str(self.creation_time)
-        rv[FieldPath.item_id.value] = self.item_id
-        rv[FieldPath.item_url.value] = self.item_url
-        rv[FieldPath.name.value] = self.name
-        rv[FieldPath.img_url.value] = self.img_url
-        return rv
+        """
+        turn item to dict
+        :return: a dictionary
+        """
+        r_v = dict()
+        r_v[FieldPath.creation_time.value] = str(self.creation_time)
+        r_v[FieldPath.item_id.value] = self.item_id
+        r_v[FieldPath.item_url.value] = self.item_url
+        r_v[FieldPath.name.value] = self.name
+        r_v[FieldPath.img_url.value] = self.img_url
+        return r_v
 
     def __repr__(self):
         return json.dumps(self.to_dict())
 
-    @staticmethod
-    def get_list_by_group(list_ids: List[str]):
-        # TODO
-        raise NotImplemented
-
 
 class ItemFilter(TypedDict, total=False):
+    """
+    Item Filter Class
+    """
     group_id: str
     gid: str
     voted_by: str
@@ -73,22 +91,35 @@ class ItemFilter(TypedDict, total=False):
 
 
 def db_add_item(item: Item):
+    """
+    add item to db
+    :param item: item object
+    :return: update time
+    """
+    from utils.connections import ref_items
     if item.item_id is None:
-        t, doc = ref_items.add(item.to_dict())
-        doc: DocumentReference = doc
+        add_time, doc = ref_items.add(item.to_dict())
         item_id = doc.id
         doc.update({'itemId': item_id})
-        return t
-    else:
-        res: types.WriteResult = ref_items.document(item.item_id).set(item.to_dict())
-        return res.update_time
+        return add_time
+    res: types.WriteResult = ref_items.document(item.item_id).set(item.to_dict())
+    return res.update_time
 
 
 def filter_items(params):
+    """
+    :param params: gid, voted_by, unvoted_by, uid
+    :return:
+    {
+        "roomTotal": room_total,
+        "items": item detailed info
+    }
+    """
+    from utils.connections import ref_items, ref_groups, ref_votes
     group_id = params.get("gid") if 'gid' in params else params.get("group_id")
     voted_by = params.get("voted_by")
     unvoted_by = params.get("unvoted_by")
-    offset, limit = params.get('offset'), params.get('limit')
+    # offset, limit = params.get('offset'), params.get('limit')
     if group_id is None:
         raise DataModelException("gid is required.")
     if voted_by is not None and unvoted_by is not None:
@@ -127,6 +158,12 @@ def filter_items(params):
 
 
 def add_item_to_store(params: Item):
+    """
+    add item to item collection
+    :param params: Item obj
+    :return: firestore add response
+    """
+    from utils.connections import ref_items
     item_id = params.item_id
     if item_id is None:
         raise DataModelException("itemId is required.")

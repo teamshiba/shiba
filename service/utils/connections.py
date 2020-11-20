@@ -1,3 +1,7 @@
+"""
+Initialize db collection reference.
+"""
+
 from google.cloud.firestore import CollectionReference
 
 from utils import db

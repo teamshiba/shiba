@@ -4,3 +4,7 @@ mypy_extensions
 firebase_admin
 flask-cors
 pytest
+pytest-cov
+flake8
+flake8-html
+pylint
