@@ -6,7 +6,7 @@ from utils import format_headers
 
 class TestRoomRoutes:
 
-    def test_get_list_suc(self, client: FlaskClient, connection: ConnHelper):
+    def test_get_list_suc(self, client: FlaskClient, connection: ConnHelper): # noqa
         with client:
             results = client.get(
                 '/room/list',

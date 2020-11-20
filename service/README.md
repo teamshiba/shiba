@@ -14,7 +14,7 @@ pip install pytest-cov
 pytest --cov=routes --cov-report=html tests/
 ``` 
 
-## Checkstyle
+## Static code analysis
 
 ### Checkstyle report
 
@@ -24,3 +24,10 @@ Install pylint suite. Run the pylint and generate a checkstyle report.
 pip install pylint
 pylint --reports=y service
 ``` 
+
+## Buf finder report
+
+```shell script
+pip install flake8 flake8-html 
+flake8 ./service/ --format=html --htmldir=reports/bugfinder-service --statistics --max-line-length=99
+```

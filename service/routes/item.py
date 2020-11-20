@@ -3,7 +3,8 @@ from flask import Blueprint, request
 from models.group import Group
 from models.item import filter_items, Item, db_add_item
 from utils.decorators import check_token
-from utils.exceptions import InvalidQueryParams, InvalidRequestBody, DataModelException, UnauthorizedRequest
+from utils.exceptions import InvalidQueryParams, InvalidRequestBody, \
+    DataModelException, UnauthorizedRequest
 
 router_item = Blueprint('item', __name__)
 
