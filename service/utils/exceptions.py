@@ -1,4 +1,5 @@
 from werkzeug.exceptions import HTTPException
+from typing import Union
 
 
 class InvalidQueryParams(HTTPException):
@@ -13,7 +14,7 @@ class InvalidRequestBody(HTTPException):
         self.description = desc
 
     @staticmethod
-    def raise_key_error(e: KeyError = None):
+    def raise_key_error(e: Union[KeyError, str] = None):
         raise InvalidRequestBody(
             "Field '{}' is required.".format(e.args[0] if type(e) is KeyError else e)
         )

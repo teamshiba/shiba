@@ -2,6 +2,7 @@
 Fixtures are functions, which will run before each test function to which it is applied.
 """
 import pytest
+from typing import Union
 
 from utils import create_app
 from tests.data_mocks import load_to_db, clear_db
@@ -14,7 +15,7 @@ class ConnHelper:
     token: str
     uid: str
 
-    def __init__(self, token="", uid=""):
+    def __init__(self, token: Union[str, bytes]="", uid=""):
         self.uid = uid
         if isinstance(token, str):
             self.token = token
