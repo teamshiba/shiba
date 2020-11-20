@@ -3,9 +3,7 @@ from typing import Union
 
 
 class InvalidQueryParams(HTTPException):
-    """
-    Invalid query parameters.
-    """
+    """Invalid query parameters."""
 
     def __init__(self, desc=""):
         self.code = 400
@@ -13,9 +11,7 @@ class InvalidQueryParams(HTTPException):
 
 
 class InvalidRequestBody(HTTPException):
-    """
-    Invalid request body.
-    """
+    """Invalid request body."""
 
     def __init__(self, desc=""):
         self.code = 400
@@ -34,9 +30,7 @@ class InvalidRequestBody(HTTPException):
 
 
 class InvalidRequestHeader(HTTPException):
-    """
-    Invalid request header.
-    """
+    """Invalid request header."""
 
     def __init__(self, desc=""):
         self.code = 400
@@ -44,9 +38,7 @@ class InvalidRequestHeader(HTTPException):
 
 
 class UnauthorizedRequest(HTTPException):
-    """
-    The user is not authorized for the intended action.
-    """
+    """The user is not authorized for the intended action."""
 
     def __init__(self, desc=""):
         self.code = 403
@@ -54,17 +46,12 @@ class UnauthorizedRequest(HTTPException):
 
     @staticmethod
     def error_no_membership():
-        """
-        The user is not a member of this group.
-        :return:
-        """
+        """The user is not a member of this group."""
         return UnauthorizedRequest('Not a member of target matching group.')
 
 
 class LoginRequired(HTTPException):
-    """
-    The request is not sent from a login user.
-    """
+    """The request is not sent from a login user."""
 
     def __init__(self, desc=""):
         self.code = 401

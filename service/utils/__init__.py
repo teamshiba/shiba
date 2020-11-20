@@ -10,9 +10,7 @@ db = None
 
 
 class Config:
-    """
-    Global configuration object.
-    """
+    """Global configuration object."""
     is_testing: bool = False
 
 
@@ -50,11 +48,7 @@ def create_app(test_mode=False):
 
 
 def format_headers(token=""):
-    """
-    Format a HTTP request header with the auth information.
-    :param token:
-    :return:
-    """
+    """Format a HTTP request header with the auth information."""
     return {
         'Authorization': 'Bearer {}'.format(token)
     }

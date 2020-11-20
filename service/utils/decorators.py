@@ -12,18 +12,13 @@ from utils.exceptions import LoginRequired
 def check_token(f):
     """
     Authorization information extractor.
-    :param f:
+    :param f: request handler.
     :return:
     """
 
     @wraps(f)
     def wrap(*args, **kwargs):
-        """
-        wrapping the function `f`.
-        :param args:
-        :param kwargs:
-        :return:
-        """
+        """wrapping the function `f`."""
         auth_token = request.headers.get('Authorization')
         if auth_token is None or not auth_token.startswith("Bearer"):
             raise LoginRequired('No auth token provided')
