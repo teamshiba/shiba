@@ -124,7 +124,7 @@ class Group:
         snap = doc.get()
         if Group.validate_user_role(uid=uid, group_snap=snap) > 0:
             doc.update({
-                'itemList': firestore.ArrayUnion([item_id])
+                'itemList': firestore.ArrayUnion([item_id]) # noqa
             })
         else:
             raise UnauthorizedRequest.error_no_membership()

@@ -30,11 +30,10 @@ def check_token(f):
             else:
                 user = auth.verify_id_token(id_token=token_body,
                                             app=firebase_admin.get_app('Shiba'))
-        except (ValueError, IndexError, InvalidIdTokenError) as e:
-            # TODO fix custom token created by firebase_admin is still invalid "id token"
-            raise LoginRequired('Invalid token provided: {}'.format(e))
         except (ExpiredIdTokenError, RevokedIdTokenError) as e:
             raise LoginRequired('Expired token provided: {}'.format(e))
+        except (ValueError, IndexError, InvalidIdTokenError) as e:
+            raise LoginRequired('Invalid token provided: {}'.format(e))
         kwargs.update({"auth_uid": user["user_id"]})
         return f(*args, **kwargs)
 

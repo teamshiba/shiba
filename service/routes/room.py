@@ -1,3 +1,4 @@
+"""Room APIs"""
 from firebase_admin import firestore
 from flask import Blueprint, request
 
