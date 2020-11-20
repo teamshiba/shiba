@@ -1,5 +1,5 @@
 """Room APIs"""
-from firebase_admin import firestore
+from google.cloud.firestore import ArrayUnion
 from flask import Blueprint, request
 
 from models.group import Group
@@ -124,7 +124,7 @@ def update_group_profile(auth_uid=None, group_id=None):
     if current_organizer != auth_uid and (
             'isCompleted' in dict_to_update or 'organizerUid' in dict_to_update
     ):
-        raise UnauthorizedRequest("Only the organizer can modify 'status' and change the room host.")
+        raise UnauthorizedRequest("Only the organizer can modify 'status' and change the room host")
 
     if len(dict_to_update) > 0:
         group_doc.update(dict_to_update)
@@ -138,6 +138,12 @@ def update_group_profile(auth_uid=None, group_id=None):
 @room.route('/room/<group_id>/member', methods=['PUT'])
 @check_token
 def join_group(auth_uid=None, group_id=""):
+    """
+    Join Group Api
+    :param auth_uid: uid
+    :param group_id: gid
+    :return:
+    """
     user_id = auth_uid  # the login user joins a target group.
 
     if not ref_groups.document(group_id).get().exists:
@@ -147,7 +153,7 @@ def join_group(auth_uid=None, group_id=""):
     if not ref_users.document(user_id).get().exists:
         raise InvalidRequestBody('Invalid userId provided')
 
-    ref_groups.document(group_id).update({u'members': firestore.ArrayUnion([user_id])})  # noqa
+    ref_groups.document(group_id).update({u'members': ArrayUnion([user_id])})  # noqa
 
     return {
         "status": "success",
@@ -158,6 +164,12 @@ def join_group(auth_uid=None, group_id=""):
 @room.route('/room/<string:group_id>/stats', methods=['GET'])
 @check_token
 def get_stats(auth_uid=None, group_id=""):
+    """
+    Get statistics
+    :param auth_uid: uid
+    :param group_id: gid
+    :return:
+    """
     snap = ref_groups.document(group_id).get()
 
     role = Group.validate_user_role(auth_uid, group_snap=snap)

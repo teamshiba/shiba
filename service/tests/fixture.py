@@ -1,8 +1,9 @@
 """
 Fixtures are functions, which will run before each test function to which it is applied.
 """
-import pytest
 from typing import Union
+import pytest
+
 
 from utils import create_app
 from tests.data_mocks import load_to_db, clear_db

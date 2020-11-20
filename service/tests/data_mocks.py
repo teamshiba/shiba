@@ -1,3 +1,6 @@
+"""
+Load mock data to db
+"""
 import google
 
 from utils.db import delete_collection
