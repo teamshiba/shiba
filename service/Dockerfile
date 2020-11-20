@@ -7,7 +7,9 @@ RUN pip install -r requirements.txt
 
 # Explicitly copy the file so that docker will raise an error if the
 # file doesn't exist
-COPY fbConfigs.json /app/
+COPY fbConfigs.json fbConfigs_test.json /app/
 COPY . /app/
+
+RUN pytest
 
 CMD gunicorn -w $(nproc) -b 0.0.0.0:8000 app:app
