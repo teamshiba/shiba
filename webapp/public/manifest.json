@@ -1,6 +1,6 @@
 {
-  "short_name": "React App",
-  "name": "Create React App Sample",
+  "short_name": "ShibaMatch",
+  "name": "Find a restaurant or hotel for your group with ease!",
   "icons": [
     {
       "src": "favicon.ico",
