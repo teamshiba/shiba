@@ -167,11 +167,11 @@ const Voting: FC<IProps> = observer((props) => {
             className={classes.votingButtonBg}
             disabled={currItem == null}
             onClick={() =>
-              currItem && roomVotingStore.vote(currItem.itemId, "like")
+              currItem && roomVotingStore.vote(currItem.itemId, "dislike")
             }
           >
-            <Favorite
-              className={`${currItem && classes.likeButton} ${
+            <Clear
+              className={`${currItem && classes.dislikeButton} ${
                 classes.votingButton
               }`}
             />
@@ -182,11 +182,11 @@ const Voting: FC<IProps> = observer((props) => {
             className={classes.votingButtonBg}
             disabled={currItem == null}
             onClick={() =>
-              currItem && roomVotingStore.vote(currItem.itemId, "dislike")
+              currItem && roomVotingStore.vote(currItem.itemId, "like")
             }
           >
-            <Clear
-              className={`${currItem && classes.dislikeButton} ${
+            <Favorite
+              className={`${currItem && classes.likeButton} ${
                 classes.votingButton
               }`}
             />
