@@ -97,8 +97,8 @@ const Voting: FC<IProps> = observer((props) => {
 
   if (groupProfileStore.data == null) return null;
 
-  const onCardLeftScreen = (direction: string, item: string) => {
-    roomVotingStore.vote(item, direction == "left" ? "like" : "dislike");
+  const onSwipe = (direction: string, item: string) => {
+    roomVotingStore.vote(item, direction == "right" ? "like" : "dislike");
   };
 
   let content;
@@ -109,7 +109,7 @@ const Voting: FC<IProps> = observer((props) => {
         {items.map((item) => (
           <div className="swipe" key={item.itemId}>
             <TinderCard
-              onCardLeftScreen={(dir) => onCardLeftScreen(dir, item.itemId)}
+              onSwipe={(dir) => onSwipe(dir, item.itemId)}
               preventSwipe={["up", "down"]}
             >
               <div
