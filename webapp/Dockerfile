@@ -12,6 +12,8 @@ ENV REACT_APP_API_SERVER ${API_SERVER}
 # file doesn't exist
 COPY .env /build/
 COPY . /build/
+
+RUN npm run test-all
 RUN npm run build
 
 FROM nginx:1.19.4
