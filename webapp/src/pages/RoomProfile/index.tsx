@@ -17,6 +17,7 @@ import EditInput from "../../components/EditInput";
 import { copyToClipboard } from "../../common/utils";
 import AvatarList from "../../components/AvatarList";
 import { groupStore } from "../../stores/group-store";
+import { userStore } from "../../stores/user-store";
 
 type IProps = RouteComponentProps<{ id: string }>;
 
@@ -72,16 +73,17 @@ const RoomProfile: FC<IProps> = observer((props) => {
           }
         />
       </Card>
-      {!groupProfileStore.data.isCompleted && (
-        <Card>
-          <Button
-            className={classes.endButton}
-            onClick={() => groupProfileStore.endMatch()}
-          >
-            End this match
-          </Button>
-        </Card>
-      )}
+      {!groupProfileStore.data.isCompleted &&
+        groupProfileStore.data.organizerUid === userStore.user?.userId && (
+          <Card>
+            <Button
+              className={classes.endButton}
+              onClick={() => groupProfileStore.endMatch()}
+            >
+              End this match
+            </Button>
+          </Card>
+        )}
     </Fragment>
   );
 });

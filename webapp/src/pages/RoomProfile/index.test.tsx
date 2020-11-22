@@ -4,6 +4,7 @@ import RoomProfile from "./index";
 import { MemoryRouter, Route } from "react-router";
 
 jest.mock("../../stores/group-store");
+jest.mock("../../stores/user-store");
 
 test("renders", async () => {
   render(
