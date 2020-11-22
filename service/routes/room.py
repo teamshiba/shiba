@@ -71,8 +71,6 @@ def get_group_profile(auth_uid=None, group_id=None):
     group_id = group_id or request.args.get('gid') or ''
     group_doc = ref_groups.document(group_id)
     snap = group_doc.get()
-    if Group.validate_user_role(auth_uid, group_snap=snap) < 1:
-        raise UnauthorizedRequest.error_no_membership()
     if not snap.exists:
         raise InvalidQueryParams("Group id does not exist.")
     rv = snap.to_dict()
