@@ -18,12 +18,14 @@ class GroupStore {
         groupId: "groupId1",
         roomName: "Test Group 1",
         isCompleted: false,
+        organizerUid: "1234",
         members: [],
       },
       {
         groupId: "groupId2",
         roomName: "Test Group 2",
         isCompleted: false,
+        organizerUid: "1234",
         members: [],
       },
     ];
@@ -35,12 +37,14 @@ class GroupStore {
         groupId: "groupId3",
         roomName: "Test Group 3",
         isCompleted: true,
+        organizerUid: "1234",
         members: [],
       },
       {
         groupId: "groupId4",
         roomName: "Test Group 4",
         isCompleted: true,
+        organizerUid: "1234",
         members: [],
       },
     ];
@@ -51,6 +55,7 @@ class GroupStore {
       groupId: "groupId5",
       roomName: name,
       isCompleted: false,
+      organizerUid: "1234",
       members: [],
     });
   }
@@ -76,6 +81,7 @@ class GroupProfileStore {
       groupId: this.groupId,
       roomName: `Test Group ${this.groupId}`,
       isCompleted: false,
+      organizerUid: "1234",
       members: [
         {
           userId: "1234",
