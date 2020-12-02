@@ -27,7 +27,7 @@ def get_group_item_list(auth_uid=None):
     try:
         return filter_items(params)
     except DataModelException as error:
-        raise InvalidQueryParams(error.description)
+        raise InvalidQueryParams(error.description) from error
 
 
 # POST /api/item

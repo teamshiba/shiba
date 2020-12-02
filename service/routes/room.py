@@ -66,6 +66,7 @@ def create_group(auth_uid=None):
 
 @room.route('/room/<string:group_id>', methods=['GET'])
 @check_token
+# pylint: disable=unused-argument
 def get_group_profile(auth_uid=None, group_id=None):
     """Get the profile of a matching group."""
     group_id = group_id or request.args.get('gid') or ''
@@ -122,7 +123,8 @@ def update_group_profile(auth_uid=None, group_id=None):
     if current_organizer != auth_uid and (
             'isCompleted' in dict_to_update or 'organizerUid' in dict_to_update
     ):
-        raise UnauthorizedRequest("Only the organizer can modify 'status' and change the room host")
+        raise UnauthorizedRequest("Only the organizer can modify 'status'"
+                                  " and change the room host")
 
     if len(dict_to_update) > 0:
         group_doc.update(dict_to_update)

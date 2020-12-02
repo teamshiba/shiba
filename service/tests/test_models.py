@@ -1,8 +1,8 @@
-from flask.testing import FlaskClient
+from flask.testing import FlaskClient  # noqa: F401
 from models.group import Group
 from models.item import Item, db_add_item, filter_items
 from models.voting import Voting
-from tests.fixture import ConnHelper, client, connection
+from tests.fixture import ConnHelper, client, connection  # noqa: F401
 
 test_id = '12345'
 
@@ -65,10 +65,3 @@ class TestVotingModel:
     def test_to_dict(self):
         voting = Voting(item_id=test_id)
         assert voting.to_dict()['itemId'] == test_id
-
-
-
-
-
-
-

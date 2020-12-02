@@ -7,6 +7,7 @@ class InvalidQueryParams(HTTPException):
     """Invalid query parameters."""
 
     def __init__(self, desc=""):
+        super().__init__()
         self.code = 400
         self.description = desc
 
@@ -15,10 +16,12 @@ class InvalidRequestBody(HTTPException):
     """Invalid request body."""
 
     def __init__(self, desc=""):
+        super().__init__()
         self.code = 400
         self.description = desc
 
     @staticmethod
+    # pylint: disable=unsubscriptable-object
     def raise_key_error(e: Union[KeyError, str] = None):
         """
         Helper function for raising key error.
@@ -34,6 +37,7 @@ class InvalidRequestHeader(HTTPException):
     """Invalid request header."""
 
     def __init__(self, desc=""):
+        super().__init__()
         self.code = 400
         self.description = desc
 
@@ -42,6 +46,7 @@ class UnauthorizedRequest(HTTPException):
     """The user is not authorized for the intended action."""
 
     def __init__(self, desc=""):
+        super().__init__()
         self.code = 403
         self.description = desc
 
@@ -55,6 +60,7 @@ class LoginRequired(HTTPException):
     """The request is not sent from a login user."""
 
     def __init__(self, desc=""):
+        super().__init__()
         self.code = 401
         self.description = desc
 
@@ -64,7 +70,7 @@ class DataModelException(Exception):
     description: str = None
 
     def __init__(self, msg=""):
-        super(DataModelException, self).__init__()
+        super().__init__()
         self.description = msg
 
     def __repr__(self):

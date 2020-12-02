@@ -9,6 +9,7 @@ from utils.db import init_db
 db = None
 
 
+# pylint: disable=too-few-public-methods
 class Config:
     """Global configuration object."""
     is_testing: bool = False
@@ -24,6 +25,7 @@ def create_app(test_mode=False):
     :return:
     """
     _app = Flask(__name__)
+    # pylint: disable=global-statement
     global db
     if test_mode:
         db = init_db('fbConfigs_test.json')
