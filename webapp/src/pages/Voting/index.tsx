@@ -18,6 +18,7 @@ import { Clear, Equalizer, Favorite } from "@material-ui/icons";
 import { makeStyles } from "@material-ui/core/styles";
 import { groupStore } from "../../stores/group-store";
 import { VotingItem } from "../../domain/voting-item";
+import ButtonAdd from "../../components/ButtonAdd";
 
 const useStyles = makeStyles(() => ({
   votingButtonBgContainer: {
@@ -47,9 +48,6 @@ const useStyles = makeStyles(() => ({
   },
   likeButton: {
     color: "#F2994A",
-  },
-  addButton: {
-    color: "#2F80ED",
   },
   infoButton: {
     color: "#6FCF97",
@@ -213,11 +211,7 @@ const Voting: FC<IProps> = observer((props) => {
           </IconButton>
         </div>
         <div className={classes.votingButtonBgContainer}>
-          <IconButton className={classes.votingButtonBg} onClick={handleAdd}>
-            <AddOutlinedIcon
-              className={`${classes.addButton} ${classes.votingButton}`}
-            />
-          </IconButton>
+          <ButtonAdd handleAdd={handleAdd} />
         </div>
       </div>
     </div>
