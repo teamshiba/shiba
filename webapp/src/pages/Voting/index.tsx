@@ -1,5 +1,5 @@
 /**
- * @desc when user need to add items to the list for voting.
+ * @desc when user wants to vote from the item list.
  */
 
 import React, { FC, Fragment, useEffect } from "react";
@@ -211,7 +211,10 @@ const Voting: FC<IProps> = observer((props) => {
           </IconButton>
         </div>
         <div className={classes.votingButtonBgContainer}>
-          <ButtonAdd handleAdd={handleAdd} />
+          {/*<ButtonAdd handleAdd={handleAdd} />*/}
+          <ButtonAdd
+            handleAdd={() => browserHistory.push(`/room/${roomId}/add`)}
+          />
         </div>
       </div>
     </div>
