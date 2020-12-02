@@ -7,6 +7,7 @@ import Header from "../../components/Header";
 import IconButton from "@material-ui/core/IconButton";
 import EditOutlinedIcon from "@material-ui/icons/EditOutlined";
 import AddOutlinedIcon from "@material-ui/icons/AddOutlined";
+import InfoIcon from "@material-ui/icons/Info";
 import TinderCard from "react-tinder-card";
 import { votingStore } from "../../stores/voting-store";
 import "./index.css";
@@ -50,6 +51,13 @@ const useStyles = makeStyles(() => ({
   addButton: {
     color: "#2F80ED",
   },
+  infoButton: {
+    color: "#6FCF97",
+  },
+  rightButton: {
+    float: "right",
+    margin: "10px",
+  },
 }));
 
 const fakeItems: VotingItem[] = [
@@ -58,12 +66,14 @@ const fakeItems: VotingItem[] = [
     imgURL:
       "https://s3-media1.fl.yelpcdn.com/bphoto/howYvOKNPXU9A5KUahEXLA/o.jpg",
     name: "North India Restaurant",
+    itemURL: "https://www.yelp.com/biz/north-india-restaurant-san-francisco",
   },
   {
     itemId: "molinari-delicatessen-san-francisco",
     imgURL:
       "http://s3-media4.fl.yelpcdn.com/bphoto/6He-NlZrAv2mDV-yg6jW3g/o.jpg",
     name: "Molinari Delicatessen",
+    itemURL: "yelp.com/biz/molinari-delicatessen-san-francisco",
   },
 ];
 
@@ -117,6 +127,17 @@ const Voting: FC<IProps> = observer((props) => {
                 className="card"
               >
                 <h3>{item.name}</h3>
+                <IconButton
+                  className={`${classes.votingButtonBg} ${classes.rightButton}`}
+                  onClick={() => {
+                    console.log(item.itemURL);
+                    window.open(item.itemURL, "_blank");
+                  }}
+                >
+                  <InfoIcon
+                    className={`${classes.infoButton} ${classes.votingButton}`}
+                  />
+                </IconButton>
               </div>
             </TinderCard>
           </div>
