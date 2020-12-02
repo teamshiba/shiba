@@ -129,5 +129,5 @@ class Group:
                 'itemList': ArrayUnion([item_id])
             })
             return 1
-        else:
-            raise UnauthorizedRequest.error_no_membership()
+
+        raise UnauthorizedRequest.error_no_membership()

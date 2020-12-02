@@ -132,12 +132,11 @@ def filter_items(params):
         query_voted = ref_votes.where('groupId', '==', group_id).where(
             'userId', '==', target_uid
         )
-        list_voted = list()
         if query_voted:
-            stream_voted = query_voted.stream()
-            for doc in stream_voted:
-                list_voted.append(doc.to_dict()["itemId"])
-        set_voted = set(list_voted)
+            set_voted = [doc.to_dict()["itemId"] for doc in query_voted.stream()]
+        else:
+            set_voted = []
+        set_voted = set(set_voted)
         if voted_by:
             set_item_ids = set_item_ids.intersection(set_voted)
         else:
@@ -147,8 +146,7 @@ def filter_items(params):
     if set_item_ids:
         query = ref_items.where(u'itemId', u'in', list(set_item_ids))
         if query.get():
-            stream = query.stream()
-            for doc in stream:
+            for doc in query.stream():
                 list_stream.append(doc.to_dict())
 
     return {

@@ -1,0 +1,36 @@
+name: WebApp CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+defaults:
+  run:
+    working-directory: ./webapp
+
+jobs:
+  build_and_test:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - uses: actions/setup-node@v1
+      with:
+        node-version: 15.x
+
+    - uses: actions/cache@v2
+      with:
+        path: '**/node_modules'
+        key: ${{ runner.os }}-modules-${{ hashFiles('**/package-lock.json') }}
+
+    - env:
+        DOTENV: ${{ secrets.DOTENV }}
+      run: echo "$DOTENV" | base64 -d > .env
+
+    - run: npm install
+    - run: npx eslint .
+    - run: npm run build
+    - run: npm test

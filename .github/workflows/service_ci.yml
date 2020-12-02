@@ -1,0 +1,41 @@
+name: Service CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+defaults:
+  run:
+    working-directory: ./service
+
+jobs:
+  check_and_test:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - uses: actions/setup-python@v2
+      with:
+        python-version: '3.9'
+
+    - uses: actions/cache@v2
+      with:
+        path: ~/.cache/pip
+        key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
+        restore-keys: |
+          ${{ runner.os }}-pip-
+
+    - env:
+        FBCONFIG_TEST: ${{ secrets.FBCONFIG_TEST }}
+      run: echo "$FBCONFIG_TEST" | base64 -d > fbConfigs_test.json
+
+    - run: pip install -r requirements.txt
+
+    - run: pylint --reports=y --disable=import-outside-toplevel --disable=invalid-name --msg-template="$FileDir$/{path}:{line}:{C}:({symbol}){msg}" models routes utils
+
+    - run: flake8 . --max-line-length=99
+
+    - run: pytest
