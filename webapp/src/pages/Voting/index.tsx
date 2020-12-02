@@ -130,7 +130,6 @@ const Voting: FC<IProps> = observer((props) => {
                 <IconButton
                   className={`${classes.votingButtonBg} ${classes.rightButton}`}
                   onClick={() => {
-                    console.log(item.itemURL);
                     window.open(item.itemURL, "_blank");
                   }}
                 >
