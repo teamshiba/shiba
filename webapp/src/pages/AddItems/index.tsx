@@ -10,11 +10,9 @@ import { votingStore } from "../../stores/voting-store";
 import { groupStore } from "../../stores/group-store";
 import TextField from "@material-ui/core/TextField";
 import { VotingItem } from "../../domain/voting-item";
-import axios from "axios";
 import { InputAdornment } from "@material-ui/core";
 import SearchIcon from "@material-ui/icons/Search";
 import makeStyles from "@material-ui/core/styles/makeStyles";
-import { browserHistory } from "../../common/utils";
 import ButtonAdd from "../../components/ButtonAdd";
 
 type IProps = RouteComponentProps<{ id: string }>;
@@ -66,17 +64,17 @@ const fakeRecItems: VotingItem[] = [
 
 const fakeItems: VotingItem[] = [
   {
-    itemId: "north-india-restaurant-san-francisco",
+    itemId: "2north-india-restaurant-san-francisco",
     imgURL:
       "https://s3-media1.fl.yelpcdn.com/bphoto/howYvOKNPXU9A5KUahEXLA/o.jpg",
-    name: "North India Restaurant",
+    name: "2North India Restaurant",
     itemURL: "https://www.yelp.com/biz/north-india-restaurant-san-francisco",
   },
   {
-    itemId: "molinari-delicatessen-san-francisco",
+    itemId: "2molinari-delicatessen-san-francisco",
     imgURL:
       "http://s3-media4.fl.yelpcdn.com/bphoto/6He-NlZrAv2mDV-yg6jW3g/o.jpg",
-    name: "Molinari Delicatessen",
+    name: "2Molinari Delicatessen",
     itemURL: "yelp.com/biz/molinari-delicatessen-san-francisco",
   },
 ];
@@ -108,6 +106,14 @@ const AddItems: FC<IProps> = observer((props) => {
   }, [search]);
 
   if (groupProfileStore.data == null) return null;
+
+  const handleAdd = async (item: VotingItem) => {
+    await roomVotingStore.addItem(item);
+    await roomVotingStore.updateItems();
+    setItemList(
+      itemList.filter((filterItem) => filterItem.itemId !== item.itemId)
+    );
+  };
 
   return (
     <Fragment>
@@ -141,9 +147,7 @@ const AddItems: FC<IProps> = observer((props) => {
             >
               <div className={classes.title}>{item.name}</div>
               <div className={classes.addButton}>
-                <ButtonAdd
-                  handleAdd={() => browserHistory.push(`/room/${roomId}/add`)}
-                />
+                <ButtonAdd handleAdd={() => handleAdd(item)} />
               </div>
             </div>
           ))}

@@ -158,14 +158,6 @@ const Voting: FC<IProps> = observer((props) => {
   const currItem: VotingItem | null =
     items.length > 0 ? items[items.length - 1] : null;
 
-  const handleAdd = async () => {
-    for (const item of fakeItems) {
-      await roomVotingStore.addItem(item);
-    }
-
-    await roomVotingStore.updateItems();
-  };
-
   content = (
     <div className="screen">
       {content}
@@ -211,7 +203,6 @@ const Voting: FC<IProps> = observer((props) => {
           </IconButton>
         </div>
         <div className={classes.votingButtonBgContainer}>
-          {/*<ButtonAdd handleAdd={handleAdd} />*/}
           <ButtonAdd
             handleAdd={() => browserHistory.push(`/room/${roomId}/add`)}
           />
