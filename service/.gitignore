@@ -204,8 +204,6 @@ venv/
 ENV/
 env.bak/
 venv.bak/
-fbConfigs.json
-fbConfigs_test.json
 
 # Spyder project settings
 .spyderproject
@@ -230,3 +228,7 @@ dmypy.json
 
 # End of https://www.toptal.com/developers/gitignore/api/python,intellij+all
 
+# App environments
+environ.json
+fbConfigs.json
+fbConfigs_test.json

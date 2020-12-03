@@ -165,4 +165,4 @@ GET /api/item/search
 }
 ```
 
-- Omitted fields are the same as they are in Yelp documents.
+- Omitted fields are the same as they are in Yelp documents. All other fields are of the same name except for `itemURL` and `imgURL`.
