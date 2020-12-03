@@ -2,28 +2,44 @@
  * @desc when user need to add items to the list for voting.
  */
 
-import React, { FC, Fragment, useEffect } from "react";
+import React, { FC, Fragment, useEffect, useState } from "react";
 import Header from "../../components/Header";
 import { RouteComponentProps } from "react-router";
 import { observer } from "mobx-react";
 import { votingStore } from "../../stores/voting-store";
 import { groupStore } from "../../stores/group-store";
-// import fetch from 'cross-fetch';
 import TextField from "@material-ui/core/TextField";
-// import Autocomplete from '@material-ui/lab/Autocomplete';
-import CircularProgress from "@material-ui/core/CircularProgress";
 import { VotingItem } from "../../domain/voting-item";
 import axios from "axios";
 import { InputAdornment } from "@material-ui/core";
 import SearchIcon from "@material-ui/icons/Search";
+import makeStyles from "@material-ui/core/styles/makeStyles";
 
 type IProps = RouteComponentProps<{ id: string }>;
 
-function sleep(delay = 0) {
-  return new Promise((resolve) => {
-    setTimeout(resolve, delay);
-  });
-}
+const useStyles = makeStyles(() => ({
+  screen: {
+    height: "85vh",
+    display: "flex",
+    flexDirection: "column",
+  },
+  container: {
+    display: "flex",
+    justifyContent: "space-around",
+    flexWrap: "wrap",
+    overflow: "scroll",
+    paddingBotton: "40px",
+  },
+  card: {
+    width: "120px",
+    height: "180px",
+    position: "relative",
+    borderRadius: "20px",
+    backgroundSize: "cover",
+    backgroundPosition: "center",
+    marginTop: "2em",
+  },
+}));
 
 const fakeRecItems: VotingItem[] = [
   {
@@ -53,7 +69,9 @@ const fakeItems: VotingItem[] = [
 ];
 
 const AddItems: FC<IProps> = observer((props) => {
-  const [search, setSearch] = React.useState("");
+  const classes = useStyles();
+  const [search, setSearch] = useState("");
+  const [itemList, setItemList] = useState<VotingItem[]>([]);
 
   const roomId = props.match.params["id"];
   const roomVotingStore = votingStore.room(roomId);
@@ -68,9 +86,11 @@ const AddItems: FC<IProps> = observer((props) => {
   // When search result changes
   useEffect(() => {
     if (search === "") {
-      // Show recommendation lsit
+      // Show recommendation list
+      setItemList(fakeRecItems);
     } else {
-      // Show searched result
+      // Show searched list
+      setItemList(fakeItems);
     }
   }, [search]);
 
@@ -79,23 +99,38 @@ const AddItems: FC<IProps> = observer((props) => {
   return (
     <Fragment>
       <Header hasBackButton>{groupProfileStore.data.roomName}</Header>
-      <TextField
-        label="Search"
-        variant="outlined"
-        size="small"
-        fullWidth
-        placeholder={search}
-        style={{ marginTop: "15px" }}
-        onChange={(e) => setSearch(e.target.value)}
-        InputProps={{
-          startAdornment: (
-            <InputAdornment position="start">
-              <SearchIcon />
-            </InputAdornment>
-          ),
-        }}
-      />
-      {/*{content}*/}
+      <div className={classes.screen}>
+        <TextField
+          label="Search"
+          variant="outlined"
+          size="small"
+          fullWidth
+          placeholder={search}
+          style={{ marginTop: "15px" }}
+          onChange={(e) => setSearch(e.target.value)}
+          InputProps={{
+            startAdornment: (
+              <InputAdornment position="start">
+                <SearchIcon />
+              </InputAdornment>
+            ),
+          }}
+        />
+
+        <div className={classes.container}>
+          {itemList.map((item) => (
+            <div
+              key={item.itemId}
+              style={{
+                backgroundImage: "url(" + item.imgURL + ")",
+              }}
+              className={classes.card}
+            >
+              AAA
+            </div>
+          ))}
+        </div>
+      </div>
     </Fragment>
   );
 });
