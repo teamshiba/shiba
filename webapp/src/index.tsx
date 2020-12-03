@@ -17,6 +17,7 @@ import axios from "axios";
 import AuthSynchronizer from "./components/AuthSynchronizer";
 import RoomProfile from "./pages/RoomProfile";
 import Invitation from "./pages/Invitation";
+import AddItems from "./pages/AddItems";
 
 axios.interceptors.request.use(
   (config) => {
@@ -79,6 +80,7 @@ ReactDOM.render(
                   <Route path="/room/history" component={HistoryRoomList} />
                   <Route path="/room/:id/profile" component={RoomProfile} />
                   <Route path="/room/:id/stats" component={Statistics} />
+                  <Route path="/room/:id/add" component={AddItems} />
                   <Route path="/room/:id" component={Voting} />
                 </Switch>
               </Route>

@@ -1,4 +1,4 @@
-import { getOrCreate } from "./utils";
+import { createDebouncer, getOrCreate } from "./utils";
 
 test("get or create", () => {
   const map = new Map<string, string>();
@@ -9,4 +9,22 @@ test("get or create", () => {
   const value2 = getOrCreate(map, "a", () => "b");
   expect(value2).toBe("a");
   expect(map.get("a")).toBe("a");
+});
+
+test("debounce", async () => {
+  let triggered = false;
+  const debounce = createDebouncer(100);
+  const trigger = () => (triggered = true);
+
+  const sleep = (time: number) =>
+    new Promise((resolve) => setTimeout(resolve, time));
+
+  for (let i = 0; i < 10; ++i) {
+    debounce(trigger);
+    await sleep(50);
+    expect(triggered).toBeFalsy();
+  }
+
+  await sleep(100);
+  expect(triggered).toBeTruthy();
 });

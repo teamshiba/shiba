@@ -1,12 +1,11 @@
 /**
- * @desc when user need to add items to the list for voting.
+ * @desc when user wants to vote from the item list.
  */
 
 import React, { FC, Fragment, useEffect } from "react";
 import Header from "../../components/Header";
 import IconButton from "@material-ui/core/IconButton";
 import EditOutlinedIcon from "@material-ui/icons/EditOutlined";
-import AddOutlinedIcon from "@material-ui/icons/AddOutlined";
 import InfoIcon from "@material-ui/icons/Info";
 import TinderCard from "react-tinder-card";
 import { votingStore } from "../../stores/voting-store";
@@ -18,27 +17,10 @@ import { Clear, Equalizer, Favorite } from "@material-ui/icons";
 import { makeStyles } from "@material-ui/core/styles";
 import { groupStore } from "../../stores/group-store";
 import { VotingItem } from "../../domain/voting-item";
+import ButtonAdd from "../../components/ButtonAdd";
+import VotingButton from "../../components/VotingButton";
 
 const useStyles = makeStyles(() => ({
-  votingButtonBgContainer: {
-    width: "60px",
-    height: "60px",
-    borderRadius: "50%",
-    backgroundColor: "#F0F0F0",
-    display: "flex",
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  votingButtonBg: {
-    width: "50px",
-    height: "50px",
-    borderRadius: "50%",
-    backgroundColor: "white",
-  },
-  votingButton: {
-    fontSize: "30px",
-    borderRadius: "50%",
-  },
   statsButton: {
     color: "#6FCF97",
   },
@@ -48,9 +30,6 @@ const useStyles = makeStyles(() => ({
   likeButton: {
     color: "#F2994A",
   },
-  addButton: {
-    color: "#2F80ED",
-  },
   infoButton: {
     color: "#6FCF97",
   },
@@ -59,23 +38,6 @@ const useStyles = makeStyles(() => ({
     margin: "10px",
   },
 }));
-
-const fakeItems: VotingItem[] = [
-  {
-    itemId: "north-india-restaurant-san-francisco",
-    imgURL:
-      "https://s3-media1.fl.yelpcdn.com/bphoto/howYvOKNPXU9A5KUahEXLA/o.jpg",
-    name: "North India Restaurant",
-    itemURL: "https://www.yelp.com/biz/north-india-restaurant-san-francisco",
-  },
-  {
-    itemId: "molinari-delicatessen-san-francisco",
-    imgURL:
-      "http://s3-media4.fl.yelpcdn.com/bphoto/6He-NlZrAv2mDV-yg6jW3g/o.jpg",
-    name: "Molinari Delicatessen",
-    itemURL: "yelp.com/biz/molinari-delicatessen-san-francisco",
-  },
-];
 
 type IProps = RouteComponentProps<{ id: string }>;
 
@@ -127,16 +89,14 @@ const Voting: FC<IProps> = observer((props) => {
                 className="card"
               >
                 <h3>{item.name}</h3>
-                <IconButton
-                  className={`${classes.votingButtonBg} ${classes.rightButton}`}
-                  onClick={() => {
-                    window.open(item.itemURL, "_blank");
-                  }}
-                >
-                  <InfoIcon
-                    className={`${classes.infoButton} ${classes.votingButton}`}
+                <div className={classes.rightButton}>
+                  <VotingButton
+                    onClick={() => {
+                      window.open(item.itemURL, "_blank");
+                    }}
+                    icon={InfoIcon}
                   />
-                </IconButton>
+                </div>
               </div>
             </TinderCard>
           </div>
@@ -160,65 +120,34 @@ const Voting: FC<IProps> = observer((props) => {
   const currItem: VotingItem | null =
     items.length > 0 ? items[items.length - 1] : null;
 
-  const handleAdd = async () => {
-    for (const item of fakeItems) {
-      await roomVotingStore.addItem(item);
-    }
-
-    await roomVotingStore.updateItems();
-  };
-
   content = (
     <div className="screen">
       {content}
       <div className="voting-buttons">
-        <div className={classes.votingButtonBgContainer}>
-          <IconButton
-            className={classes.votingButtonBg}
-            onClick={() => browserHistory.push(`/room/${roomId}/stats`)}
-          >
-            <Equalizer
-              className={`${classes.statsButton} ${classes.votingButton}`}
-            />
-          </IconButton>
-        </div>
-        <div className={classes.votingButtonBgContainer}>
-          <IconButton
-            className={classes.votingButtonBg}
-            disabled={currItem == null}
-            onClick={() =>
-              currItem && roomVotingStore.vote(currItem.itemId, "dislike")
-            }
-          >
-            <Clear
-              className={`${currItem && classes.dislikeButton} ${
-                classes.votingButton
-              }`}
-            />
-          </IconButton>
-        </div>
-        <div className={classes.votingButtonBgContainer}>
-          <IconButton
-            className={classes.votingButtonBg}
-            disabled={currItem == null}
-            onClick={() =>
-              currItem && roomVotingStore.vote(currItem.itemId, "like")
-            }
-          >
-            <Favorite
-              className={`${currItem && classes.likeButton} ${
-                classes.votingButton
-              }`}
-            />
-          </IconButton>
-        </div>
-        <div className={classes.votingButtonBgContainer}>
-          <IconButton className={classes.votingButtonBg} onClick={handleAdd}>
-            <AddOutlinedIcon
-              className={`${classes.addButton} ${classes.votingButton}`}
-            />
-          </IconButton>
-        </div>
+        <VotingButton
+          onClick={() => browserHistory.push(`/room/${roomId}/stats`)}
+          icon={Equalizer}
+          className={classes.statsButton}
+        />
+        <VotingButton
+          onClick={() =>
+            currItem && roomVotingStore.vote(currItem.itemId, "dislike")
+          }
+          disabled={currItem == null}
+          icon={Clear}
+          className={currItem && classes.dislikeButton}
+        />
+        <VotingButton
+          onClick={() =>
+            currItem && roomVotingStore.vote(currItem.itemId, "like")
+          }
+          disabled={currItem == null}
+          icon={Favorite}
+          className={currItem && classes.likeButton}
+        />
+        <ButtonAdd
+          handleAdd={() => browserHistory.push(`/room/${roomId}/add`)}
+        />
       </div>
     </div>
   );

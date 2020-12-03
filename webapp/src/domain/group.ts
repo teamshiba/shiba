@@ -5,5 +5,6 @@ export interface Group {
   roomName: string;
   isCompleted: boolean;
   organizerUid: string;
+  itemList: string[];
   members: User[];
 }

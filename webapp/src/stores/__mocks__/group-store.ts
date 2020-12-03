@@ -20,6 +20,7 @@ class GroupStore {
         isCompleted: false,
         organizerUid: "1234",
         members: [],
+        itemList: [],
       },
       {
         groupId: "groupId2",
@@ -27,6 +28,7 @@ class GroupStore {
         isCompleted: false,
         organizerUid: "1234",
         members: [],
+        itemList: [],
       },
     ];
   }
@@ -39,6 +41,7 @@ class GroupStore {
         isCompleted: true,
         organizerUid: "1234",
         members: [],
+        itemList: [],
       },
       {
         groupId: "groupId4",
@@ -46,6 +49,7 @@ class GroupStore {
         isCompleted: true,
         organizerUid: "1234",
         members: [],
+        itemList: [],
       },
     ];
   }
@@ -57,6 +61,7 @@ class GroupStore {
       isCompleted: false,
       organizerUid: "1234",
       members: [],
+      itemList: [],
     });
   }
 
@@ -88,6 +93,7 @@ class GroupProfileStore {
           displayName: `User in ${this.groupId}`,
         } as User,
       ],
+      itemList: [],
     };
   }
 
