@@ -123,3 +123,46 @@ POST /api/item
 }
 ```
 
+## (4) Search for items using the Yelp API
+
+Used to retrieve a list of added items.
+
+```
+GET /api/item/search
+```
+
+- Take reference from [Yelp API](https://www.yelp.com/developers/documentation/v3/business_search).
+
+**Auth required** : `YES`
+
+**Query Parameters** :
+
+| Attribute | Type     | Required | Description   |
+| :--------: | :--------: | :--------: | :-------------- |
+| `term` | string | no | Search terms or business names. |
+| `location` | string | no | Required if either latitude or longitude is not provided.  |
+| `latitude` | decimal | no | Required if location is not provided. |
+| `longitude` | decimal | no | Required if location is not provided. |
+| `categories` | string | no | Categories to filter the search results with. |
+| `limit` | integer | no | By default, it will return 20. Maximum is 50. |
+| `offset` | integer | no | Offset the list of returned business results by this amount. |
+
+**Success response** :
+
+- **Code** : `200 OK`
+- **Body** : Search results. 
+
+```json5
+{
+  "total" : 0, // total number of items in that group.
+  "items" : [
+    {
+      "itemURL" : "<string>[The URL that links to the resource webpage.]",
+      "name" : "<string>[The display name of that item.]",
+      "imgURL": "<string>[The URL that store the key picture of that item.]",
+    }
+  ]
+}
+```
+
+- Omitted fields are the same as they are in Yelp documents.
