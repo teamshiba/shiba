@@ -44,24 +44,27 @@ const Statistics: FC<IProps> = observer((props) => {
       <Header hasBackButton>{groupDetailStore.data?.roomName}</Header>
 
       <h3>Top picks</h3>
-      {roomStatisticsStore.statistics.map((stat) => {
-        let progress = 0;
-        if (groupSize != undefined && groupSize > 0) {
-          progress = (stat.like / groupSize) * 100;
-        }
+      {roomStatisticsStore.statistics
+        .slice()
+        .sort((a, b) => b.like - a.like)
+        .map((stat) => {
+          let progress = 0;
+          if (groupSize != undefined && groupSize > 0) {
+            progress = (stat.like / groupSize) * 100;
+          }
 
-        return (
-          <div key={stat.items.itemId}>
-            <div style={{ display: "flex", justifyContent: "space-between" }}>
-              <div>{stat.items.name}</div>
-              {progress == 100 && (
-                <div style={{ color: "#FFBC6F" }}>Match!</div>
-              )}
+          return (
+            <div key={stat.items.itemId}>
+              <div style={{ display: "flex", justifyContent: "space-between" }}>
+                <div>{stat.items.name}</div>
+                {progress == 100 && (
+                  <div style={{ color: "#FFBC6F" }}>Match!</div>
+                )}
+              </div>
+              <BorderLinearProgress variant="determinate" value={progress} />
             </div>
-            <BorderLinearProgress variant="determinate" value={progress} />
-          </div>
-        );
-      })}
+          );
+        })}
     </Fragment>
   );
 });

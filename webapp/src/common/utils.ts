@@ -35,4 +35,15 @@ export function getOrCreate<K, V>(
   return newValue;
 }
 
+export function createDebouncer(time: number): (func: () => void) => void {
+  let timeout: number | null = null;
+  return (func: () => void) => {
+    if (timeout != null) {
+      clearTimeout(timeout);
+    }
+
+    timeout = window.setTimeout(() => func(), time);
+  };
+}
+
 export { browserHistory };

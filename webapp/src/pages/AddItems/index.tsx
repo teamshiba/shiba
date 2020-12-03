@@ -14,6 +14,9 @@ import SearchIcon from "@material-ui/icons/Search";
 import makeStyles from "@material-ui/core/styles/makeStyles";
 import ButtonAdd from "../../components/ButtonAdd";
 import { itemStore } from "../../stores/item-store";
+import { createDebouncer } from "../../common/utils";
+import CheckIcon from "@material-ui/icons/Check";
+import VotingButton from "../../components/VotingButton";
 
 type IProps = RouteComponentProps<{ id: string }>;
 
@@ -52,11 +55,12 @@ const useStyles = makeStyles(() => ({
   },
 }));
 
-const AddItems: FC<IProps> = observer((props) => {
-  const classes = useStyles();
-  const [search, setSearch] = useState("");
-  const [itemList, setItemList] = useState<VotingItem[]>([]);
+const searchDebounce = createDebouncer(500);
 
+const AddItems: FC<IProps> = observer((props) => {
+  const [term, setTerm_] = useState("");
+
+  const classes = useStyles();
   const roomId = props.match.params["id"];
   const groupProfileStore = groupStore.room(roomId);
   const itemListStore = itemStore.room(roomId);
@@ -74,35 +78,22 @@ const AddItems: FC<IProps> = observer((props) => {
       itemListStore.updateRecommendedItems(-1, -1);
     }
 
-    itemListStore.updateSearchedItems();
     groupProfileStore.update();
   }, []);
 
-  // When search result changes
-  useEffect(() => {
-    // Delay search for 1 second
-    const timer = setTimeout(() => {
-      if (search === "") {
-        // Show recommendation list
-        setItemList(Array.from(itemListStore.itemsRecommended.values()));
-      } else {
-        // Show searched list
-        setItemList(Array.from(itemListStore.itemsSearched.values()));
-      }
-    }, 1000);
-
-    return () => clearTimeout(timer);
-  }, [search]);
-
   if (groupProfileStore.data == null) return null;
 
-  const handleAdd = async (item: VotingItem, isSearch: boolean) => {
-    await itemListStore.addItem(item);
-    await itemListStore.removeItemFromList(item, isSearch);
-    setItemList(
-      itemList.filter((filterItem) => filterItem.itemId !== item.itemId)
-    );
+  const setTerm = (term: string) => {
+    setTerm_(term);
+    searchDebounce(() => itemListStore.search(term));
   };
+
+  const handleAdd = async (item: VotingItem) => {
+    await itemListStore.addItem(item);
+    await groupProfileStore.update();
+  };
+
+  const addedItems = new Set(groupProfileStore.data.itemList);
 
   return (
     <Fragment>
@@ -113,9 +104,9 @@ const AddItems: FC<IProps> = observer((props) => {
           variant="outlined"
           size="small"
           fullWidth
-          placeholder={search}
+          value={term}
           style={{ marginTop: "15px" }}
-          onChange={(e) => setSearch(e.target.value)}
+          onChange={(e) => setTerm(e.target.value)}
           InputProps={{
             startAdornment: (
               <InputAdornment position="start">
@@ -126,7 +117,7 @@ const AddItems: FC<IProps> = observer((props) => {
         />
 
         <div className={classes.container}>
-          {itemList.map((item) => (
+          {itemListStore.items.map((item) => (
             <div
               key={item.itemId}
               style={{
@@ -136,9 +127,15 @@ const AddItems: FC<IProps> = observer((props) => {
             >
               <div className={classes.title}>{item.name}</div>
               <div className={classes.addButton}>
-                <ButtonAdd
-                  handleAdd={() => handleAdd(item, search.length === 0)}
-                />
+                {addedItems.has(item.itemId) ? (
+                  <VotingButton
+                    onClick={() => null}
+                    icon={CheckIcon}
+                    disabled
+                  />
+                ) : (
+                  <ButtonAdd handleAdd={() => handleAdd(item)} />
+                )}
               </div>
             </div>
           ))}

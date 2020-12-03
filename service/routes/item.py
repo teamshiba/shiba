@@ -6,6 +6,7 @@ from models.item import filter_items, Item, db_add_item
 from utils.decorators import check_token
 from utils.exceptions import (InvalidQueryParams, InvalidRequestBody,
                               DataModelException, UnauthorizedRequest)
+from utils.external import yelp_search_biz
 
 router_item = Blueprint('item', __name__)
 
@@ -52,3 +53,33 @@ def add_item(auth_uid=None):
     return {
         "msg": "success"
     }
+
+
+@router_item.route('/item/search', methods=['GET'])
+def search_item():
+    """Yelp API: business search"""
+    params: dict = request.args.to_dict()
+    location = params.get('location')
+    latitude = params.get('latitude')
+    longitude = params.get('longitude')
+    term = params.get('term')
+    try:
+        resp = yelp_search_biz(location=location,
+                               latitude=latitude,
+                               longitude=longitude,
+                               term=term,
+                               url_params=params)
+        if 'businesses' not in resp:
+            return {
+                'msg': 'Unexpected response from Yelp API.'
+            }, 500
+        for item in resp['businesses']:
+            item['itemURL'] = item['url']
+            item['imgURL'] = item['image_url']
+        return resp
+    except KeyError as e:
+        return {
+            'msg': 'In response key not found: ' + str(e)
+        }, 500
+    except ValueError as e:
+        raise InvalidQueryParams(str(e))
