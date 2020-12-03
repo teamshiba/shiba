@@ -1,5 +1,5 @@
 import { makeAutoObservable } from "mobx";
-import { VotingItem, VotingItemResponse } from "../domain/voting-item";
+import { VotingItem } from "../domain/voting-item";
 import axios from "axios";
 import { serverPrefix } from "../common/config";
 import { getOrCreate } from "../common/utils";
