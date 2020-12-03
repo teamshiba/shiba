@@ -63,7 +63,17 @@ const AddItems: FC<IProps> = observer((props) => {
 
   // Always do an update when page loads
   useEffect(() => {
-    itemListStore.updateRecommendedItems();
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition((position) => {
+        itemListStore.updateRecommendedItems(
+          position.coords.latitude,
+          position.coords.longitude
+        );
+      });
+    } else {
+      itemListStore.updateRecommendedItems(-1, -1);
+    }
+
     itemListStore.updateSearchedItems();
     groupProfileStore.update();
   }, []);

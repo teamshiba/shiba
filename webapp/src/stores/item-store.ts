@@ -51,10 +51,14 @@ class RoomItemStore {
     makeAutoObservable(this);
   }
 
-  async updateRecommendedItems() {
+  async updateRecommendedItems(latitude: number, longitude: number) {
     // const endpoint = `${serverPrefix}/item/list?gid=${this.roomId}&unvoted_by=${userStore.user?.userId}`;
     // const response = (await axios.get<VotingItemResponse>(endpoint)).data;
     // this.mergeItems(response);
+
+    if (latitude === -1 && longitude === -1) {
+      // Some other way to get recommendation
+    }
 
     fakeRecItems.map((item) => this.itemsRecommended.set(item.itemId, item));
   }
