@@ -14,6 +14,8 @@ import axios from "axios";
 import { InputAdornment } from "@material-ui/core";
 import SearchIcon from "@material-ui/icons/Search";
 import makeStyles from "@material-ui/core/styles/makeStyles";
+import { browserHistory } from "../../common/utils";
+import ButtonAdd from "../../components/ButtonAdd";
 
 type IProps = RouteComponentProps<{ id: string }>;
 
@@ -27,17 +29,28 @@ const useStyles = makeStyles(() => ({
     display: "flex",
     justifyContent: "space-around",
     flexWrap: "wrap",
-    overflow: "scroll",
+    overflowY: "scroll",
     paddingBotton: "40px",
   },
   card: {
-    width: "120px",
-    height: "180px",
+    width: "150px",
+    height: "210px",
     position: "relative",
     borderRadius: "20px",
     backgroundSize: "cover",
     backgroundPosition: "center",
     marginTop: "2em",
+  },
+  title: {
+    margin: "3px",
+    position: "absolute",
+    bottom: 0,
+    color: "white",
+    fontWeight: 700,
+  },
+  addButton: {
+    margin: "5px",
+    float: "right",
   },
 }));
 
@@ -126,7 +139,12 @@ const AddItems: FC<IProps> = observer((props) => {
               }}
               className={classes.card}
             >
-              AAA
+              <div className={classes.title}>{item.name}</div>
+              <div className={classes.addButton}>
+                <ButtonAdd
+                  handleAdd={() => browserHistory.push(`/room/${roomId}/add`)}
+                />
+              </div>
             </div>
           ))}
         </div>
