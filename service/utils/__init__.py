@@ -1,6 +1,7 @@
 """
 app initialization.
 """
+import json
 from flask import Flask
 from werkzeug.exceptions import HTTPException
 
@@ -13,6 +14,14 @@ db = None
 class Config:
     """Global configuration object."""
     is_testing: bool = False
+    env_dict: dict
+
+    def __init__(self):
+        with open("environ.json") as f:
+            self.env_dict = json.load(f)
+
+    def get_yelp_api_key(self):
+        return self.env_dict.get('yelp_api_key')
 
 
 config_g = Config()
