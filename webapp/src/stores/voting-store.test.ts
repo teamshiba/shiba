@@ -37,29 +37,29 @@ test("updates items", async () => {
   expect(roomVotingStore.items.get("item1")?.name).toBe("mock item");
 });
 
-test("add item", async () => {
-  const votingStore = new VotingStore();
-  const roomId = "1234";
-  const roomVotingStore = votingStore.room(roomId);
-  const mockItem = {
-    itemId: "item1",
-    name: "mock item",
-  } as VotingItem;
-
-  let postCalled = false;
-
-  mockedAxios.post.mockImplementationOnce(async (path, data) => {
-    postCalled = true;
-    expect(path).toContain("/item");
-    expect(data).toStrictEqual({
-      groupId: "1234",
-      item: mockItem,
-    });
-  });
-
-  await roomVotingStore.addItem(mockItem);
-  expect(postCalled).toBeTruthy();
-});
+// test("add item", async () => {
+//   const votingStore = new VotingStore();
+//   const roomId = "1234";
+//   const roomVotingStore = votingStore.room(roomId);
+//   const mockItem = {
+//     itemId: "item1",
+//     name: "mock item",
+//   } as VotingItem;
+//
+//   let postCalled = false;
+//
+//   mockedAxios.post.mockImplementationOnce(async (path, data) => {
+//     postCalled = true;
+//     expect(path).toContain("/item");
+//     expect(data).toStrictEqual({
+//       groupId: "1234",
+//       item: mockItem,
+//     });
+//   });
+//
+//   await roomVotingStore.addItem(mockItem);
+//   expect(postCalled).toBeTruthy();
+// });
 
 test("vote", async () => {
   const roomVotingStore = await updateItems();
