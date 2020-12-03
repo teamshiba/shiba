@@ -59,6 +59,8 @@ const searchDebounce = createDebouncer(500);
 
 const AddItems: FC<IProps> = observer((props) => {
   const [term, setTerm_] = useState("");
+  const [latitude, setLatitude] = useState(-1);
+  const [longitude, setLongitude] = useState(-1);
 
   const classes = useStyles();
   const roomId = props.match.params["id"];
@@ -69,14 +71,12 @@ const AddItems: FC<IProps> = observer((props) => {
   useEffect(() => {
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition((position) => {
-        itemListStore.updateRecommendedItems(
-          position.coords.latitude,
-          position.coords.longitude
-        );
+        setLatitude(position.coords.latitude);
+        setLongitude(position.coords.longitude);
       });
-    } else {
-      itemListStore.updateRecommendedItems(-1, -1);
     }
+
+    itemListStore.updateRecommendedItems(latitude, longitude);
 
     groupProfileStore.update();
   }, []);
@@ -85,7 +85,7 @@ const AddItems: FC<IProps> = observer((props) => {
 
   const setTerm = (term: string) => {
     setTerm_(term);
-    searchDebounce(() => itemListStore.search(term));
+    searchDebounce(() => itemListStore.search(term, latitude, longitude));
   };
 
   const handleAdd = async (item: VotingItem) => {

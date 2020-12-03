@@ -1,5 +1,5 @@
 import { makeAutoObservable } from "mobx";
-import { VotingItem } from "../domain/voting-item";
+import { VotingItem, VotingItemResponse } from "../domain/voting-item";
 import axios from "axios";
 import { serverPrefix } from "../common/config";
 import { getOrCreate } from "../common/utils";
@@ -62,20 +62,28 @@ export class RoomItemStore {
     latitude: number,
     longitude: number
   ): Promise<void> {
-    // const endpoint = `${serverPrefix}/item/list?gid=${this.roomId}&unvoted_by=${userStore.user?.userId}`;
-    // const response = (await axios.get<VotingItemResponse>(endpoint)).data;
+    const endpoint = `${serverPrefix}/item/search?latitude=${latitude}&longitude=${longitude}`;
+    const response = (await axios.get<VotingItemResponse>(endpoint)).data;
+    response.items.map((item) => this.itemsRecommended.set(item.itemId, item));
     // this.mergeItems(response);
 
     if (latitude === -1 && longitude === -1) {
       // Some other way to get recommendation
     }
 
-    fakeRecItems.map((item) => this.itemsRecommended.set(item.itemId, item));
+    // fakeRecItems.map((item) => this.itemsRecommended.set(item.itemId, item));
   }
 
-  async search(term: string): Promise<void> {
+  async search(
+    term: string,
+    latitude: number,
+    longitude: number
+  ): Promise<void> {
     this.term = term;
-    fakeItems.map((item) => this.itemsSearched.set(item.itemId, item));
+    const endpoint = `${serverPrefix}/item/search?latitude=${latitude}&longitude=${longitude}?term=${this.term}`;
+    const response = (await axios.get<VotingItemResponse>(endpoint)).data;
+    response.items.map((item) => this.itemsSearched.set(item.itemId, item));
+    // fakeItems.map((item) => this.itemsSearched.set(item.itemId, item));
   }
 
   async addItem(item: VotingItem): Promise<void> {
