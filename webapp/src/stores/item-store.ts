@@ -43,15 +43,25 @@ export class ItemStore {
   }
 }
 
-class RoomItemStore {
+export class RoomItemStore {
   itemsRecommended = new Map<string, VotingItem>();
   itemsSearched = new Map<string, VotingItem>();
+  term = "";
 
   constructor(public roomId: string) {
     makeAutoObservable(this);
   }
 
-  async updateRecommendedItems(latitude: number, longitude: number) {
+  get items(): VotingItem[] {
+    const map =
+      this.term.length > 0 ? this.itemsSearched : this.itemsRecommended;
+    return Array.from(map.values());
+  }
+
+  async updateRecommendedItems(
+    latitude: number,
+    longitude: number
+  ): Promise<void> {
     // const endpoint = `${serverPrefix}/item/list?gid=${this.roomId}&unvoted_by=${userStore.user?.userId}`;
     // const response = (await axios.get<VotingItemResponse>(endpoint)).data;
     // this.mergeItems(response);
@@ -63,7 +73,8 @@ class RoomItemStore {
     fakeRecItems.map((item) => this.itemsRecommended.set(item.itemId, item));
   }
 
-  async updateSearchedItems() {
+  async search(term: string): Promise<void> {
+    this.term = term;
     fakeItems.map((item) => this.itemsSearched.set(item.itemId, item));
   }
 
@@ -72,14 +83,6 @@ class RoomItemStore {
       groupId: this.roomId,
       item,
     });
-  }
-
-  async removeItemFromList(item: VotingItem, isSearch: boolean): Promise<void> {
-    if (isSearch) {
-      this.itemsSearched.delete(item.itemId);
-    } else {
-      this.itemsRecommended.delete(item.itemId);
-    }
   }
 }
 
