@@ -97,7 +97,7 @@ export class RoomItemStore {
 
     if (latitude === -1 && longitude === -1) {
       const location = "NYC";
-      endpoint = `${serverPrefix}/item/search?location=NYC&term=${this.term}`;
+      endpoint = `${serverPrefix}/item/search?location=${location}&term=${this.term}`;
     } else {
       endpoint = `${serverPrefix}/item/search?latitude=${latitude}&longitude=${longitude}&term=${this.term}`;
     }
