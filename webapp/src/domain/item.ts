@@ -4,6 +4,7 @@ export interface Item {
   itemURL: string;
   name: string;
   rating: number;
+  categories: [{ alias: string; title: string }];
 }
 
 export interface ItemResponse {

@@ -80,7 +80,10 @@ export class RoomItemStore {
 
     response.data.businesses
       .sort((a, b) => b.rating - a.rating)
-      .map((item) => this.itemsRecommended.set(item.id, item));
+      .map(
+        (item) =>
+          this.isValidItem(item) && this.itemsRecommended.set(item.id, item)
+      );
   }
 
   async search(
@@ -103,8 +106,8 @@ export class RoomItemStore {
     if (response.status === 400) {
       return;
     }
-    response.data.businesses.map((item) =>
-      this.itemsSearched.set(item.id, item)
+    response.data.businesses.map(
+      (item) => this.isValidItem(item) && this.itemsSearched.set(item.id, item)
     );
   }
 
@@ -118,6 +121,16 @@ export class RoomItemStore {
         itemURL: item.itemURL,
       },
     });
+  }
+
+  private isValidItem(item: Item): boolean {
+    for (const category of item.categories) {
+      const alias = category.alias;
+      if (alias.includes("park") || alias.includes("museum")) {
+        return false;
+      }
+    }
+    return true;
   }
 }
 
