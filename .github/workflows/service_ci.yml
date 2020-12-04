@@ -34,8 +34,6 @@ jobs:
 
     - run: pip install -r requirements.txt
 
-    - run: pylint --disable=import-outside-toplevel --disable=invalid-name --msg-template="$FileDir$/{path}:{line}:{C}:({symbol}){msg}" models routes utils
-
     - run: flake8 . --max-line-length=99
 
     - run: pytest
