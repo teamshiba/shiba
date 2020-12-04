@@ -1,5 +1,5 @@
 """Room APIs"""
-from google.cloud.firestore import ArrayUnion
+from google.cloud.firestore import ArrayUnion, ArrayRemove
 from flask import Blueprint, request
 
 from models.group import Group
@@ -30,8 +30,6 @@ def get_group_list(auth_uid=None):
     if user_id is None:
         raise InvalidQueryParams("uid is required.")
 
-    # offset = request.args.get('offset') if 'offset' in request.args else 0
-    # limit = request.args.get('limit') if 'limit' in request.args else 100
     state_text = request.args.get('state') or ''
     filter_completed = state_text == 'true'
     query = ref_groups.where(u'members', u'array_contains', user_id)
@@ -162,8 +160,33 @@ def join_group(auth_uid=None, group_id=""):
 
 
 @room.route('/room/<group_id>/member', methods=['DELETE'])
-def join_group(auth_uid=None, group_id=""):
-    pass
+@check_token
+def remove_user(auth_uid=None, group_id=""):
+    """
+    :param auth_uid: organizer Id
+    :param group_id: gid
+    :return: msg
+    """
+    member_id = request.args.get('uid') if 'uid' in request.args else ''
+    if not member_id:
+        raise InvalidQueryParams("No member id provided.")
+
+    if not ref_groups.document(group_id).get().exists:
+        raise InvalidRequestBody('Invalid groupId provided.')
+
+    snap = ref_groups.document(group_id).get().to_dict()
+    if auth_uid != snap.get('organizerUid'):
+        raise UnauthorizedRequest('You have no privilege to remove a user.')
+    if member_id not in snap.get('members'):
+        raise InvalidRequestBody('Target user not in that group.')
+    if auth_uid == member_id:
+        raise InvalidRequestBody('You cannot remove the organizer.')
+
+    ref_groups.document(group_id).update({
+        u'members': ArrayRemove([member_id])})
+    return {
+        "msg": "removed."
+    }
 
 
 @room.route('/room/<string:group_id>/stats', methods=['GET'])
@@ -175,6 +198,9 @@ def get_stats(auth_uid=None, group_id=""):
     :param group_id: gid
     :return:
     """
+    if not ref_groups.document(group_id).get().exists:
+        raise InvalidRequestBody('Invalid groupId provided.')
+
     snap = ref_groups.document(group_id).get()
 
     role = Group.validate_user_role(auth_uid, group_snap=snap)

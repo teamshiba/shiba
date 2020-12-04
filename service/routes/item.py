@@ -56,7 +56,8 @@ def add_item(auth_uid=None):
 
 
 @router_item.route('/item/search', methods=['GET'])
-def search_item():
+@check_token
+def search_item(auth_uid=None):
     """Yelp API: business search"""
     params: dict = request.args.to_dict()
     location = params.get('location')
