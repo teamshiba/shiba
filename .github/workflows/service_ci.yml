@@ -32,9 +32,11 @@ jobs:
         FBCONFIG_TEST: ${{ secrets.FBCONFIG_TEST }}
       run: echo "$FBCONFIG_TEST" | base64 -d > fbConfigs_test.json
 
-    - run: pip install -r requirements.txt
+    - env:
+        ENVIRON_JSON: ${{ secrets.ENVIRON_JSON }}
+      run: echo "$ENVIRON_JSON" | base64 -d > environ.json
 
-    - run: pylint --disable=import-outside-toplevel --disable=invalid-name --msg-template="$FileDir$/{path}:{line}:{C}:({symbol}){msg}" models routes utils
+    - run: pip install -r requirements.txt
 
     - run: flake8 . --max-line-length=99
 
