@@ -5,6 +5,7 @@ import VotingButton from "./VotingButton";
 
 interface IProps {
   handleAdd: () => void;
+  disabled?: boolean;
 }
 
 const useStyles = makeStyles(() => ({
@@ -20,6 +21,7 @@ const ButtonAdd: FC<IProps> = (props) => {
     <VotingButton
       onClick={props.handleAdd}
       icon={AddOutlinedIcon}
+      disabled={props.disabled}
       className={classes.addButton}
     />
   );
