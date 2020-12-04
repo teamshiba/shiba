@@ -161,6 +161,11 @@ def join_group(auth_uid=None, group_id=""):
     }
 
 
+@room.route('/room/<group_id>/member', methods=['DELETE'])
+def join_group(auth_uid=None, group_id=""):
+    pass
+
+
 @room.route('/room/<string:group_id>/stats', methods=['GET'])
 @check_token
 def get_stats(auth_uid=None, group_id=""):

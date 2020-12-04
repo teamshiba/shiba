@@ -155,7 +155,7 @@ GET /api/item/search
 ```json5
 {
   "total" : 0, // total number of items in that group.
-  "items" : [
+  "businesses" : [
     {
       "itemURL" : "<string>[The URL that links to the resource webpage.]",
       "name" : "<string>[The display name of that item.]",
