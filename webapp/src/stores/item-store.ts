@@ -2,7 +2,11 @@ import { makeAutoObservable } from "mobx";
 import axios from "axios";
 import { serverPrefix } from "../common/config";
 import { getOrCreate } from "../common/utils";
-import { Item, ItemResponse } from "../domain/item";
+import {
+  SearchResponse,
+  SearchResponseItem,
+  VotingItem,
+} from "../domain/voting-item";
 
 // const fakeRecItems: Item[] = [
 //   {
@@ -45,45 +49,18 @@ export class ItemStore {
 }
 
 export class RoomItemStore {
-  itemsRecommended = new Map<string, Item>();
-  itemsSearched = new Map<string, Item>();
+  itemsRecommended = new Map<string, VotingItem>();
+  itemsSearched = new Map<string, VotingItem>();
   term = "";
 
   constructor(public roomId: string) {
     makeAutoObservable(this);
   }
 
-  get items(): Item[] {
+  get items(): VotingItem[] {
     const map =
       this.term.length > 0 ? this.itemsSearched : this.itemsRecommended;
     return Array.from(map.values());
-  }
-
-  async updateRecommendedItems(
-    latitude: number,
-    longitude: number
-  ): Promise<void> {
-    this.itemsRecommended.clear();
-    let endpoint;
-
-    if (latitude === -1 && longitude === -1) {
-      const location = "NYC";
-      endpoint = `${serverPrefix}/item/search?location=${location}`;
-    } else {
-      endpoint = `${serverPrefix}/item/search?latitude=${latitude}&longitude=${longitude}`;
-    }
-
-    const response = await axios.get<ItemResponse>(endpoint);
-    if (response.status === 400) {
-      return;
-    }
-
-    response.data.businesses
-      .sort((a, b) => b.rating - a.rating)
-      .map(
-        (item) =>
-          this.isValidItem(item) && this.itemsRecommended.set(item.id, item)
-      );
   }
 
   async search(
@@ -91,39 +68,39 @@ export class RoomItemStore {
     latitude: number,
     longitude: number
   ): Promise<void> {
-    this.itemsSearched.clear();
     this.term = term;
+    // Depending on whether the term is empty, store the response into recommended or searched items
+    const dest = term == "" ? this.itemsRecommended : this.itemsSearched;
+    dest.clear();
     let endpoint;
 
+    const termParameter = term.length > 0 ? `&term=${this.term}` : "";
     if (latitude === -1 && longitude === -1) {
       const location = "NYC";
-      endpoint = `${serverPrefix}/item/search?location=${location}&term=${this.term}`;
+      endpoint = `${serverPrefix}/item/search?location=${location}${termParameter}`;
     } else {
-      endpoint = `${serverPrefix}/item/search?latitude=${latitude}&longitude=${longitude}&term=${this.term}`;
+      endpoint = `${serverPrefix}/item/search?latitude=${latitude}&longitude=${longitude}${termParameter}`;
     }
 
-    const response = await axios.get<ItemResponse>(endpoint);
+    const response = await axios.get<SearchResponse>(endpoint);
     if (response.status === 400) {
       return;
     }
     response.data.businesses.map(
-      (item) => this.isValidItem(item) && this.itemsSearched.set(item.id, item)
+      (item) =>
+        RoomItemStore.isValidItem(item) &&
+        dest.set(item.id, { itemId: item.id, ...item })
     );
   }
 
-  async addItem(item: Item): Promise<void> {
+  async addItem(item: VotingItem): Promise<void> {
     await axios.post(`${serverPrefix}/item`, {
+      item,
       groupId: this.roomId,
-      item: {
-        itemId: item.id,
-        imgURL: item.imgURL,
-        name: item.name,
-        itemURL: item.itemURL,
-      },
     });
   }
 
-  private isValidItem(item: Item): boolean {
+  private static isValidItem(item: SearchResponseItem): boolean {
     for (const category of item.categories) {
       const alias = category.alias;
       if (alias.includes("park") || alias.includes("museum")) {

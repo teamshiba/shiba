@@ -16,7 +16,7 @@ import { itemStore } from "../../stores/item-store";
 import { createDebouncer } from "../../common/utils";
 import CheckIcon from "@material-ui/icons/Check";
 import VotingButton from "../../components/VotingButton";
-import { Item } from "../../domain/item";
+import { VotingItem } from "../../domain/voting-item";
 
 type IProps = RouteComponentProps<{ id: string }>;
 
@@ -76,7 +76,7 @@ const AddItems: FC<IProps> = observer((props) => {
       });
     }
 
-    itemListStore.updateRecommendedItems(latitude, longitude);
+    itemListStore.search(term, latitude, longitude);
 
     groupProfileStore.update();
   }, []);
@@ -88,7 +88,7 @@ const AddItems: FC<IProps> = observer((props) => {
     searchDebounce(() => itemListStore.search(term, latitude, longitude));
   };
 
-  const handleAdd = async (item: Item) => {
+  const handleAdd = async (item: VotingItem) => {
     await itemListStore.addItem(item);
     await groupProfileStore.update();
   };
@@ -119,7 +119,7 @@ const AddItems: FC<IProps> = observer((props) => {
         <div className={classes.container}>
           {itemListStore.items.map((item) => (
             <div
-              key={item.id}
+              key={item.itemId}
               style={{
                 backgroundImage: "url(" + item.imgURL + ")",
               }}
@@ -127,7 +127,7 @@ const AddItems: FC<IProps> = observer((props) => {
             >
               <div className={classes.title}>{item.name}</div>
               <div className={classes.addButton}>
-                {addedItems.has(item.id) ? (
+                {addedItems.has(item.itemId) ? (
                   <VotingButton
                     onClick={() => null}
                     icon={CheckIcon}

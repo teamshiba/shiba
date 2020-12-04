@@ -64,7 +64,7 @@ test("rename", async () => {
   const userStore = new UserStore();
 
   const mockUser = {
-    uid: "user1",
+    userId: "user1",
     displayName: "Test User",
     email: "test@test.com",
     photoURL: "fake",
