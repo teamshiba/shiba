@@ -8,7 +8,6 @@ import { RouteComponentProps } from "react-router";
 import { observer } from "mobx-react";
 import { groupStore } from "../../stores/group-store";
 import TextField from "@material-ui/core/TextField";
-import { VotingItem } from "../../domain/voting-item";
 import { InputAdornment } from "@material-ui/core";
 import SearchIcon from "@material-ui/icons/Search";
 import makeStyles from "@material-ui/core/styles/makeStyles";
@@ -17,6 +16,7 @@ import { itemStore } from "../../stores/item-store";
 import { createDebouncer } from "../../common/utils";
 import CheckIcon from "@material-ui/icons/Check";
 import VotingButton from "../../components/VotingButton";
+import { Item } from "../../domain/item";
 
 type IProps = RouteComponentProps<{ id: string }>;
 
@@ -88,7 +88,7 @@ const AddItems: FC<IProps> = observer((props) => {
     searchDebounce(() => itemListStore.search(term, latitude, longitude));
   };
 
-  const handleAdd = async (item: VotingItem) => {
+  const handleAdd = async (item: Item) => {
     await itemListStore.addItem(item);
     await groupProfileStore.update();
   };
@@ -119,7 +119,7 @@ const AddItems: FC<IProps> = observer((props) => {
         <div className={classes.container}>
           {itemListStore.items.map((item) => (
             <div
-              key={item.itemId}
+              key={item.id}
               style={{
                 backgroundImage: "url(" + item.imgURL + ")",
               }}
@@ -127,7 +127,7 @@ const AddItems: FC<IProps> = observer((props) => {
             >
               <div className={classes.title}>{item.name}</div>
               <div className={classes.addButton}>
-                {addedItems.has(item.itemId) ? (
+                {addedItems.has(item.id) ? (
                   <VotingButton
                     onClick={() => null}
                     icon={CheckIcon}
