@@ -2,13 +2,14 @@
  * @desc user can read or modify the information of a matching room here.
  */
 
-import React, { FC } from "react";
+import React, { FC, MouseEvent } from "react";
 import Avatar from "@material-ui/core/Avatar";
 import makeStyles from "@material-ui/core/styles/makeStyles";
 import { User } from "../domain/user";
 
 interface IProps {
   members: User[];
+  onClick?: (event: MouseEvent<HTMLDivElement>, user: User) => void;
 }
 
 const useStyles = makeStyles(() => ({
@@ -37,7 +38,10 @@ const AvatarList: FC<IProps> = (props) => {
     <div className={classes.avatarList}>
       {props.members.map((member) => (
         <div className={classes.avatar} key={member.userId}>
-          <Avatar src={member.photoURL} />
+          <Avatar
+            onClick={(event) => props.onClick && props.onClick(event, member)}
+            src={member.photoURL}
+          />
           <span>{member.displayName}</span>
         </div>
       ))}

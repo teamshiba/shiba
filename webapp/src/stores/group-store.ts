@@ -85,6 +85,14 @@ class GroupProfileStore {
 
     this.update();
   }
+
+  async removeUser(uid: string): Promise<void> {
+    console.log("remove user", uid);
+  }
+
+  async makeOrganizer(uid: string): Promise<void> {
+    console.log("make user", uid, "organizer");
+  }
 }
 
 export const groupStore = new GroupStore();
