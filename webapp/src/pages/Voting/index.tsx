@@ -147,6 +147,7 @@ const Voting: FC<IProps> = observer((props) => {
         />
         <ButtonAdd
           handleAdd={() => browserHistory.push(`/room/${roomId}/add`)}
+          disabled={groupProfileStore.data.isCompleted}
         />
       </div>
     </div>
