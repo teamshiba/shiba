@@ -8,34 +8,6 @@ import {
   VotingItem,
 } from "../domain/voting-item";
 
-// const fakeRecItems: Item[] = [
-//   {
-//     id: "rec-north-india-restaurant-san-francisco",
-//     imgURL:
-//       "https://s3-media1.fl.yelpcdn.com/bphoto/howYvOKNPXU9A5KUahEXLA/o.jpg",
-//     name: "Rec North India Restaurant",
-//     itemURL: "https://www.yelp.com/biz/north-india-restaurant-san-francisco",
-//     rating: 4.0,
-//   },
-// ];
-//
-// const fakeItems: Item[] = [
-//   {
-//     itemId: "2north-india-restaurant-san-francisco",
-//     imgURL:
-//       "https://s3-media1.fl.yelpcdn.com/bphoto/howYvOKNPXU9A5KUahEXLA/o.jpg",
-//     name: "2North India Restaurant",
-//     itemURL: "https://www.yelp.com/biz/north-india-restaurant-san-francisco",
-//   },
-//   {
-//     itemId: "2molinari-delicatessen-san-francisco",
-//     imgURL:
-//       "http://s3-media4.fl.yelpcdn.com/bphoto/6He-NlZrAv2mDV-yg6jW3g/o.jpg",
-//     name: "2Molinari Delicatessen",
-//     itemURL: "yelp.com/biz/molinari-delicatessen-san-francisco",
-//   },
-// ];
-
 export class ItemStore {
   private items = new Map<string, RoomItemStore>();
 
@@ -86,6 +58,7 @@ export class RoomItemStore {
     if (response.status === 400) {
       return;
     }
+
     response.data.businesses.map(
       (item) =>
         RoomItemStore.isValidItem(item) &&
