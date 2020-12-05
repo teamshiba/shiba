@@ -87,11 +87,19 @@ class GroupProfileStore {
   }
 
   async removeUser(uid: string): Promise<void> {
-    console.log("remove user", uid);
+    await axios.delete(
+      `${serverPrefix}/room/${this.groupId}/member?uid=${uid}`
+    );
+
+    await this.update();
   }
 
   async makeOrganizer(uid: string): Promise<void> {
-    console.log("make user", uid, "organizer");
+    await axios.put(`${serverPrefix}/room/${this.groupId}`, {
+      organizerUid: uid,
+    });
+
+    await this.update();
   }
 }
 

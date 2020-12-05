@@ -6,9 +6,12 @@ import React, { FC, MouseEvent } from "react";
 import Avatar from "@material-ui/core/Avatar";
 import makeStyles from "@material-ui/core/styles/makeStyles";
 import { User } from "../domain/user";
+import Badge from "@material-ui/core/Badge";
+import StarIcon from "@material-ui/icons/Star";
 
 interface IProps {
   members: User[];
+  highlightUid?: string;
   onClick?: (event: MouseEvent<HTMLDivElement>, user: User) => void;
 }
 
@@ -20,7 +23,6 @@ const useStyles = makeStyles(() => ({
     display: "flex",
     flexDirection: "column",
     alignItems: "center",
-    margin: "0.5em",
     "& *": {
       margin: "0.5em",
     },
@@ -38,10 +40,18 @@ const AvatarList: FC<IProps> = (props) => {
     <div className={classes.avatarList}>
       {props.members.map((member) => (
         <div className={classes.avatar} key={member.userId}>
-          <Avatar
-            onClick={(event) => props.onClick && props.onClick(event, member)}
-            src={member.photoURL}
-          />
+          <Badge
+            badgeContent={
+              member.userId === props.highlightUid ? (
+                <StarIcon color="primary" />
+              ) : undefined
+            }
+          >
+            <Avatar
+              onClick={(event) => props.onClick && props.onClick(event, member)}
+              src={member.photoURL}
+            />
+          </Badge>
           <span>{member.displayName}</span>
         </div>
       ))}
