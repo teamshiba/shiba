@@ -55,7 +55,14 @@ const Statistics: FC<IProps> = observer((props) => {
 
           return (
             <div key={stat.items.itemId}>
-              <div style={{ display: "flex", justifyContent: "space-between" }}>
+              <div
+                style={{
+                  display: "flex",
+                  justifyContent: "space-between",
+                  marginTop: "0.5em",
+                  marginBottom: "0.5em",
+                }}
+              >
                 <div>{stat.items.name}</div>
                 {progress == 100 && (
                   <div style={{ color: "#FFBC6F" }}>Match!</div>
