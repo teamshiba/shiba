@@ -230,3 +230,60 @@ GET /api/room/<group_id:string>/stats
   "isCompleted": true // state of that matching room.
 }
 ```
+
+## (7) Remove an user from a matching group
+
+Used to let a user leave a matching group.
+
+```
+DELETE /api/room/<group_id>/member
+```
+
+**Auth required** : `YES`
+
+**Path parameters** :
+
+| Attribute | Type     | Required | Description   |
+| :--------: | :--------: | :--------: | :-------------- |
+| `groupId` | string | yes  | Matching room ID. |
+
+**Query parameters** :
+
+| Attribute | Type     | Required | Description   |
+| :--------: | :--------: | :--------: | :-------------- |
+| `uid` | string | yes  | Target user ID. |
+
+**Success response** :
+
+- **Code** : `200 OK`
+- **Body** : 
+
+```json
+{
+  "msg": "removed."
+}
+```
+
+**Error responses**
+
+1. Not authorized:
+
+```json
+{
+  "msg": "You have no privilege to remove a user."
+}
+```
+
+2. Bad parameters:
+
+- **Condition** : Either the user ID or the group ID is invalid. 
+
+- **Code** : `400`
+
+- **Content** :
+
+```json
+{
+    "msg": "Invalid group id. / Target user not in that group."
+}
+```
