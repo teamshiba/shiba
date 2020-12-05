@@ -8,7 +8,6 @@ import { RouteComponentProps } from "react-router";
 import { observer } from "mobx-react";
 import { groupStore } from "../../stores/group-store";
 import TextField from "@material-ui/core/TextField";
-import { VotingItem } from "../../domain/voting-item";
 import { InputAdornment } from "@material-ui/core";
 import SearchIcon from "@material-ui/icons/Search";
 import makeStyles from "@material-ui/core/styles/makeStyles";
@@ -17,6 +16,7 @@ import { itemStore } from "../../stores/item-store";
 import { createDebouncer } from "../../common/utils";
 import CheckIcon from "@material-ui/icons/Check";
 import VotingButton from "../../components/VotingButton";
+import { VotingItem } from "../../domain/voting-item";
 
 type IProps = RouteComponentProps<{ id: string }>;
 
@@ -59,6 +59,8 @@ const searchDebounce = createDebouncer(500);
 
 const AddItems: FC<IProps> = observer((props) => {
   const [term, setTerm_] = useState("");
+  const [latitude, setLatitude] = useState(-1);
+  const [longitude, setLongitude] = useState(-1);
 
   const classes = useStyles();
   const roomId = props.match.params["id"];
@@ -69,14 +71,12 @@ const AddItems: FC<IProps> = observer((props) => {
   useEffect(() => {
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition((position) => {
-        itemListStore.updateRecommendedItems(
-          position.coords.latitude,
-          position.coords.longitude
-        );
+        setLatitude(position.coords.latitude);
+        setLongitude(position.coords.longitude);
       });
-    } else {
-      itemListStore.updateRecommendedItems(-1, -1);
     }
+
+    itemListStore.search(term, latitude, longitude);
 
     groupProfileStore.update();
   }, []);
@@ -85,7 +85,7 @@ const AddItems: FC<IProps> = observer((props) => {
 
   const setTerm = (term: string) => {
     setTerm_(term);
-    searchDebounce(() => itemListStore.search(term));
+    searchDebounce(() => itemListStore.search(term, latitude, longitude));
   };
 
   const handleAdd = async (item: VotingItem) => {
