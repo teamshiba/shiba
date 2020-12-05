@@ -21,7 +21,6 @@ class RoomVotingStore {
   items = new Map<string, VotingItem>();
   totalCount = 0;
   unvotedCount = 0;
-  voted = false;
 
   constructor(public roomId: string) {
     makeAutoObservable(this);
@@ -34,8 +33,6 @@ class RoomVotingStore {
   }
 
   async vote(itemId: string, option: "like" | "dislike") {
-    this.voted = true;
-
     const response = (
       await axios.put<VotingItemResponse>(`${serverPrefix}/voting`, {
         itemId,
