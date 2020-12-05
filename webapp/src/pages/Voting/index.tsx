@@ -157,7 +157,7 @@ const useScreenSkeletonStyles = makeStyles(() => ({
   screen: {
     display: "flex",
     flexDirection: "column",
-    height: "85vh",
+    height: "78vh",
     justifyContent: "space-between",
   },
 
