@@ -147,7 +147,11 @@ const GroupAvatarList: FC<GroupAvatarListProps> = (props) => {
 
   return (
     <ConfirmProvider>
-      <AvatarList members={props.members} onClick={handleOpenUserPopOver} />
+      <AvatarList
+        highlightUid={props.organizerUID}
+        members={props.members}
+        onClick={handleOpenUserPopOver}
+      />
       {popOverState && (
         <MemberEditPopOver
           user={popOverState.user}
