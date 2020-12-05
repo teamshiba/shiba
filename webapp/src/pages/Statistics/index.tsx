@@ -3,6 +3,7 @@
  */
 
 import React, { FC, Fragment, useEffect } from "react";
+import OpenInNewIcon from "@material-ui/icons/OpenInNew";
 import Header from "../../components/Header";
 import { RouteComponentProps } from "react-router";
 import { observer } from "mobx-react";
@@ -10,6 +11,7 @@ import LinearProgress from "@material-ui/core/LinearProgress";
 import withStyles from "@material-ui/core/styles/withStyles";
 import { groupStore } from "../../stores/group-store";
 import { statisticsStore } from "../../stores/statistics-store";
+import makeStyles from "@material-ui/core/styles/makeStyles";
 
 const BorderLinearProgress = withStyles((theme) => ({
   root: {
@@ -28,11 +30,34 @@ const BorderLinearProgress = withStyles((theme) => ({
 
 type IProps = RouteComponentProps<{ id: string }>;
 
+const useStyles = makeStyles(() => ({
+  itemContainer: {
+    display: "flex",
+    justifyContent: "space-between",
+    marginTop: "0.5em",
+    marginBottom: "0.5em",
+  },
+  itemTitle: {
+    "&:hover": {
+      textDecoration: "underline",
+      cursor: "pointer",
+    },
+  },
+  itemLinkIcon: {
+    fontSize: "0.8em",
+    marginLeft: "0.5em",
+  },
+  matchMessage: {
+    color: "#FFBC6F",
+  },
+}));
+
 const Statistics: FC<IProps> = observer((props) => {
   const roomId = props.match.params["id"];
   const roomStatisticsStore = statisticsStore.room(roomId);
   const groupDetailStore = groupStore.room(roomId);
   const groupSize = groupDetailStore.data?.members.length;
+  const classes = useStyles();
 
   useEffect(() => {
     roomStatisticsStore.updateStatistics();
@@ -53,12 +78,23 @@ const Statistics: FC<IProps> = observer((props) => {
             progress = (stat.like / groupSize) * 100;
           }
 
+          const item = stat.items;
+
           return (
-            <div key={stat.items.itemId}>
-              <div style={{ display: "flex", justifyContent: "space-between" }}>
-                <div>{stat.items.name}</div>
+            <div key={item.itemId}>
+              <div className={classes.itemContainer}>
+                <div
+                  className={classes.itemTitle}
+                  onClick={() => window.open(item.itemURL, "_blank")}
+                >
+                  {item.name}
+                  <OpenInNewIcon
+                    className={classes.itemLinkIcon}
+                    fontSize="inherit"
+                  />
+                </div>
                 {progress == 100 && (
-                  <div style={{ color: "#FFBC6F" }}>Match!</div>
+                  <div className={classes.matchMessage}>Match!</div>
                 )}
               </div>
               <BorderLinearProgress variant="determinate" value={progress} />
