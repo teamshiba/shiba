@@ -128,11 +128,7 @@ const AddItems: FC<IProps> = observer((props) => {
               <div className={classes.title}>{item.name}</div>
               <div className={classes.addButton}>
                 {addedItems.has(item.itemId) ? (
-                  <VotingButton
-                    onClick={() => null}
-                    icon={CheckIcon}
-                    disabled
-                  />
+                  <VotingButton icon={CheckIcon} disabled />
                 ) : (
                   <ButtonAdd handleAdd={() => handleAdd(item)} />
                 )}
