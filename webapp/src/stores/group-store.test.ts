@@ -1,5 +1,6 @@
 import axios from "axios";
 import { GroupStore } from "./group-store";
+import { Group } from "../domain/group";
 
 jest.mock("axios");
 const mockedAxios = axios as jest.Mocked<typeof axios>;
@@ -21,10 +22,12 @@ test("update active groups", async () => {
   const groupStore = new GroupStore();
   const mockGroup = {
     groupId: "groupId1",
+    organizerUid: "1234",
+    itemList: [],
     roomName: "Test Group 1",
     isCompleted: false,
     members: [],
-  };
+  } as Group;
 
   mockGetRoom([mockGroup], "");
 
@@ -36,10 +39,12 @@ test("update history groups", async () => {
   const groupStore = new GroupStore();
   const mockGroup = {
     groupId: "groupId1",
+    organizerUid: "1234",
+    itemList: [],
     roomName: "Test Group 1",
     isCompleted: true,
     members: [],
-  };
+  } as Group;
 
   mockGetRoom([mockGroup], "");
 
@@ -60,7 +65,9 @@ test("create group", async () => {
 
   await groupStore.createGroup("Test Group");
 
-  expect(groupStore.activeGroups).toStrictEqual([{ roomName: "Test Group" }]);
+  expect(groupStore.activeGroups).toStrictEqual([
+    { roomName: "Test Group" } as Group,
+  ]);
 });
 
 test("get room profile", async () => {
@@ -69,7 +76,7 @@ test("get room profile", async () => {
   const groupProfileStore = groupStore.room(id);
   const mockGroup = {
     groupId: id,
-  };
+  } as Group;
 
   mockGetRoom(mockGroup, `/room/${id}`);
 
@@ -114,7 +121,10 @@ test("join room", async () => {
   mockGetRoom(mockGroup, `/room/${id}`);
 
   await groupProfileStore.join();
-  expect(groupProfileStore.data?.members).toStrictEqual(["user1", "user2"]);
+  expect(groupProfileStore.data?.members).toStrictEqual([
+    "user1",
+    "user2",
+  ] as any);
 });
 
 test("end match", async () => {
@@ -135,4 +145,48 @@ test("end match", async () => {
 
   await groupProfileStore.endMatch();
   expect(groupProfileStore.data?.isCompleted).toBe(true);
+});
+
+test("remove user", async () => {
+  const groupStore = new GroupStore();
+  const id = "1234";
+  const groupProfileStore = groupStore.room(id);
+  const mockGroup = {
+    groupId: id,
+    isCompleted: false,
+  };
+
+  let called = false;
+  mockedAxios.delete.mockImplementationOnce(async (path) => {
+    expect(path).toContain(`/room/${id}`);
+    called = true;
+  });
+
+  mockGetRoom(mockGroup, `/room/${id}`);
+
+  await groupProfileStore.removeUser("1234");
+
+  expect(called).toBeTruthy();
+});
+
+test("make organizer", async () => {
+  const groupStore = new GroupStore();
+  const id = "1234";
+  const groupProfileStore = groupStore.room(id);
+  const mockGroup = {
+    groupId: id,
+    isCompleted: false,
+  };
+
+  let called = false;
+  mockedAxios.put.mockImplementationOnce(async (path) => {
+    expect(path).toContain(`/room/${id}`);
+    called = true;
+  });
+
+  mockGetRoom(mockGroup, `/room/${id}`);
+
+  await groupProfileStore.makeOrganizer("1234");
+
+  expect(called).toBeTruthy();
 });
