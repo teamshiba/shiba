@@ -413,6 +413,7 @@ const Voting: FC<IProps> = observer((props) => {
 
 export const __testExports = {
   ResultScreen,
+  VotingScreen,
 };
 
 export default Voting;

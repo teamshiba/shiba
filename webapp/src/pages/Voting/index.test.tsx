@@ -5,8 +5,9 @@ import { MemoryRouter, Route } from "react-router";
 import { groupStore } from "../../stores/group-store";
 import { statisticsStore } from "../../stores/statistics-store";
 import { VotingItem } from "../../domain/voting-item";
+import userEvent from "@testing-library/user-event";
 
-const { ResultScreen } = __testExports;
+const { ResultScreen, VotingScreen } = __testExports;
 
 jest.mock("../../stores/group-store");
 jest.mock("../../stores/voting-store");
@@ -130,4 +131,103 @@ test("result screen", async () => {
   expect(getFirstItem()).toBe("item2");
   swipe(/Swipe Left/);
   expect(getFirstItem()).toBe("item1");
+  swipe(/Swipe Up/);
+  expect(getFirstItem()).toBe("item1");
+});
+
+test("voting screen", async () => {
+  const handleVote = jest.fn();
+  const handleGotoStats = jest.fn();
+  const handleGotoAdd = jest.fn();
+
+  render(
+    <VotingScreen
+      items={[{ itemId: "item1", name: "item1" } as VotingItem]}
+      totalCount={1}
+      onVote={handleVote}
+      onGotoStats={handleGotoStats}
+      onGotoAdd={handleGotoAdd}
+    />
+  );
+
+  expect(screen.queryByText(/item1/i)).toBeInTheDocument();
+
+  const [
+    infoButton,
+    statButton,
+    dislikeButton,
+    likeButton,
+    addButton,
+  ] = document.querySelectorAll('button[type="button"]');
+
+  window.open = jest.fn();
+  userEvent.click(infoButton);
+  expect(window.open).toBeCalled();
+
+  userEvent.click(statButton);
+  expect(handleGotoStats).toBeCalled();
+
+  userEvent.click(dislikeButton);
+  expect(handleVote).toBeCalledWith("item1", "dislike");
+
+  userEvent.click(likeButton);
+  expect(handleVote).toBeCalledWith("item1", "like");
+
+  userEvent.click(addButton);
+  expect(handleGotoAdd).toBeCalled();
+});
+
+test("voting screen (with no items)", async () => {
+  const handleVote = jest.fn();
+  const handleGotoStats = jest.fn();
+  const handleGotoAdd = jest.fn();
+
+  render(
+    <VotingScreen
+      items={[]}
+      totalCount={1}
+      onVote={handleVote}
+      onGotoStats={handleGotoStats}
+      onGotoAdd={handleGotoAdd}
+    />
+  );
+
+  expect(screen.queryByText(/click add button/i)).toBeInTheDocument();
+  expect(screen.queryByText(/wait for other people/i)).toBeInTheDocument();
+
+  const [
+    statButton,
+    dislikeButton,
+    likeButton,
+    addButton,
+  ] = document.getElementsByTagName("button");
+
+  statButton.click();
+  expect(handleGotoStats).toBeCalled();
+
+  dislikeButton.click();
+  expect(handleVote).not.toBeCalled();
+
+  likeButton.click();
+  expect(handleVote).not.toBeCalled();
+
+  addButton.click();
+  expect(handleGotoAdd).toBeCalled();
+});
+
+test("voting screen (fresh group)", async () => {
+  const handle = () => null;
+
+  render(
+    <VotingScreen
+      items={[]}
+      totalCount={0}
+      onVote={handle}
+      onGotoStats={handle}
+      onGotoAdd={handle}
+    />
+  );
+
+  expect(screen.queryByText(/click add button/i)).toBeInTheDocument();
+  expect(screen.queryByText(/wait for other people/i)).not.toBeInTheDocument();
 });
