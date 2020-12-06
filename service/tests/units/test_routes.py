@@ -1,12 +1,32 @@
 """Test API calls handler independently."""
 from unittest import TestCase
-from unittest.mock import patch, Mock, DEFAULT
+from unittest.mock import patch, Mock, MagicMock, DEFAULT
 
 from pytest import raises
 
 from routes.item import get_group_item_list, add_item
-from tests.units.mocks import get_mock_request, get_mock_group
+from tests.units import mocks
+from tests.units.mocks import get_mock_request, get_mock_group, get_mock_doc_ref
 from utils.exceptions import UnauthorizedRequest, HTTPException
+
+
+class TestRoom(TestCase):
+    # @patch('utils.config_g', mocks.get_mock_config_g())
+    def test_create_group_pass(self):
+        mock_request = get_mock_request(json={
+            'roomName': 't'
+        })
+        mock_doc_ref = get_mock_doc_ref({})
+        mock_ref_group = MagicMock(add=Mock(return_value=('Sun Dec  6 23:29:52 2020',
+                                                          mock_doc_ref)))
+        with patch('utils.config_g', mocks.get_mock_config_g()):
+            with patch.multiple('routes.room',
+                                ref_group=mock_ref_group,
+                                request=mock_request):
+                from routes.room import create_group
+                create_group.__wrapped('uid')
+
+        mock_doc_ref.get.assert_called_once()
 
 
 class TestItem(TestCase):
