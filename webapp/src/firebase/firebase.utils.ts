@@ -21,12 +21,11 @@ export const generateUserDocument = async (
       ...additionalData,
     });
   }
+
   return getUserDocument(user.uid);
 };
 
 const getUserDocument = async (uid: string): Promise<User | null> => {
-  if (!uid) return null;
-
   const userDocument = await firestore.doc(`Users/${uid}`).get();
 
   return {

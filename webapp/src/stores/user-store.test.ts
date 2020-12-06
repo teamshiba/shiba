@@ -55,6 +55,65 @@ test("initialize new user", async () => {
   expect(setUserCalled).toBeTruthy();
 });
 
+test("getting existing user", async () => {
+  const mockUser = {
+    uid: "user1",
+    displayName: "Test User",
+    email: "test@test.com",
+    photoURL: "fake",
+  };
+
+  let userStore: UserStore | null = null;
+
+  const initPromise = new Promise((resolve) => {
+    mockedFireStore.doc.mockImplementation(() => {
+      const snapshot = {
+        exists: true,
+        data: () => mockUser,
+      };
+
+      const userRef = {
+        get: async () => snapshot,
+      };
+
+      return userRef as any;
+    });
+
+    mockedAuth.onAuthStateChanged.mockImplementation((async (callback: any) => {
+      const res = await callback({
+        ...mockUser,
+        getIdToken: async () => "token",
+      } as firebase.User);
+      resolve(true);
+      return res;
+    }) as any);
+
+    userStore = new UserStore();
+  });
+
+  await initPromise;
+
+  expect((userStore as any)?.user?.uid).toBe("user1");
+});
+
+test("not logged in", async () => {
+  let userStore: UserStore | null = null;
+
+  const initPromise = new Promise((resolve) => {
+    mockedAuth.onAuthStateChanged.mockImplementation((async (callback: any) => {
+      const res = await callback(null);
+      resolve(true);
+      return res;
+    }) as any);
+
+    userStore = new UserStore();
+  });
+
+  await initPromise;
+
+  expect((userStore as any)?.user?.uid).toBeFalsy();
+});
+
 test("rename", async () => {
   mockedAuth.onAuthStateChanged.mockImplementation((() => null) as any);
   const userStore = new UserStore();
