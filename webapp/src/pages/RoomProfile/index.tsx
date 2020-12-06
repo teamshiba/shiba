@@ -3,6 +3,7 @@
  */
 
 import React, { FC, Fragment, MouseEvent, useEffect, useState } from "react";
+import copy from "copy-to-clipboard";
 import { RouteComponentProps } from "react-router";
 import Header from "../../components/Header";
 import { observer } from "mobx-react";
@@ -14,7 +15,6 @@ import InputAdornment from "@material-ui/core/InputAdornment";
 import Input from "@material-ui/core/Input";
 import FileCopyIcon from "@material-ui/icons/FileCopy";
 import EditInput from "../../components/EditInput";
-import { copyToClipboard } from "../../common/utils";
 import AvatarList from "../../components/AvatarList";
 import { groupStore } from "../../stores/group-store";
 import { userStore } from "../../stores/user-store";
@@ -208,7 +208,7 @@ const RoomProfile: FC<IProps> = observer((props) => {
           value={invitationLink}
           endAdornment={
             <InputAdornment position="end">
-              <IconButton onClick={() => copyToClipboard(invitationLink)}>
+              <IconButton onClick={() => copy(invitationLink)}>
                 <FileCopyIcon />
               </IconButton>
             </InputAdornment>
