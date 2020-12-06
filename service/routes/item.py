@@ -85,4 +85,4 @@ def search_item(auth_uid=None):
             'msg': 'In response key not found: ' + str(e)
         }, 500
     except ValueError as e:
-        raise InvalidQueryParams(str(e))
+        raise InvalidQueryParams(str(e)) from e

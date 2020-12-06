@@ -40,4 +40,6 @@ jobs:
 
     - run: flake8 . --max-line-length=99
 
+    - run: pylint --disable=C0415,C0103 utils models routes
+
     - run: pytest

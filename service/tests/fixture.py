@@ -6,7 +6,7 @@ from typing import Union
 import pytest
 
 from tests.db_mocks import load_to_db, clear_db
-from utils import create_app
+from utils.pipeline import create_app
 
 
 class ConnHelper:

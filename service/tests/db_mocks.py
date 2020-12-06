@@ -3,8 +3,7 @@ Load mock data to db
 """
 import google
 
-from utils.db import delete_collection
-from utils.read_write import json_read
+from utils.tools import json_read, delete_collection
 
 mock_groups = json_read("mocks/groups.json")["data"]
 mock_items = json_read("mocks/items.json")["data"]
