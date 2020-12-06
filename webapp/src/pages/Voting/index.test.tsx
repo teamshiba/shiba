@@ -92,9 +92,9 @@ test("renders completed (with multiple matches)", async () => {
   groupProfileStore.data.isCompleted = true;
   statStore.statistics.push({
     items: {
-      itemId: "mock1",
-      name: "Mock Item 1",
-      itemURL: "https://example.com/test-item",
+      itemId: "mock2",
+      name: "Mock Item 2",
+      itemURL: "https://example.com/test-item2",
     } as VotingItem,
     like: 1,
     dislike: 2,
