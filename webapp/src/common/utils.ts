@@ -46,4 +46,7 @@ export function createDebouncer(time: number): (func: () => void) => void {
   };
 }
 
+export const sleep = (time: number): Promise<void> =>
+  new Promise((resolve) => setTimeout(resolve, time));
+
 export { browserHistory };

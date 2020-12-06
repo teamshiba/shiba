@@ -231,3 +231,8 @@ const RoomProfile: FC<IProps> = observer((props) => {
 });
 
 export default RoomProfile;
+
+export const __testExports = {
+  MemberEditPopOver,
+  GroupAvatarList,
+};

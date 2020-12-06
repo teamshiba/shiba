@@ -4,12 +4,12 @@ import userEvent from "@testing-library/user-event";
 import AddItems from "./index";
 import { MemoryRouter, Route } from "react-router";
 import { itemStore } from "../../stores/item-store";
+import { sleep } from "../../common/utils";
 
 jest.mock("../../stores/item-store");
 jest.mock("../../stores/group-store");
 
 // Mock geolocation
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 (window.navigator.geolocation as any) = {
   getCurrentPosition: (callback: (pos: GeolocationPosition) => void) =>
     callback({
@@ -42,7 +42,7 @@ test("renders search result", async () => {
 
   const searchBar = elements[0];
   userEvent.type(searchBar, "some restaurant");
-  await new Promise((r) => setTimeout(() => r(null), 1500));
+  await sleep(1500);
 
   expect(
     screen.queryByText(/Searched Item: some restaurant/)

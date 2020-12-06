@@ -35,11 +35,9 @@ test("initialize new user", async () => {
         },
       };
 
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       return userRef as any;
     });
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     mockedAuth.onAuthStateChanged.mockImplementation((async (callback: any) => {
       const res = await callback({
         ...mockUser,
@@ -47,7 +45,6 @@ test("initialize new user", async () => {
       } as firebase.User);
       resolve(true);
       return res;
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     }) as any);
 
     new UserStore();
@@ -59,7 +56,6 @@ test("initialize new user", async () => {
 });
 
 test("rename", async () => {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   mockedAuth.onAuthStateChanged.mockImplementation((() => null) as any);
   const userStore = new UserStore();
 
@@ -84,7 +80,6 @@ test("rename", async () => {
       },
     };
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     return userRef as any;
   });
 
