@@ -5,7 +5,6 @@ import "./index.css";
 import Layout from "./components/Layout";
 import App from "./App";
 import Authentication from "./pages/Authentication/index";
-import reportWebVitals from "./reportWebVitals";
 import { browserHistory } from "./common/utils";
 import { ActiveRoomList, HistoryRoomList } from "./pages/RoomList";
 import Voting from "./pages/Voting";
@@ -96,8 +95,3 @@ ReactDOM.render(
   </React.StrictMode>,
   document.getElementById("root")
 );
-
-// If you want to start measuring performance in your app, pass a function
-// to log results (for example: reportWebVitals(console.log))
-// or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
-reportWebVitals();

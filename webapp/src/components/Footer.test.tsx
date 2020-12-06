@@ -5,7 +5,12 @@ import { History } from "history";
 
 jest.mock("@material-ui/core/BottomNavigation", () => ({
   __esModule: true,
-  default: (props: { value: string }) => <div>Value: {props.value}</div>,
+  default: (props: any) => (
+    <div>
+      Value: {props.value}
+      <button onClick={() => props.onChange(0)}>Test Change</button>
+    </div>
+  ),
 }));
 
 function fakeHistory(path: string): History {
@@ -36,4 +41,14 @@ test("highlights profile", async () => {
 
   const elem = screen.queryByText(/value: 2/i);
   expect(elem).toBeInTheDocument();
+});
+
+test("changes router", async () => {
+  const history = fakeHistory("/user/profile");
+  history.push = jest.fn();
+
+  render(<Footer history={history} />);
+
+  screen.getByText(/Test Change/i).click();
+  expect(history.push).toBeCalled();
 });

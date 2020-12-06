@@ -3,7 +3,7 @@ import React, { ComponentType, FC } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 
 interface IProps {
-  onClick: () => void;
+  onClick?: () => void;
   icon: ComponentType<{ className: string }>;
   className?: string | null;
   disabled?: boolean;

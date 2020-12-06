@@ -1,4 +1,4 @@
-import { createDebouncer, getOrCreate } from "./utils";
+import { createDebouncer, getOrCreate, sleep } from "./utils";
 
 test("get or create", () => {
   const map = new Map<string, string>();
@@ -15,9 +15,6 @@ test("debounce", async () => {
   let triggered = false;
   const debounce = createDebouncer(100);
   const trigger = () => (triggered = true);
-
-  const sleep = (time: number) =>
-    new Promise((resolve) => setTimeout(resolve, time));
 
   for (let i = 0; i < 10; ++i) {
     debounce(trigger);
