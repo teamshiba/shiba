@@ -1,5 +1,6 @@
 import unittest
 from unittest.mock import MagicMock, patch
+
 from pytest import raises
 
 from utils.exceptions import handle_http_exception, LoginRequired, InvalidRequestBody
@@ -23,8 +24,9 @@ class TestExceptions(unittest.TestCase):
 
 
 class TestExternal(unittest.TestCase):
+
     @patch('requests.request')
-    def test_yelp_search_biz(self, request_mock: MagicMock):
+    def test_yelp_search_biz_pass(self, request_mock: MagicMock):
         expected = {
             "businesses": [],
             "total": 0,
@@ -41,3 +43,12 @@ class TestExternal(unittest.TestCase):
         res = yelp_search_biz(location='New York City')
         resp_mock.json.assert_any_call()
         self.assertDictEqual(res, expected)
+
+    @patch('requests.request')
+    def test_yelp_search_biz_fail(self, request_mock: MagicMock):
+        resp_mock = MagicMock()
+        resp_mock.json = MagicMock(return_value={})
+        request_mock.return_value = resp_mock
+        with raises(ValueError):
+            yelp_search_biz(term='New York City')
+        resp_mock.json.assert_not_called()
