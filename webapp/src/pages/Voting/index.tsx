@@ -411,4 +411,8 @@ const Voting: FC<IProps> = observer((props) => {
   );
 });
 
+export const __testExports = {
+  ResultScreen,
+};
+
 export default Voting;

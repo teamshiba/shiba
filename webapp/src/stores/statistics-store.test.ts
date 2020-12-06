@@ -30,5 +30,5 @@ test("updates items", async () => {
   });
 
   await roomStatStore.updateStatistics();
-  expect(roomStatStore.statistics).toStrictEqual([mockResult]);
+  expect(roomStatStore.statistics).toStrictEqual([mockResult] as any);
 });
