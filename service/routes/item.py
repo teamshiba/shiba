@@ -59,6 +59,8 @@ def add_item(auth_uid=None):
 @check_token
 def search_item(auth_uid=None):
     """Yelp API: business search"""
+    if not auth_uid:
+        raise UnauthorizedRequest()
     params: dict = request.args.to_dict()
     location = params.get('location')
     latitude = params.get('latitude')
