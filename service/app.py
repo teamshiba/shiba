@@ -1,5 +1,6 @@
 from flask_cors import CORS
-from utils import create_app
+
+from utils.pipeline import create_app
 
 # This line must be outside of `if __name__ == "__main__"` so that
 # gunicorn can use it

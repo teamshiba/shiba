@@ -1,6 +1,6 @@
 """Room APIs"""
-from google.cloud.firestore import ArrayUnion, ArrayRemove
 from flask import Blueprint, request
+from google.cloud.firestore import ArrayUnion, ArrayRemove
 
 from models.group import Group
 from models.item import filter_items
@@ -64,8 +64,7 @@ def create_group(auth_uid=None):
 
 @room.route('/room/<string:group_id>', methods=['GET'])
 @check_token
-# pylint: disable=unused-argument
-def get_group_profile(auth_uid=None, group_id=None):
+def get_group_profile(group_id=None):
     """Get the profile of a matching group."""
     group_id = group_id or request.args.get('gid') or ''
     group_doc = ref_groups.document(group_id)

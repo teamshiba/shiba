@@ -1,7 +1,7 @@
 from flask.testing import FlaskClient
 
 from tests.fixture import ConnHelper, client, connection  # noqa
-from utils import format_headers
+from utils.tools import format_headers
 
 
 class TestRoomRoutes:

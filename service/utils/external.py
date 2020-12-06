@@ -2,8 +2,9 @@
 """Used for external data source."""
 
 from typing import Dict
-import requests
 from urllib.parse import quote
+
+import requests
 
 from utils import config_g
 
@@ -38,7 +39,7 @@ def request_external(host, path, api_key, url_params=None) -> Dict:
 def yelp_search_biz(term: str = None, location: str = None,
                     latitude: float = None,
                     longitude: float = None,
-                    url_params: Dict = {}) -> Dict:
+                    url_params: Dict = None) -> Dict:
     """Query the Search API by a search term and location.
     Args:
         term (str): The search term passed to the API.
@@ -51,15 +52,16 @@ def yelp_search_biz(term: str = None, location: str = None,
         :param term: The search term passed to the API.
         :param url_params: Extra parameters.
     """
+    params = url_params.copy() if url_params else {}
     if not (location or (latitude and longitude)):
         raise ValueError("Either location or coordinates is required.")
     if term:
-        url_params['term'] = term.replace(' ', '+')
+        params['term'] = term.replace(' ', '+')
     if latitude and longitude:
-        url_params['latitude'] = latitude
-        url_params['longitude'] = longitude
+        params['latitude'] = latitude
+        params['longitude'] = longitude
     if location:
-        url_params['location'] = location.replace(' ', '+')
+        params['location'] = location.replace(' ', '+')
     return request_external(YELP_API_HOST,
                             YELP_SEARCH_PATH, YELP_API_KEY,
-                            url_params=url_params)
+                            url_params=params)

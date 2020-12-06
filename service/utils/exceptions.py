@@ -1,5 +1,4 @@
 """Exceptions"""
-from typing import Union
 from werkzeug.exceptions import HTTPException
 
 
@@ -21,8 +20,7 @@ class InvalidRequestBody(HTTPException):
         self.description = desc
 
     @staticmethod
-    # pylint: disable=unsubscriptable-object
-    def raise_key_error(e: Union[KeyError, str] = None):
+    def raise_key_error(e=None):
         """
         Helper function for raising key error.
         :param e:
