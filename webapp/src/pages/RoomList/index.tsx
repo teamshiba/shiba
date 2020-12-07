@@ -2,27 +2,26 @@
  * @desc Homepage. List of matching rooms.
  */
 
-import React, { FC, Fragment, useEffect, useState } from "react";
-import Header from "../../components/Header";
-import ShibaLogo from "../../components/ShibaLogo";
-import IconButton from "@material-ui/core/IconButton";
-import AddIcon from "@material-ui/icons/Add";
-import { observer } from "mobx-react";
-import List from "@material-ui/core/List";
-import ListItem from "@material-ui/core/ListItem";
-import ListItemText from "@material-ui/core/ListItemText";
-import { ListItemIcon } from "@material-ui/core";
+import React, { FC, useEffect, useState } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import TextField from "@material-ui/core/TextField";
 import Dialog from "@material-ui/core/Dialog";
 import DialogActions from "@material-ui/core/DialogActions";
 import DialogContent from "@material-ui/core/DialogContent";
+import AddIcon from "@material-ui/icons/Add";
 import DialogTitle from "@material-ui/core/DialogTitle";
 import Button from "@material-ui/core/Button";
 import { Group } from "../../domain/group";
+import { groupStore } from "../../stores/group-store";
+import List from "@material-ui/core/List";
+import Message from "../../components/Message";
+import { ListItem, ListItemIcon, ListItemText } from "@material-ui/core";
 import { browserHistory } from "../../common/utils";
 import Avatar from "@material-ui/core/Avatar";
-import { groupStore } from "../../stores/group-store";
+import ShibaLogo from "../../components/ShibaLogo";
+import Header from "../../components/Header";
+import { observer } from "mobx-react";
+import IconButton from "@material-ui/core/IconButton";
 
 const useStyles = makeStyles(() => ({
   listItem: {
@@ -63,11 +62,9 @@ const CreateGroupModal: FC<IModalProps> = (props) => {
             id="groupName"
             label="Group Name"
             type="text"
-            placeholder={groupName}
+            value={groupName}
             fullWidth
-            onChange={(e) => {
-              setGroupName(e.target.value);
-            }}
+            onChange={(e) => setGroupName(e.target.value)}
             required
           />
         </DialogContent>
@@ -75,7 +72,12 @@ const CreateGroupModal: FC<IModalProps> = (props) => {
           <Button onClick={props.handleClose} color="primary">
             Cancel
           </Button>
-          <Button onClick={props.handleClose} color="primary" type="submit">
+          <Button
+            onClick={props.handleClose}
+            color="primary"
+            type="submit"
+            disabled={groupName.length == 0}
+          >
             Create!
           </Button>
         </DialogActions>
@@ -86,6 +88,7 @@ const CreateGroupModal: FC<IModalProps> = (props) => {
 
 interface IRoomListProps {
   groups: Group[];
+  emptyMessage: string;
 }
 
 const roomAvatarName = (name: string): string => {
@@ -99,6 +102,9 @@ const roomAvatarName = (name: string): string => {
 
 const RoomList: FC<IRoomListProps> = (props) => {
   const classes = useStyles();
+  if (props.groups.length == 0) {
+    return <Message>{props.emptyMessage}</Message>;
+  }
 
   return (
     <List>
@@ -127,20 +133,22 @@ export const ActiveRoomList: FC = observer(() => {
   }, []);
 
   return (
-    <Fragment>
+    <>
       <Header
         buttons={
           <IconButton onClick={() => setOpen(true)}>
-            {" "}
-            <AddIcon />{" "}
+            <AddIcon />
           </IconButton>
         }
       >
         <ShibaLogo />
       </Header>
-      <RoomList groups={groupStore.activeGroups} />
+      <RoomList
+        groups={groupStore.activeGroups}
+        emptyMessage="No rooms joined yet, click add button to create one or join some existing rooms"
+      />
       <CreateGroupModal isOpen={isOpen} handleClose={() => setOpen(false)} />
-    </Fragment>
+    </>
   );
 });
 
@@ -150,12 +158,16 @@ export const HistoryRoomList: FC = observer(() => {
   }, []);
 
   return (
-    <Fragment>
+    <>
       <Header>
-        {" "}
-        <ShibaLogo />{" "}
+        <ShibaLogo />
       </Header>
-      <RoomList groups={groupStore.historyGroups} />
-    </Fragment>
+      <RoomList
+        groups={groupStore.historyGroups}
+        emptyMessage="No history rooms yet, after a room is completed, it will be shown here"
+      />
+    </>
   );
 });
+
+export const __testExports = { CreateGroupModal };

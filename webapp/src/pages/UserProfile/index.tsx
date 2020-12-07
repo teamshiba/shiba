@@ -37,7 +37,7 @@ const UserProfile: FC = observer(() => {
     userStore.rename(newName);
   };
 
-  const handleSignout = () => {
+  const handleSignOut = () => {
     firebase.auth().signOut();
     localStorage.removeItem("auth_token");
     browserHistory.push("/auth/");
@@ -56,7 +56,7 @@ const UserProfile: FC = observer(() => {
         />
       </Card>
       <Card>
-        <Button className={classes.signOutButton} onClick={handleSignout}>
+        <Button className={classes.signOutButton} onClick={handleSignOut}>
           Sign Out
         </Button>
       </Card>
