@@ -15,9 +15,3 @@ services:
 
   backend:
     build: service
-    environment:
-      - REDIS_HOST=redis
-
-  redis:
-    image: redis:6.0.9
-
