@@ -6,6 +6,8 @@ import { groupStore } from "../../stores/group-store";
 import { statisticsStore } from "../../stores/statistics-store";
 import { VotingItem } from "../../domain/voting-item";
 import userEvent from "@testing-library/user-event";
+import { browserHistory } from "../../common/utils";
+import { votingStore } from "../../stores/voting-store";
 
 const { ResultScreen, VotingScreen } = __testExports;
 
@@ -230,4 +232,57 @@ test("voting screen (fresh group)", async () => {
 
   expect(screen.queryByText(/click add button/i)).toBeInTheDocument();
   expect(screen.queryByText(/wait for other people/i)).not.toBeInTheDocument();
+});
+
+test("click room profile button", async () => {
+  render(
+    <MemoryRouter initialEntries={["/1234"]}>
+      <Route path="/:id" component={Voting} />
+    </MemoryRouter>
+  );
+
+  const iconButton = document.getElementsByTagName("button")[1];
+
+  const spy = jest.spyOn(browserHistory, "push");
+
+  iconButton.click();
+  expect(spy).toBeCalled();
+});
+
+test("result screen vote by click", async () => {
+  const handleGotoStats = jest.fn();
+
+  render(
+    <ResultScreen
+      items={
+        [
+          { itemId: "item1", name: "item1" },
+          { itemId: "item2", name: "item2" },
+        ] as any
+      }
+      onGotoStats={handleGotoStats}
+    />
+  );
+
+  const dislikeButton = document.getElementsByTagName("button")[9];
+  const likeButton = document.getElementsByTagName("button")[10];
+  const getFirstItem = () => screen.queryAllByText(/item/)[0].textContent;
+
+  expect(getFirstItem()).toBe("item1");
+  dislikeButton.click();
+  expect(getFirstItem()).toBe("item2");
+  likeButton.click();
+});
+
+test("No more items to swipe", async () => {
+  render(
+    <MemoryRouter initialEntries={["/1234"]}>
+      <Route path="/:id" component={Voting} />
+    </MemoryRouter>
+  );
+
+  const roomVotingStore = votingStore.room("1234");
+
+  await roomVotingStore.vote("item1", "like");
+  expect(roomVotingStore.items.size).toBe(0);
 });
