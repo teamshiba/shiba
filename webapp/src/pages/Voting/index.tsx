@@ -21,6 +21,7 @@ import { VotingItem } from "../../domain/voting-item";
 import ButtonAdd from "../../components/ButtonAdd";
 import VotingButton from "../../components/VotingButton";
 import { statisticsStore } from "../../stores/statistics-store";
+import Message from "../../components/Message";
 
 interface VotingCardProps {
   items: VotingItem[];
@@ -107,21 +108,6 @@ const VotingCard: FC<VotingCardProps> = (props) => {
       ))}
     </div>
   );
-};
-
-const useMessageStyles = makeStyles(() => ({
-  message: {
-    margin: "3em",
-    textAlign: "center",
-    fontSize: "1.5em",
-    fontFamily: "sans-serif",
-    color: "#cccccc",
-  },
-}));
-
-const Message: FC = (props) => {
-  const classes = useMessageStyles();
-  return <div className={classes.message}>{props.children}</div>;
 };
 
 const useButtonStyles = makeStyles((theme) => ({
