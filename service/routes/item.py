@@ -22,6 +22,8 @@ def get_group_item_list(auth_uid=None):
     """
     params: dict = request.args.to_dict()
     gid = params.get("gid") or params.get("group_id")
+    if gid is None:
+        raise InvalidQueryParams('gid is required.')
     role = Group.validate_user_role(auth_uid, gid)
     if role < 1:
         raise UnauthorizedRequest.error_no_membership()

@@ -7,7 +7,8 @@ from pytest import raises
 from routes.item import get_group_item_list, add_item
 from tests.units import mocks
 from tests.units.mocks import get_mock_request, get_mock_group, get_mock_doc_ref
-from utils.exceptions import UnauthorizedRequest, HTTPException
+from utils.exceptions import HTTPException
+from utils import exceptions
 
 
 class TestRoom(TestCase):
@@ -63,7 +64,9 @@ class TestItem(TestCase):
                             Group=mock_group,
                             filter_items=mock_filter_items,
                             request=mock_request):
-            get_group_item_list.__wrapped__()
+            resp = get_group_item_list.__wrapped__()
+            assert 'data' in resp
+            assert type(resp['data']) == list
         mock_filter_items.assert_called_once()
         mock_group.validate_user_role.assert_called_once()
 
@@ -79,10 +82,25 @@ class TestItem(TestCase):
                             Group=mock_group,
                             filter_items=mock_filter_items,
                             request=mock_request):
-            with raises(UnauthorizedRequest):
+            with raises(exceptions.UnauthorizedRequest):
                 get_group_item_list.__wrapped__()
         mock_filter_items.assert_not_called()
         mock_group.validate_user_role.assert_called_once()
+
+        mock_group = get_mock_group(role=1)
+        mock_request = get_mock_request(args={})
+        mock_filter_items = Mock(return_value={
+            'data': []
+        })
+        with patch.multiple('routes.item',
+                            Group=mock_group,
+                            filter_items=mock_filter_items,
+                            request=mock_request):
+            with raises(exceptions.InvalidQueryParams):
+                get_group_item_list.__wrapped__()
+        mock_group.assert_not_called()
+        mock_filter_items.assert_not_called()
+        mock_group.validate_user_role.assert_not_called()
 
     def test_add_item_pass(self):
         mock_request = get_mock_request(json={
@@ -94,7 +112,7 @@ class TestItem(TestCase):
                 'itemURL': 'url'
             }
         })
-        mock_group_cls = get_mock_group(1)
+        mock_group_cls = get_mock_group(role=1)
         mock_group_cls.append_item_list = Mock(return_value=1)
         with patch.multiple('routes.item',
                             Group=mock_group_cls,
@@ -108,7 +126,7 @@ class TestItem(TestCase):
         mock_request = get_mock_request(json={
             'groupId': 'test_gid',
         })
-        mock_group_cls = get_mock_group(1)
+        mock_group_cls = get_mock_group(role=1)
         mock_group_cls.append_item_list = Mock(return_value=1)
         with patch.multiple('routes.item',
                             Group=mock_group_cls,

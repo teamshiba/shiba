@@ -52,3 +52,10 @@ class TestExternal(unittest.TestCase):
         with raises(ValueError):
             yelp_search_biz(term='New York City')
         resp_mock.json.assert_not_called()
+
+        resp_mock = MagicMock()
+        resp_mock.json = MagicMock(return_value={})
+        request_mock.return_value = resp_mock
+        with raises(ValueError, match='Invalid'):
+            yelp_search_biz(latitude=180, longitude=-90)
+        resp_mock.json.assert_not_called()
