@@ -14,20 +14,39 @@ class TestRoom(TestCase):
 
     def test_create_group_pass(self):
         mock_request = get_mock_request(json={
-            'roomName': 't'
+            'roomName': 'test_room_name'
         })
-        mock_doc_ref = get_mock_doc_ref({})
-        mock_ref_group = MagicMock(add=Mock(return_value=('Sun Dec  6 23:29:52 2020',
-                                                          mock_doc_ref)))
+        mock_doc_ref = get_mock_doc_ref(data={
+            "msg": "success",
+            "creationTime": 'Sun Dec  6 23:29:52 2020',
+            "data": {}
+        })
+        mock_ref_groups = MagicMock(add=Mock(return_value=('Sun Dec  6 23:29:52 2020',
+                                                           mock_doc_ref)))
 
         with patch('utils.config_g', mocks.get_mock_config_g()):
             from routes.room import create_group
             with patch.multiple('routes.room',
-                                ref_groups=mock_ref_group,
+                                ref_groups=mock_ref_groups,
                                 request=mock_request):
-                create_group.__wrapped__('uid')
-
+                resp = create_group.__wrapped__('test_uid')
+                self.assertIn('data', resp)
+        mock_ref_groups.add.assert_called_once()
         mock_doc_ref.get.assert_called_once()
+
+    def test_create_group_fail(self):
+        mock_request = get_mock_request(json={})
+        mock_ref_groups = MagicMock(add=MagicMock())
+
+        with patch('utils.config_g', mocks.get_mock_config_g()):
+            from routes.room import create_group
+            with patch.multiple('routes.room',
+                                ref_groups=mock_ref_groups,
+                                request=mock_request):
+                with raises(HTTPException, match="Field 'roomName' is required."):
+                    create_group.__wrapped__('test_uid')
+        mock_request.get_json.assert_called_once()
+        mock_ref_groups.add.assert_not_called()
 
 
 class TestItem(TestCase):
@@ -43,7 +62,7 @@ class TestItem(TestCase):
         with patch.multiple('routes.item',
                             Group=mock_group,
                             filter_items=mock_filter_items,
-                            request=mock_request) as values:
+                            request=mock_request):
             get_group_item_list.__wrapped__()
         mock_filter_items.assert_called_once()
         mock_group.validate_user_role.assert_called_once()
@@ -59,7 +78,7 @@ class TestItem(TestCase):
         with patch.multiple('routes.item',
                             Group=mock_group,
                             filter_items=mock_filter_items,
-                            request=mock_request) as values:
+                            request=mock_request):
             with raises(UnauthorizedRequest):
                 get_group_item_list.__wrapped__()
         mock_filter_items.assert_not_called()
