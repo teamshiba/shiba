@@ -66,6 +66,7 @@ def create_group(auth_uid=None):
 @check_token
 def get_group_profile(auth_uid=None, group_id=None):
     """Get the profile of a matching group."""
+    _ = auth_uid
     group_id = group_id or request.args.get('gid') or ''
     group_doc = ref_groups.document(group_id)
     snap = group_doc.get()

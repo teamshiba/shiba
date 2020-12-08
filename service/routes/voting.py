@@ -19,6 +19,7 @@ voting = Blueprint('voting', __name__)
 def put_a_vote(auth_uid: str = None):
     """
     :param auth_uid: valid user_id
+            gid, item_id, v_type
     :return:
     {
         "roomTotal": room_total,
