@@ -43,11 +43,16 @@ class Voting:
         """
         :param source: parameter dictionary
         """
-        self.creation_time = source["creationTime"]
-        self.group_id = source["groupId"]
-        self.item_id = source["itemId"]
-        self.user_id = source["userId"]
-        self.vote_type = source["type"]
+        if "creationTime" in source:
+            self.creation_time = source["creationTime"]
+        if "groupId" in source:
+            self.group_id = source["groupId"]
+        if "itemId" in source:
+            self.item_id = source["itemId"]
+        if "userId" in source:
+            self.user_id = source["userId"]
+        if "type" in source:
+            self.vote_type = source["type"]
 
     def to_dict(self):
         """

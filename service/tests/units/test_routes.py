@@ -49,6 +49,18 @@ class TestRoom(TestCase):
         mock_request.get_json.assert_called_once()
         mock_ref_groups.add.assert_not_called()
 
+    # def test_join_group(self):
+    #     mock_request = get_mock_request(json={})
+    #     mock_doc_ref = get_mock_doc_ref(data={
+    #         "msg": "success",
+    #         "creationTime": 'Sun Dec  6 23:29:52 2020',
+    #         "data": {}
+    #     })
+    #     mock_ref_groups = MagicMock(add=Mock(return_value=('Sun Dec  6 23:29:52 2020',
+    #                                                        mock_doc_ref)))
+    #     mock_ref_users = MagicMock(add=Mock(return_value=('Sun Dec  6 23:29:52 2020',
+    #                                                        mock_doc_ref)))
+
 
 class TestItem(TestCase):
 
@@ -136,3 +148,37 @@ class TestItem(TestCase):
                 add_item.__wrapped__()
 
             values['db_add_item'].assert_not_called()
+
+
+# class TestVoting(TestCase):
+#     def test_put_a_vote_pass(self):
+#         mock_request = get_mock_request(json={
+#             'groupId': 'test_gid',
+#             'itemId': 'test_item_id',
+#             'type': 1,
+#             'auth_uid': 'test-user-1'
+#         })
+#         mock_doc_ref = get_mock_doc_ref(data={
+#             "msg": "success",
+#             "creationTime": 'Sun Dec  6 23:29:52 2020',
+#             "data": {"itemList": 'test_item_id'}
+#         })
+#         mock_ref_groups = MagicMock(add=Mock(return_value=('Sun Dec  6 23:29:52 2020',
+#                                                            mock_doc_ref)))
+#         mock_ref_voting = MagicMock(add=Mock(return_value=('Sun Dec  6 23:29:52 2020',
+#                                                            mock_doc_ref)))
+#         mock_group_cls = get_mock_group(role=1)
+#         with patch('utils.config_g', mocks.get_mock_config_g()):
+#             from routes.voting import put_a_vote
+#             with patch.multiple('routes.voting',
+#                                 ref_groups=mock_ref_groups,
+#                                 ref_votes=mock_ref_voting,
+#                                 request=mock_request,
+#                                 Group=mock_group_cls) as values:
+#                 resp = put_a_vote.__wrapped__()
+#                 assert 'gid' in resp
+#
+#         mock_request.add.assert_called_once()
+#         mock_group_cls.get.assert_called_once()
+
+

@@ -19,6 +19,7 @@ voting = Blueprint('voting', __name__)
 def put_a_vote(auth_uid: str = None):
     """
     :param auth_uid: valid user_id
+            gid, item_id, v_type
     :return:
     {
         "roomTotal": room_total,
@@ -48,6 +49,7 @@ def put_a_vote(auth_uid: str = None):
         raise InvalidRequestBody("duplicated vote.")
     group_snap = ref_groups.document(gid).get()
     item_list = group_snap.get("itemList")
+    print('.....item_list....', item_list)
     members = group_snap.get('members')
     if item_id not in list(item_list):
         raise InvalidRequestBody("target item not in that group.")

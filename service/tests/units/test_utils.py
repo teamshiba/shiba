@@ -40,7 +40,7 @@ class TestExternal(unittest.TestCase):
         resp_mock = MagicMock()
         resp_mock.json = MagicMock(return_value=expected)
         request_mock.return_value = resp_mock
-        res = yelp_search_biz(location='New York City')
+        res = yelp_search_biz(location='New York City', term='Chinese')
         resp_mock.json.assert_any_call()
         self.assertDictEqual(res, expected)
 

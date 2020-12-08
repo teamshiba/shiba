@@ -1,6 +1,7 @@
 from flask.testing import FlaskClient  # noqa: F401
+import pytest
 from models.group import Group
-from models.item import Item, db_add_item, filter_items
+from models.item import Item, db_add_item, filter_items, add_item_to_store
 from models.voting import Voting
 from tests.fixture import ConnHelper, client, connection  # noqa: F401
 
@@ -27,16 +28,29 @@ class TestItemModel:
         item = Item(item_id=test_id)
         assert db_add_item(item) is not None
 
+    def test_db_add_item_no_item_id(self):
+        item = Item(item_id=None)
+        assert db_add_item(item) is not None
+
     def test_filter_items(self):
-        params = {'gid': '0', 'unvoted_by': '0'}
-        assert filter_items(params) is not None
+        with pytest.raises(TypeError):
+            resp = filter_items({
+                                    'uid': 'test-user-1',
+                                    'gid': '12345',
+                                    'voted_by': '12345'})
+
+    def test_add_item_to_store(self):
+        item = Item()
+        resp = add_item_to_store(item)
+        assert resp is not None
 
 
 class TestVotingModel:
 
     def test_from_dict(self):
         voting = Voting(item_id=test_id)
-        assert voting.item_id == test_id
+        voting.from_dict({'type': 1, 'groupId': '1', 'itemId': '1', 'userId': '1', 'creationTime': '1'})
+        assert voting.vote_type == 1
 
     def test_to_dict(self):
         voting = Voting(item_id=test_id)
