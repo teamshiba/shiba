@@ -10,8 +10,16 @@ def mocked_check_token(f):
 
 
 def get_mock_request(json=None, args=None, header=None):
+    def get_value(key):
+        if type(args) is dict:
+            return args.get(key)
+        else:
+            return None
+
     request = MagicMock()
+    # request.args = Mock(wraps=args)
     request.args.to_dict = Mock(return_value=args)
+    request.args.get = get_value
     request.headers = header
     request.get_json = Mock(return_value=json)
     # req.headers.get = MagicMock(return_value='Bearer test-token')
@@ -45,10 +53,16 @@ def get_mock_query(stream=[]):
     return mock
 
 
-def get_mock_collection(mock_doc=None, stream=[]):
+def get_mock_collection(mock_doc: Mock = None, valid_ids=[], stream=[]):
+    def doc_getter(key):
+        if not valid_ids or key in valid_ids:
+            return mock_doc
+        else:
+            return get_mock_doc_ref(None)
+
     return MagicMock(
         add=Mock(return_value=('2020', mock_doc)),
-        document=Mock(return_value=mock_doc),
+        document=Mock(wraps=doc_getter),
         where=MagicMock(return_value=get_mock_query(stream))
     )
 
