@@ -20,9 +20,13 @@ jest.mock("react-tinder-card", () => (props: any) => (
     <button onClick={() => props.onSwipe("left")}>Swipe Left</button>
     <button onClick={() => props.onSwipe("right")}>Swipe Right</button>
     <button onClick={() => props.onSwipe("up")}>Swipe Up</button>
+    <button onClick={() => props.onSwipe("down")}>Swipe Down</button>
     {props.children}
   </>
 ));
+
+const getFirstItem = () => screen.queryAllByText(/item/)[0].textContent;
+const swipe = (text: RegExp) => screen.getAllByText(text)[0].click();
 
 test("renders", async () => {
   render(
@@ -106,7 +110,7 @@ test("renders completed (with multiple matches)", async () => {
   expect(message).toBeInTheDocument();
 });
 
-test("result screen", async () => {
+test("result screen (swipe right)", async () => {
   const handleGotoStats = jest.fn();
 
   render(
@@ -121,19 +125,50 @@ test("result screen", async () => {
     />
   );
 
-  const getFirstItem = () => screen.queryAllByText(/item/)[0].textContent;
-  const swipe = (text: RegExp) => screen.getAllByText(text)[0].click();
+  expect(getFirstItem()).toBe("item1");
+  swipe(/Swipe Right/);
+  expect(getFirstItem()).toBe("item2");
+});
+
+test("result screen (swipe left)", async () => {
+  const handleGotoStats = jest.fn();
+
+  render(
+    <ResultScreen
+      items={
+        [
+          { itemId: "item1", name: "item1" },
+          { itemId: "item2", name: "item2" },
+        ] as any
+      }
+      onGotoStats={handleGotoStats}
+    />
+  );
 
   expect(getFirstItem()).toBe("item1");
-  swipe(/Swipe Right/);
-  expect(getFirstItem()).toBe("item2");
-  swipe(/Swipe Right/);
-  expect(getFirstItem()).toBe("item1");
   swipe(/Swipe Left/);
   expect(getFirstItem()).toBe("item2");
-  swipe(/Swipe Left/);
+});
+
+test("result screen (swipe up / down)", async () => {
+  const handleGotoStats = jest.fn();
+
+  render(
+    <ResultScreen
+      items={
+        [
+          { itemId: "item1", name: "item1" },
+          { itemId: "item2", name: "item2" },
+        ] as any
+      }
+      onGotoStats={handleGotoStats}
+    />
+  );
+
   expect(getFirstItem()).toBe("item1");
   swipe(/Swipe Up/);
+  expect(getFirstItem()).toBe("item1");
+  swipe(/Swipe Down/);
   expect(getFirstItem()).toBe("item1");
 });
 
@@ -249,7 +284,7 @@ test("click room profile button", async () => {
   expect(spy).toBeCalled();
 });
 
-test("result screen vote by click", async () => {
+test("result screen vote by click (like)", async () => {
   const handleGotoStats = jest.fn();
 
   render(
@@ -264,14 +299,33 @@ test("result screen vote by click", async () => {
     />
   );
 
-  const dislikeButton = document.getElementsByTagName("button")[9];
-  const likeButton = document.getElementsByTagName("button")[10];
-  const getFirstItem = () => screen.queryAllByText(/item/)[0].textContent;
+  const likeButton = document.getElementsByTagName("button")[12];
+
+  expect(getFirstItem()).toBe("item1");
+  likeButton.click();
+  expect(getFirstItem()).toBe("item2");
+});
+
+test("result screen vote by click (dislike)", async () => {
+  const handleGotoStats = jest.fn();
+
+  render(
+    <ResultScreen
+      items={
+        [
+          { itemId: "item1", name: "item1" },
+          { itemId: "item2", name: "item2" },
+        ] as any
+      }
+      onGotoStats={handleGotoStats}
+    />
+  );
+
+  const dislikeButton = document.getElementsByTagName("button")[11];
 
   expect(getFirstItem()).toBe("item1");
   dislikeButton.click();
   expect(getFirstItem()).toBe("item2");
-  likeButton.click();
 });
 
 test("No more items to swipe", async () => {
