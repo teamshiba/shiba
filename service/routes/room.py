@@ -75,6 +75,7 @@ def get_group_profile(auth_uid=None, group_id=None):
     list_uid = rv.get("members")
     members = list_uid or []
     return_members = []
+    _ = auth_uid
 
     for user_id in members:
         user_dict = ref_users.document(user_id).get().to_dict()
