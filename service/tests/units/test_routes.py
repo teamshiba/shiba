@@ -5,10 +5,9 @@ from unittest.mock import patch, Mock, MagicMock, DEFAULT
 from pytest import raises
 
 from routes.item import get_group_item_list, add_item, search_item
-from tests.units import mocks
 from tests.units.mocks import get_mock_request, get_mock_group, get_mock_doc_ref
 from tests.units import mocks
-from utils.exceptions import HTTPException
+from utils.exceptions import HTTPException, UnauthorizedRequest, InvalidRequestBody
 from utils import exceptions
 
 
@@ -237,3 +236,170 @@ class TestVoting(TestCase):
             'gid': 'test_gid',
             'unvoted_by': 'test-user-1'
         })
+
+    def test_put_a_vote_fail_gid(self):
+        mock_request = get_mock_request(json={})
+        mock_doc_ref = get_mock_doc_ref(data={"itemList": ['test_item_id'],
+                                              'members': ['test-user-1']})
+        mock_ref_groups = mocks.get_mock_collection(mock_doc=mock_doc_ref, stream=[
+        ])
+        mock_ref_voting = mocks.get_mock_collection(mock_doc=mock_doc_ref)
+        mock_group_cls = get_mock_group(role=1)
+        mock_filter_items = Mock(return_value={
+            'data': []
+        })
+        with patch('utils.config_g', mocks.get_mock_config_g()):
+            from routes.voting import put_a_vote
+            with patch.multiple('routes.voting',
+                                ref_groups=mock_ref_groups,
+                                ref_votes=mock_ref_voting,
+                                request=mock_request,
+                                Group=mock_group_cls,
+                                filter_items=mock_filter_items):
+                with raises(InvalidRequestBody, match="groupId is required."):
+                    put_a_vote.__wrapped__('test-user-1')
+
+    def test_put_a_vote_fail_valid_user(self):
+        mock_request = get_mock_request(json={'groupId': 'test_gid',
+                                              'itemId': 'test_item_id'})
+        mock_doc_ref = get_mock_doc_ref(data={"itemList": ['test_item_id'],
+                                              'members': ['test-user-1']})
+        mock_ref_groups = mocks.get_mock_collection(mock_doc=mock_doc_ref, stream=[
+        ])
+        mock_ref_voting = mocks.get_mock_collection(mock_doc=mock_doc_ref)
+        mock_group_cls = get_mock_group(role=0)
+        mock_filter_items = Mock(return_value={
+            'data': []
+        })
+        with patch('utils.config_g', mocks.get_mock_config_g()):
+            from routes.voting import put_a_vote
+            with patch.multiple('routes.voting',
+                                ref_groups=mock_ref_groups,
+                                ref_votes=mock_ref_voting,
+                                request=mock_request,
+                                Group=mock_group_cls,
+                                filter_items=mock_filter_items):
+                with raises(UnauthorizedRequest, match="Not a member of target group."):
+                    put_a_vote.__wrapped__('test-user-1')
+
+    def test_put_a_vote_fail_item_id(self):
+        mock_request = get_mock_request(json={'groupId': 'test_gid'})
+        mock_doc_ref = get_mock_doc_ref(data={"itemList": ['test_item_id'],
+                                              'members': ['test-user-1']})
+        mock_ref_groups = mocks.get_mock_collection(mock_doc=mock_doc_ref, stream=[
+        ])
+        mock_ref_voting = mocks.get_mock_collection(mock_doc=mock_doc_ref)
+        mock_group_cls = get_mock_group(role=1)
+        mock_filter_items = Mock(return_value={
+            'data': []
+        })
+        with patch('utils.config_g', mocks.get_mock_config_g()):
+            from routes.voting import put_a_vote
+            with patch.multiple('routes.voting',
+                                ref_groups=mock_ref_groups,
+                                ref_votes=mock_ref_voting,
+                                request=mock_request,
+                                Group=mock_group_cls,
+                                filter_items=mock_filter_items):
+                with raises(InvalidRequestBody, match="itemId is required."):
+                    put_a_vote.__wrapped__('test-user-1')
+
+    def test_put_a_vote_fail_v_type(self):
+        mock_request = get_mock_request(json={'groupId': 'test_gid',
+                                              'itemId': 'test_item_id'})
+        mock_doc_ref = get_mock_doc_ref(data={"itemList": ['test_item_id'],
+                                              'members': ['test-user-1']})
+        mock_ref_groups = mocks.get_mock_collection(mock_doc=mock_doc_ref, stream=[
+        ])
+        mock_ref_voting = mocks.get_mock_collection(mock_doc=mock_doc_ref)
+        mock_group_cls = get_mock_group(role=1)
+        mock_filter_items = Mock(return_value={
+            'data': []
+        })
+        with patch('utils.config_g', mocks.get_mock_config_g()):
+            from routes.voting import put_a_vote
+            with patch.multiple('routes.voting',
+                                ref_groups=mock_ref_groups,
+                                ref_votes=mock_ref_voting,
+                                request=mock_request,
+                                Group=mock_group_cls,
+                                filter_items=mock_filter_items):
+                with raises(InvalidRequestBody, match="type is required."):
+                    put_a_vote.__wrapped__('test-user-1')
+
+    def test_put_a_vote_fail_v_type_num(self):
+        mock_request = get_mock_request(json={'groupId': 'test_gid',
+                                              'itemId': 'test_item_id',
+                                              'type': 0})
+        mock_doc_ref = get_mock_doc_ref(data={"itemList": ['test_item_id'],
+                                              'members': ['test-user-1']})
+        mock_ref_groups = mocks.get_mock_collection(mock_doc=mock_doc_ref, stream=[
+        ])
+        mock_ref_voting = mocks.get_mock_collection(mock_doc=mock_doc_ref)
+        mock_group_cls = get_mock_group(role=1)
+        mock_filter_items = Mock(return_value={
+            'data': []
+        })
+        with patch('utils.config_g', mocks.get_mock_config_g()):
+            from routes.voting import put_a_vote
+            with patch.multiple('routes.voting',
+                                ref_groups=mock_ref_groups,
+                                ref_votes=mock_ref_voting,
+                                request=mock_request,
+                                Group=mock_group_cls,
+                                filter_items=mock_filter_items):
+                with raises(InvalidRequestBody, match="type must be 1 or -1."):
+                    put_a_vote.__wrapped__('test-user-1')
+
+    def test_put_a_vote_fail_item_list(self):
+        mock_request = get_mock_request(json={
+            'groupId': 'test_gid',
+            'itemId': 'test_item_id',
+            'type': 1,
+            'auth_uid': 'test-user-1'})
+        mock_doc_ref = get_mock_doc_ref(data={"itemList": [],
+                                              'members': ['test-user-1']})
+        mock_ref_groups = mocks.get_mock_collection(mock_doc=mock_doc_ref, stream=[
+        ])
+        mock_ref_voting = mocks.get_mock_collection(mock_doc=mock_doc_ref)
+        mock_group_cls = get_mock_group(role=1)
+        mock_filter_items = Mock(return_value={
+            'data': []
+        })
+        with patch('utils.config_g', mocks.get_mock_config_g()):
+            from routes.voting import put_a_vote
+            with patch.multiple('routes.voting',
+                                ref_groups=mock_ref_groups,
+                                ref_votes=mock_ref_voting,
+                                request=mock_request,
+                                Group=mock_group_cls,
+                                filter_items=mock_filter_items):
+                with raises(InvalidRequestBody, match="target item not in that group."):
+                    put_a_vote.__wrapped__('test-user-1')
+
+    def test_put_a_vote_fail_members(self):
+        mock_request = get_mock_request(json={
+            'groupId': 'test_gid',
+            'itemId': 'test_item_id',
+            'type': 1,
+            'auth_uid': 'test-user-1'
+        })
+        mock_doc_ref = get_mock_doc_ref(data={"itemList": ['test_item_id'],
+                                              'members': []})
+        mock_ref_groups = mocks.get_mock_collection(mock_doc=mock_doc_ref, stream=[
+        ])
+        mock_ref_voting = mocks.get_mock_collection(mock_doc=mock_doc_ref)
+        mock_group_cls = get_mock_group(role=1)
+        mock_filter_items = Mock(return_value={
+            'data': []
+        })
+        with patch('utils.config_g', mocks.get_mock_config_g()):
+            from routes.voting import put_a_vote
+            with patch.multiple('routes.voting',
+                                ref_groups=mock_ref_groups,
+                                ref_votes=mock_ref_voting,
+                                request=mock_request,
+                                Group=mock_group_cls,
+                                filter_items=mock_filter_items):
+                with raises(InvalidRequestBody, match="that user not in this group."):
+                    put_a_vote.__wrapped__('test-user-1')
