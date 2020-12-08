@@ -43,15 +43,3 @@ class TestItemModel:
         item = Item()
         resp = add_item_to_store(item)
         assert resp is not None
-
-
-class TestVotingModel:
-
-    def test_from_dict(self):
-        voting = Voting(item_id=test_id)
-        voting.from_dict({'type': 1, 'groupId': '1', 'itemId': '1', 'userId': '1', 'creationTime': '1'})
-        assert voting.vote_type == 1
-
-    def test_to_dict(self):
-        voting = Voting(item_id=test_id)
-        assert voting.to_dict()['itemId'] == test_id

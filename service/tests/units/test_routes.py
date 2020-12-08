@@ -49,17 +49,40 @@ class TestRoom(TestCase):
         mock_request.get_json.assert_called_once()
         mock_ref_groups.add.assert_not_called()
 
-    # def test_join_group(self):
-    #     mock_request = get_mock_request(json={})
-    #     mock_doc_ref = get_mock_doc_ref(data={
-    #         "msg": "success",
-    #         "creationTime": 'Sun Dec  6 23:29:52 2020',
-    #         "data": {}
-    #     })
-    #     mock_ref_groups = MagicMock(add=Mock(return_value=('Sun Dec  6 23:29:52 2020',
-    #                                                        mock_doc_ref)))
-    #     mock_ref_users = MagicMock(add=Mock(return_value=('Sun Dec  6 23:29:52 2020',
-    #                                                        mock_doc_ref)))
+    def test_join_group_pass(self):
+        from routes.room import ArrayUnion, join_group
+        to_update = {'members': ArrayUnion(['test_uid'])}
+        doc_group = mocks.get_mock_doc_ref({'groupId': 0})
+        ref_groups = mocks.get_mock_collection(mock_doc=doc_group)
+        doc_user = mocks.get_mock_doc_ref({'userId': 0})
+        ref_users = mocks.get_mock_collection(mock_doc=doc_user)
+
+        with patch.multiple('routes.room',
+                            ref_groups=ref_groups,
+                            ref_users=ref_users):
+            resp = join_group.__wrapped__('test_uid')
+            assert 'data' in resp
+
+        doc_group.update.called_once_with(to_update)
+
+    def test_get_group_list_pass(self):
+        from routes.room import get_group_list
+        req = get_mock_request(args={'state': 'true'})
+        doc = get_mock_doc_ref(data={
+            'roomName': '',
+            'organizerUid': '',
+            'isCompleted': ''
+        }, doc_id='id')
+        groups = mocks.get_mock_collection(stream=[doc])
+        with patch.multiple('routes.room',
+                            ref_groups=groups,
+                            request=req):
+            resp = get_group_list.__wrapped__('uid')
+            assert 'data' in resp
+            assert len(resp['data']) == 1
+
+    def test_get_group_profile_pass(self):
+        pass
 
 
 class TestItem(TestCase):

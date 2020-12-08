@@ -18,12 +18,15 @@ def get_mock_request(json=None, args=None, header=None):
     return request
 
 
-def get_mock_doc_ref(data={}):
-    mock = MagicMock()
-    mock.to_dict = Mock(return_value=data)
-    mock.get = lambda k: data.get(k)
+def get_mock_doc_ref(data={}, doc_id=None):
+    doc = MagicMock()
+    doc.to_dict = Mock(return_value=data)
+    doc.get = lambda k: data.get(k)
+    doc.exists = True if data else False
     ref = MagicMock()
-    ref.get = Mock(return_value=mock)
+    ref.get = Mock(return_value=doc)
+    ref.update = Mock()
+    ref.id = doc_id
     return ref
 
 
