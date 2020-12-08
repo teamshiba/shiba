@@ -49,7 +49,6 @@ def put_a_vote(auth_uid: str = None):
         raise InvalidRequestBody("duplicated vote.")
     group_snap = ref_groups.document(gid).get()
     item_list = group_snap.get("itemList")
-    print('.....item_list....', item_list)
     members = group_snap.get('members')
     if item_id not in list(item_list):
         raise InvalidRequestBody("target item not in that group.")

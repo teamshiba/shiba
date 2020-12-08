@@ -4,9 +4,10 @@ from unittest.mock import patch, Mock, MagicMock, DEFAULT
 
 from pytest import raises
 
-from routes.item import get_group_item_list, add_item
+from routes.item import get_group_item_list, add_item, search_item
 from tests.units import mocks
 from tests.units.mocks import get_mock_request, get_mock_group, get_mock_doc_ref
+from tests.units import mocks
 from utils.exceptions import HTTPException
 from utils import exceptions
 
@@ -149,36 +150,90 @@ class TestItem(TestCase):
 
             values['db_add_item'].assert_not_called()
 
+    def test_search_item_pass(self):
+        inbound_request = get_mock_request(args={
+            'location': 'NYC',
+            'term': 'nothing'
+        })
+        outbound_request = Mock(return_value=Mock(json=Mock(
+            return_value={
+                "businesses": [{
+                    'url': 'test_url',
+                    'image_url': 'test_img'
+                }],
+                "total": 1,
+                "region": {}
+            }
+        )))
+        with patch('routes.item.request', inbound_request):
+            with patch('utils.external.requests.request', outbound_request):
+                resp = search_item.__wrapped__('test_uid')
+                assert 'businesses' in resp
+                for item in resp['businesses']:
+                    assert 'itemURL' in item
+                    assert 'imgURL' in item
 
-# class TestVoting(TestCase):
-#     def test_put_a_vote_pass(self):
-#         mock_request = get_mock_request(json={
-#             'groupId': 'test_gid',
-#             'itemId': 'test_item_id',
-#             'type': 1,
-#             'auth_uid': 'test-user-1'
-#         })
-#         mock_doc_ref = get_mock_doc_ref(data={
-#             "msg": "success",
-#             "creationTime": 'Sun Dec  6 23:29:52 2020',
-#             "data": {"itemList": 'test_item_id'}
-#         })
-#         mock_ref_groups = MagicMock(add=Mock(return_value=('Sun Dec  6 23:29:52 2020',
-#                                                            mock_doc_ref)))
-#         mock_ref_voting = MagicMock(add=Mock(return_value=('Sun Dec  6 23:29:52 2020',
-#                                                            mock_doc_ref)))
-#         mock_group_cls = get_mock_group(role=1)
-#         with patch('utils.config_g', mocks.get_mock_config_g()):
-#             from routes.voting import put_a_vote
-#             with patch.multiple('routes.voting',
-#                                 ref_groups=mock_ref_groups,
-#                                 ref_votes=mock_ref_voting,
-#                                 request=mock_request,
-#                                 Group=mock_group_cls) as values:
-#                 resp = put_a_vote.__wrapped__()
-#                 assert 'gid' in resp
-#
-#         mock_request.add.assert_called_once()
-#         mock_group_cls.get.assert_called_once()
+    def test_search_item_fail(self):
+        inbound_request1 = get_mock_request(args={
+            'term': 'nothing'
+        })
+        inbound_request2 = get_mock_request(args={
+            'term': 'nothing',
+            'location': 'NYC'
+        })
+        outbound_request = Mock(return_value=Mock(json=Mock(
+            return_value={
+                "businesses": [{
+                    'url': 'test_url',
+                }],
+                "total": 1,
+                "region": {}
+            }
+        )))
+        with patch('routes.item.request', inbound_request2):
+            with patch('utils.external.requests.request', outbound_request):
+                resp, code = search_item.__wrapped__('test_uid')
+                assert code == 500
+                assert 'msg' in resp
+
+                with raises(exceptions.UnauthorizedRequest):
+                    search_item.__wrapped__()
+
+        with patch('routes.item.request', inbound_request1):
+            with patch('utils.external.requests.request', outbound_request):
+                with raises(exceptions.InvalidQueryParams):
+                    search_item.__wrapped__('test_uid')
 
 
+class TestVoting(TestCase):
+    def test_put_a_vote_pass(self):
+        mock_request = get_mock_request(json={
+            'groupId': 'test_gid',
+            'itemId': 'test_item_id',
+            'type': 1,
+            'auth_uid': 'test-user-1'
+        })
+        mock_doc_ref = get_mock_doc_ref(data={"itemList": ['test_item_id'],
+                                              'members': ['test-user-1']})
+        mock_ref_groups = mocks.get_mock_collection(mock_doc=mock_doc_ref, stream=[
+        ])
+        mock_ref_voting = mocks.get_mock_collection(mock_doc=mock_doc_ref)
+        mock_group_cls = get_mock_group(role=1)
+        mock_filter_items = Mock(return_value={
+            'data': []
+        })
+        with patch('utils.config_g', mocks.get_mock_config_g()):
+            from routes.voting import put_a_vote
+            with patch.multiple('routes.voting',
+                                ref_groups=mock_ref_groups,
+                                ref_votes=mock_ref_voting,
+                                request=mock_request,
+                                Group=mock_group_cls,
+                                filter_items=mock_filter_items):
+                resp = put_a_vote.__wrapped__('test-user-1')
+                assert 'data' in resp
+
+        mock_filter_items.assert_called_once_with({
+            'gid': 'test_gid',
+            'unvoted_by': 'test-user-1'
+        })
