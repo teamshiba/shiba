@@ -7,7 +7,7 @@ from pytest import raises
 from routes.item import get_group_item_list, add_item, search_item
 from tests.units.mocks import get_mock_request, get_mock_group, get_mock_doc_ref
 from tests.units import mocks
-from utils.exceptions import HTTPException, UnauthorizedRequest, InvalidRequestBody
+from utils.exceptions import HTTPException, UnauthorizedRequest, InvalidRequestBody, InvalidQueryParams
 from utils import exceptions
 
 
@@ -65,6 +65,32 @@ class TestRoom(TestCase):
 
         doc_group.update.called_once_with(to_update)
 
+    def test_join_group_fail_gid(self):
+        from routes.room import join_group
+        doc_group = mocks.get_mock_doc_ref({})
+        ref_groups = mocks.get_mock_collection(mock_doc=doc_group)
+        doc_user = mocks.get_mock_doc_ref({'userId': 0})
+        ref_users = mocks.get_mock_collection(mock_doc=doc_user)
+
+        with patch.multiple('routes.room',
+                            ref_groups=ref_groups,
+                            ref_users=ref_users):
+            with raises(InvalidRequestBody, match='Invalid groupId provided'):
+                join_group.__wrapped__('test_uid')
+
+    def test_join_group_fail_uid(self):
+        from routes.room import join_group
+        doc_group = mocks.get_mock_doc_ref({'groupId': 0})
+        ref_groups = mocks.get_mock_collection(mock_doc=doc_group)
+        doc_user = mocks.get_mock_doc_ref({})
+        ref_users = mocks.get_mock_collection(mock_doc=doc_user)
+
+        with patch.multiple('routes.room',
+                            ref_groups=ref_groups,
+                            ref_users=ref_users):
+            with raises(InvalidRequestBody, match='Invalid userId provided'):
+                join_group.__wrapped__('test_uid')
+
     def test_get_group_list_pass(self):
         from routes.room import get_group_list
         req = get_mock_request(args={'state': 'true'})
@@ -80,6 +106,21 @@ class TestRoom(TestCase):
             resp = get_group_list.__wrapped__('uid')
             assert 'data' in resp
             assert len(resp['data']) == 1
+
+    def test_get_group_list_fail_uid(self):
+        from routes.room import get_group_list
+        req = get_mock_request(args={'state': 'true'})
+        doc = get_mock_doc_ref(data={
+            'roomName': '',
+            'organizerUid': '',
+            'isCompleted': ''
+        }, doc_id='id')
+        groups = mocks.get_mock_collection(stream=[doc])
+        with patch.multiple('routes.room',
+                            ref_groups=groups,
+                            request=req):
+            # with raises(InvalidQueryParams, match="uid is required."):
+            get_group_list.__wrapped__()
 
     def test_get_group_profile_pass(self):
         pass
