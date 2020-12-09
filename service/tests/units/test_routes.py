@@ -464,17 +464,19 @@ class TestRoom(TestCase):
         )
         group_cls = get_mock_group(1)
         filter_items = Mock(return_value={
-            'items': []
+            'items': [{'itemId': 'id1'}]
         })
-        ref_votes = mocks.get_mock_collection(stream=[])
+        ref_votes = mocks.get_mock_collection(stream=[{'type': 1}, {'type': -1}])
         with patch.multiple('routes.room',
                             ref_groups=ref_groups,
+                            ref_votes=ref_votes,
                             Group=group_cls,
                             filter_items=filter_items):
             from routes.room import get_stats
             resp = get_stats.__wrapped__(auth_uid='uid1', group_id='gid1')
             assert 'data' in resp
             assert 'isCompleted' in resp
+            assert len(resp['data']) == 1
 
     def test_get_stats_fail_invalid_gid(self):
         doc_group = mocks.get_mock_doc_ref(data={
@@ -517,6 +519,7 @@ class TestRoom(TestCase):
             from routes.room import get_stats
             with raises(exceptions.UnauthorizedRequest):
                 get_stats.__wrapped__(auth_uid='uid1', group_id='gid1')
+
 
 class TestItem(TestCase):
 

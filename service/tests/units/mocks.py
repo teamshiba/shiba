@@ -26,11 +26,16 @@ def get_mock_request(json=None, args=None, header=None):
     return request
 
 
-def get_mock_doc_ref(data={}, doc_id=None):
+def get_mock_doc_snap(data={}):
     doc = MagicMock()
     doc.to_dict = Mock(return_value=data)
     doc.get = lambda k: data.get(k)
     doc.exists = True if data else False
+    return doc
+
+
+def get_mock_doc_ref(data={}, doc_id=None):
+    doc = get_mock_doc_snap(data)
     ref = MagicMock()
     ref.get = Mock(return_value=doc)
     ref.update = Mock()
@@ -39,13 +44,14 @@ def get_mock_doc_ref(data={}, doc_id=None):
 
 
 def get_mock_query(stream=[]):
+    docs = [get_mock_doc_snap(it) for it in stream]
     mock = Mock(
-        stream=Mock(return_value=stream),
+        stream=Mock(return_value=docs),
         where=Mock(
             return_value=Mock(
-                stream=Mock(return_value=stream),
+                stream=Mock(return_value=docs),
                 where=Mock(
-                    return_value=Mock(stream=Mock(return_value=stream))
+                    return_value=Mock(stream=Mock(return_value=docs))
                 )
             )
         )
@@ -73,9 +79,10 @@ def get_mock_group(role=0):
     return mock
 
 
-def get_mock_config_g():
-    ref = MagicMock()
-    collection = Mock(return_value=ref)
+def get_mock_config_g(collections: dict = None):
+    def get_collection(name: str):
+        return collections.get(name)
+    collection = Mock(wraps=get_collection) if collections else Mock(return_value=Mock())
     db = Mock(collection=collection)
     config_g = Mock(db=db)
     return config_g
