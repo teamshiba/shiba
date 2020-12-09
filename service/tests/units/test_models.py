@@ -2,7 +2,9 @@ from models.group import Group
 from models.voting import Voting
 from models.item import Item
 import pytest
+from unittest.mock import patch, Mock
 from utils.exceptions import DataModelException
+from tests.units import mocks
 
 test_id = '12345'
 
@@ -39,6 +41,44 @@ class TestItem:
     def test_to_dict(self):
         item = Item(item_id=test_id)
         assert item.to_dict()['itemId'] == test_id
+
+    def test_filter_items(self):
+        doc_group = mocks.get_mock_doc_ref(data={
+            'isCompleted': True,
+            'itemList': ['id1']
+        })
+        ref_groups = mocks.get_mock_collection(
+            mock_doc=doc_group,
+            valid_ids=['gid1']
+        )
+        ref_items = mocks.get_mock_collection(stream=[{'itemId': 'id1'}])
+        ref_votes = mocks.get_mock_collection(stream=[{'itemId': 'id1', 'type': 1},
+                                                      {'itemId': 'id2', 'type': -1}])
+        config = mocks.get_mock_config_g({
+            'Users': Mock(),
+            'Groups': ref_groups,
+            'Votings': ref_votes,
+            'Items': ref_items
+        })
+        with patch('utils.config_g', config):
+            with patch.multiple('utils.connections',
+                                ref_items=ref_items,
+                                ref_votes=ref_votes,
+                                ref_groups=ref_groups):
+                from models.item import filter_items
+                resp = filter_items({
+                    'group_id': 'gid1',
+                    'voted_by': 'user1'
+                })
+                assert 'items' in resp
+                assert 'roomTotal' in resp
+
+                resp = filter_items({
+                    'group_id': 'gid1',
+                    'unvoted_by': 'user1'
+                })
+                assert 'items' in resp
+                assert 'roomTotal' in resp
 
 
 class TestVotingModel:

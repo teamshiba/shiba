@@ -76,7 +76,6 @@ def get_group_profile(auth_uid=None, group_id=None):
     list_uid = rv.get("members")
     members = list_uid or []
     return_members = []
-    _ = auth_uid
 
     for user_id in members:
         user_dict = ref_users.document(user_id).get().to_dict()
@@ -168,17 +167,18 @@ def remove_user(auth_uid=None, group_id=""):
     :param group_id: gid
     :return: msg
     """
-    member_id = request.args.get('uid') if 'uid' in request.args else ''
+    member_id = request.args.get('uid')
     if not member_id:
         raise InvalidQueryParams("No member id provided.")
 
-    if not ref_groups.document(group_id).get().exists:
+    snap = ref_groups.document(group_id).get()
+    if not snap.exists:
         raise InvalidRequestBody('Invalid groupId provided.')
 
-    snap = ref_groups.document(group_id).get().to_dict()
-    if auth_uid != snap.get('organizerUid'):
+    data = snap.to_dict()
+    if auth_uid != data.get('organizerUid'):
         raise UnauthorizedRequest('You have no privilege to remove a user.')
-    if member_id not in snap.get('members'):
+    if member_id not in data.get('members'):
         raise InvalidRequestBody('Target user not in that group.')
     if auth_uid == member_id:
         raise InvalidRequestBody('You cannot remove the organizer.')

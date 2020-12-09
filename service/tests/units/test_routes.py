@@ -5,10 +5,10 @@ from unittest.mock import patch, Mock, MagicMock, DEFAULT
 from pytest import raises
 
 from routes.item import get_group_item_list, add_item, search_item
-from tests.units.mocks import get_mock_request, get_mock_group, get_mock_doc_ref
 from tests.units import mocks
-from utils.exceptions import HTTPException, UnauthorizedRequest, InvalidRequestBody, InvalidQueryParams
+from tests.units.mocks import get_mock_request, get_mock_group, get_mock_doc_ref
 from utils import exceptions
+from utils.exceptions import HTTPException, UnauthorizedRequest, InvalidRequestBody
 
 
 class TestRoom(TestCase):
@@ -119,11 +119,406 @@ class TestRoom(TestCase):
         with patch.multiple('routes.room',
                             ref_groups=groups,
                             request=req):
-            # with raises(InvalidQueryParams, match="uid is required."):
-            get_group_list.__wrapped__()
+            with raises(exceptions.InvalidQueryParams, match="uid is required."):
+                get_group_list.__wrapped__()
 
     def test_get_group_profile_pass(self):
-        pass
+        from routes.room import get_group_profile
+        doc_group = mocks.get_mock_doc_ref(data={
+            'members': ['t-uid-1']
+        })
+        ref_groups = mocks.get_mock_collection(
+            mock_doc=doc_group,
+            valid_ids=['t-gid-1']
+        )
+        doc_user = mocks.get_mock_doc_ref(data={
+            'displayName': 't-uname-1'
+        })
+        ref_users = mocks.get_mock_collection(mock_doc=doc_user)
+        req = mocks.get_mock_request(args={
+            'gid': 't-gid-1'
+        })
+        with patch.multiple('routes.room',
+                            ref_groups=ref_groups,
+                            ref_users=ref_users,
+                            request=req):
+            resp = get_group_profile.__wrapped__('t-uid-1', 't-gid-1')
+            assert 'data' in resp
+            data = resp['data']
+            assert 'members' in data
+            assert len(data['members']) == 1
+
+    def test_get_group_profile_fail_gid(self):
+        from routes.room import get_group_profile
+        doc_group = mocks.get_mock_doc_ref(data={
+            'members': ['t-uid-1']
+        })
+        ref_groups = mocks.get_mock_collection(
+            mock_doc=doc_group,
+            valid_ids=['t-gid-1']
+        )
+        doc_user = mocks.get_mock_doc_ref(data={
+            'displayName': 't-uname-1'
+        })
+        ref_users = mocks.get_mock_collection(mock_doc=doc_user)
+        req = mocks.get_mock_request(args={
+            'gid': 't-gid-1'
+        })
+        with patch.multiple('routes.room',
+                            ref_groups=ref_groups,
+                            ref_users=ref_users,
+                            request=req):
+            with raises(exceptions.InvalidQueryParams, match="Group id does not exist."):
+                get_group_profile.__wrapped__('t-uid-1', 't-gid-2')
+
+    def test_update_group_profile_pass(self):
+        from routes.room import update_group_profile
+        doc_group = mocks.get_mock_doc_ref(data={
+            'members': ['t-uid-1'],
+            'organizerUid': 't-uid'
+        })
+        ref_groups = mocks.get_mock_collection(
+            mock_doc=doc_group,
+            valid_ids=['t-gid-1']
+        )
+        doc_user = mocks.get_mock_doc_ref(data={
+            'displayName': 't-uname-1'
+        })
+        ref_users = mocks.get_mock_collection(mock_doc=doc_user)
+        req = mocks.get_mock_request(json={
+            'groupId': 't-gid-1'
+        })
+        with patch.multiple('routes.room',
+                            ref_groups=ref_groups,
+                            ref_users=ref_users,
+                            request=req):
+            resp = update_group_profile.__wrapped__(auth_uid='t-uid-1',
+                                                    group_id='t-gid-1')
+            assert 'data' in resp
+
+    def test_update_group_profile_fail_no_gid(self):
+        from routes.room import update_group_profile
+        doc_group = mocks.get_mock_doc_ref(data={
+            'members': ['t-uid-1'],
+            'organizerUid': 't-uid'
+        })
+        ref_groups = mocks.get_mock_collection(
+            mock_doc=doc_group,
+            valid_ids=['t-gid-1']
+        )
+        doc_user = mocks.get_mock_doc_ref(data={
+            'displayName': 't-uname-1'
+        })
+        ref_users = mocks.get_mock_collection(mock_doc=doc_user)
+        req = mocks.get_mock_request(json={})
+        with patch.multiple('routes.room',
+                            ref_groups=ref_groups,
+                            ref_users=ref_users,
+                            request=req):
+            with raises(exceptions.InvalidRequestBody, match='Invalid groupId provided'):
+                update_group_profile.__wrapped__(auth_uid='t-uid-1',
+                                                 group_id='t-gid-2')
+
+    def test_update_group_profile_fail_user_id(self):
+        from routes.room import update_group_profile
+        doc_group = mocks.get_mock_doc_ref(data={
+            'members': ['t-uid-1'],
+            'organizerUid': 't-uid'
+        })
+        ref_groups = mocks.get_mock_collection(
+            mock_doc=doc_group,
+            valid_ids=['t-gid-1']
+        )
+        doc_user = mocks.get_mock_doc_ref(data={
+            'displayName': 't-uname-1'
+        })
+        ref_users = mocks.get_mock_collection(mock_doc=doc_user)
+        req = mocks.get_mock_request(json={})
+        with patch.multiple('routes.room',
+                            ref_groups=ref_groups,
+                            ref_users=ref_users,
+                            request=req):
+            with raises(exceptions.UnauthorizedRequest, match="You are not authorized to access the group profile"):
+                update_group_profile.__wrapped__(auth_uid='t-uid-2',
+                                                 group_id='t-gid-1')
+
+    def test_update_group_profile_fail_user_id(self):
+        from routes.room import update_group_profile
+        doc_group = mocks.get_mock_doc_ref(data={
+            'members': ['t-uid-2'],
+            'organizerUid': 't-uid'
+        })
+        ref_groups = mocks.get_mock_collection(
+            mock_doc=doc_group,
+            valid_ids=['t-gid-1']
+        )
+        doc_user = mocks.get_mock_doc_ref(data={
+            'displayName': 't-uname-1'
+        })
+        ref_users = mocks.get_mock_collection(mock_doc=doc_user)
+        req = mocks.get_mock_request(json={})
+        with patch.multiple('routes.room',
+                            ref_groups=ref_groups,
+                            ref_users=ref_users,
+                            request=req):
+            with raises(exceptions.UnauthorizedRequest, match="You are not authorized to access the group profile"):
+                update_group_profile.__wrapped__(auth_uid='t-uid-1',
+                                                 group_id='t-gid-1')
+
+    def test_update_group_profile_fail_invalid_gid(self):
+        from routes.room import update_group_profile
+        doc_group = mocks.get_mock_doc_ref(data={
+            'members': ['t-uid-1'],
+            'organizerUid': 't-uid-3'
+        })
+        ref_groups = mocks.get_mock_collection(
+            mock_doc=doc_group,
+            valid_ids=['t-gid-1']
+        )
+        doc_user = mocks.get_mock_doc_ref(data={
+            'displayName': 't-uname-1'
+        })
+        ref_users = mocks.get_mock_collection(mock_doc=doc_user)
+        req = mocks.get_mock_request(json={
+            'isCompleted': True})
+        with patch.multiple('routes.room',
+                            ref_groups=ref_groups,
+                            ref_users=ref_users,
+                            request=req):
+            with raises(exceptions.UnauthorizedRequest, match="Only the organizer can modify 'status'"
+                                                              " and change the room host"):
+                update_group_profile.__wrapped__(auth_uid='t-uid-1',
+                                                 group_id='t-gid-1')
+
+    def test_update_group_profile_fail_not_organizer(self):
+        from routes.room import update_group_profile
+        doc_group = mocks.get_mock_doc_ref(data={
+            'members': ['t-uid-1'],
+            'organizerUid': 't-uid'
+        })
+        ref_groups = mocks.get_mock_collection(
+            mock_doc=doc_group,
+            valid_ids=['t-gid-1']
+        )
+        doc_user = mocks.get_mock_doc_ref(data={
+            'displayName': 't-uname-1'
+        })
+        ref_users = mocks.get_mock_collection(mock_doc=doc_user)
+        req = mocks.get_mock_request(json={})
+        with patch.multiple('routes.room',
+                            ref_groups=ref_groups,
+                            ref_users=ref_users,
+                            request=req):
+            with raises(exceptions.InvalidRequestBody, match="No groupId provided"):
+                update_group_profile.__wrapped__(auth_uid='t-uid-1')
+
+    def test_remove_user_pass(self):
+        doc_group = mocks.get_mock_doc_ref(data={
+            'members': ['uid1', 'uid2'],  # ['uid1, uid2'] how dumb it is.
+            'organizerUid': 'uid1'
+        })
+        ref_groups = mocks.get_mock_collection(
+            mock_doc=doc_group,
+            valid_ids=['gid1']
+        )
+        doc_user = mocks.get_mock_doc_ref(data={
+            'displayName': 'uname1'
+        })
+        ref_users = mocks.get_mock_collection(mock_doc=doc_user)
+        req = mocks.get_mock_request(args={
+            'uid': 'uid2'
+        })
+        with patch.multiple('routes.room',
+                            ref_groups=ref_groups,
+                            ref_users=ref_users,
+                            request=req):
+            from routes.room import remove_user
+            resp = remove_user.__wrapped__(auth_uid='uid1', group_id='gid1')
+            assert 'msg' in resp
+
+    def test_remove_user_fail_no_member_id(self):
+        doc_group = mocks.get_mock_doc_ref(data={
+            'members': ['uid1', 'uid2'],  # ['uid1, uid2'] how dumb it is.
+            'organizerUid': 'uid1'
+        })
+        ref_groups = mocks.get_mock_collection(
+            mock_doc=doc_group,
+            valid_ids=['gid1']
+        )
+        doc_user = mocks.get_mock_doc_ref(data={
+            'displayName': 'uname1'
+        })
+        ref_users = mocks.get_mock_collection(mock_doc=doc_user)
+        req = mocks.get_mock_request(args={})
+        with patch.multiple('routes.room',
+                            ref_groups=ref_groups,
+                            ref_users=ref_users,
+                            request=req):
+            from routes.room import remove_user
+            with raises(exceptions.InvalidQueryParams, match="No member id provided."):
+                remove_user.__wrapped__(auth_uid='uid1', group_id='gid1')
+
+    def test_remove_user_fail_invalid_gid(self):
+        doc_group = mocks.get_mock_doc_ref(data={
+            'members': ['uid1', 'uid2'],  # ['uid1, uid2'] how dumb it is.
+            'organizerUid': 'uid1'
+        })
+        ref_groups = mocks.get_mock_collection(
+            mock_doc=doc_group,
+            valid_ids=['gid1']
+        )
+        doc_user = mocks.get_mock_doc_ref(data={
+            'displayName': 'uname1'
+        })
+        ref_users = mocks.get_mock_collection(mock_doc=doc_user)
+        req = mocks.get_mock_request(args={
+            'uid': 'uid2'
+        })
+        with patch.multiple('routes.room',
+                            ref_groups=ref_groups,
+                            ref_users=ref_users,
+                            request=req):
+            from routes.room import remove_user
+            with raises(exceptions.InvalidRequestBody, match='Invalid groupId provided.'):
+                remove_user.__wrapped__(auth_uid='uid1', group_id='gid_invalid')
+
+    def test_remove_user_fail_not_organizer(self):
+        doc_group = mocks.get_mock_doc_ref(data={
+            'members': ['uid1', 'uid2'],  # ['uid1, uid2'] how dumb it is.
+            'organizerUid': 'uid2'
+        })
+        ref_groups = mocks.get_mock_collection(
+            mock_doc=doc_group,
+            valid_ids=['gid1']
+        )
+        doc_user = mocks.get_mock_doc_ref(data={
+            'displayName': 'uname1'
+        })
+        ref_users = mocks.get_mock_collection(mock_doc=doc_user)
+        req = mocks.get_mock_request(args={
+            'uid': 'uid2'
+        })
+        with patch.multiple('routes.room',
+                            ref_groups=ref_groups,
+                            ref_users=ref_users,
+                            request=req):
+            from routes.room import remove_user
+            with raises(exceptions.UnauthorizedRequest, match='You have no privilege to remove a user.'):
+                remove_user.__wrapped__(auth_uid='uid1', group_id='gid1')
+
+    def test_remove_user_fail_invalid_target(self):
+        doc_group = mocks.get_mock_doc_ref(data={
+            'members': ['uid1', 'uid2'],  # ['uid1, uid2'] how dumb it is.
+            'organizerUid': 'uid1'
+        })
+        ref_groups = mocks.get_mock_collection(
+            mock_doc=doc_group,
+            valid_ids=['gid1']
+        )
+        doc_user = mocks.get_mock_doc_ref(data={
+            'displayName': 'uname1'
+        })
+        ref_users = mocks.get_mock_collection(mock_doc=doc_user)
+        req = mocks.get_mock_request(args={
+            'uid': 'uid3'
+        })
+        with patch.multiple('routes.room',
+                            ref_groups=ref_groups,
+                            ref_users=ref_users,
+                            request=req):
+            from routes.room import remove_user
+            with raises(exceptions.InvalidRequestBody, match='Target user not in that group.'):
+                remove_user.__wrapped__(auth_uid='uid1', group_id='gid1')
+
+    def test_remove_user_fail_move_organizer(self):
+        doc_group = mocks.get_mock_doc_ref(data={
+            'members': ['uid1', 'uid2'],  # ['uid1, uid2'] how dumb it is.
+            'organizerUid': 'uid1'
+        })
+        ref_groups = mocks.get_mock_collection(
+            mock_doc=doc_group,
+            valid_ids=['gid1']
+        )
+        doc_user = mocks.get_mock_doc_ref(data={
+            'displayName': 'uname1'
+        })
+        ref_users = mocks.get_mock_collection(mock_doc=doc_user)
+        req = mocks.get_mock_request(args={
+            'uid': 'uid1'
+        })
+        with patch.multiple('routes.room',
+                            ref_groups=ref_groups,
+                            ref_users=ref_users,
+                            request=req):
+            from routes.room import remove_user
+            with raises(exceptions.InvalidRequestBody, match='You cannot remove the organizer.'):
+                remove_user.__wrapped__(auth_uid='uid1', group_id='gid1')
+
+    def test_get_stats_pass(self):
+        doc_group = mocks.get_mock_doc_ref(data={
+            'isCompleted': True
+        })
+        ref_groups = mocks.get_mock_collection(
+            mock_doc=doc_group,
+            valid_ids=['gid1']
+        )
+        group_cls = get_mock_group(1)
+        filter_items = Mock(return_value={
+            'items': [{'itemId': 'id1'}]
+        })
+        ref_votes = mocks.get_mock_collection(stream=[{'type': 1}, {'type': -1}])
+        with patch.multiple('routes.room',
+                            ref_groups=ref_groups,
+                            ref_votes=ref_votes,
+                            Group=group_cls,
+                            filter_items=filter_items):
+            from routes.room import get_stats
+            resp = get_stats.__wrapped__(auth_uid='uid1', group_id='gid1')
+            assert 'data' in resp
+            assert 'isCompleted' in resp
+            assert len(resp['data']) == 1
+
+    def test_get_stats_fail_invalid_gid(self):
+        doc_group = mocks.get_mock_doc_ref(data={
+            'isCompleted': True
+        })
+        ref_groups = mocks.get_mock_collection(
+            mock_doc=doc_group,
+            valid_ids=['gid1']
+        )
+        group_cls = get_mock_group(1)
+        filter_items = Mock(return_value={
+            'items': []
+        })
+        ref_votes = mocks.get_mock_collection(stream=[])
+        with patch.multiple('routes.room',
+                            ref_groups=ref_groups,
+                            Group=group_cls,
+                            filter_items=filter_items):
+            from routes.room import get_stats
+            with raises(exceptions.InvalidRequestBody, match='Invalid groupId provided.'):
+                get_stats.__wrapped__(auth_uid='uid1', group_id='gid2')
+
+    def test_get_stats_fail_unauthorized(self):
+        doc_group = mocks.get_mock_doc_ref(data={
+            'isCompleted': True
+        })
+        ref_groups = mocks.get_mock_collection(
+            mock_doc=doc_group,
+            valid_ids=['gid1']
+        )
+        group_cls = get_mock_group(0)
+        filter_items = Mock(return_value={
+            'items': []
+        })
+        ref_votes = mocks.get_mock_collection(stream=[])
+        with patch.multiple('routes.room',
+                            ref_groups=ref_groups,
+                            Group=group_cls,
+                            filter_items=filter_items):
+            from routes.room import get_stats
+            with raises(exceptions.UnauthorizedRequest):
+                get_stats.__wrapped__(auth_uid='uid1', group_id='gid1')
 
 
 class TestItem(TestCase):
