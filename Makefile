@@ -7,6 +7,6 @@ frontend-cov:
 	mv webapp/coverage reports/frontend-coverage
 
 backend-cov:
-	cd service && pytest --cov-report term-missing --cov=models,utils,routes --cov-branch tests/units
+	cd service && pytest --cov-report term --cov={models,utils,routes} --cov-branch > ../reports/backend-coverage
 
 .PHONY: report frontend-cov backend-cov
