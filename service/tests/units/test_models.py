@@ -61,20 +61,24 @@ class TestItem:
             'Items': ref_items
         })
         with patch('utils.config_g', config):
-            from models.item import filter_items
-            resp = filter_items({
-                'group_id': 'gid1',
-                'voted_by': 'user1'
-            })
-            assert 'items' in resp
-            assert 'roomTotal' in resp
+            with patch.multiple('utils.connections',
+                                ref_items=ref_items,
+                                ref_votes=ref_votes,
+                                ref_groups=ref_groups):
+                from models.item import filter_items
+                resp = filter_items({
+                    'group_id': 'gid1',
+                    'voted_by': 'user1'
+                })
+                assert 'items' in resp
+                assert 'roomTotal' in resp
 
-            resp = filter_items({
-                'group_id': 'gid1',
-                'unvoted_by': 'user1'
-            })
-            assert 'items' in resp
-            assert 'roomTotal' in resp
+                resp = filter_items({
+                    'group_id': 'gid1',
+                    'unvoted_by': 'user1'
+                })
+                assert 'items' in resp
+                assert 'roomTotal' in resp
 
 
 class TestVotingModel:
