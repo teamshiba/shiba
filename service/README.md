@@ -11,7 +11,7 @@ Install Pytest suite. Run the pytest and generate a coverage report.
 ```shell script
 pip install pytest
 pip install pytest-cov
-pytest --cov=routes --cov-report=html tests/
+pytest --cov-report term-missing --cov={models,utils,routes} --cov-branch
 ``` 
 
 ## Static code analysis
