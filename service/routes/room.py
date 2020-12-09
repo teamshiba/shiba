@@ -178,7 +178,7 @@ def remove_user(auth_uid=None, group_id=""):
     data = snap.to_dict()
     if auth_uid != data.get('organizerUid'):
         raise UnauthorizedRequest('You have no privilege to remove a user.')
-    if not (member_id in data.get('members')):
+    if member_id not in data.get('members'):
         raise InvalidRequestBody('Target user not in that group.')
     if auth_uid == member_id:
         raise InvalidRequestBody('You cannot remove the organizer.')
