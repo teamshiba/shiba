@@ -58,6 +58,8 @@ def yelp_search_biz(term: str = None, location: str = None,
     if term:
         params['term'] = term.replace(' ', '+')
     if latitude and longitude:
+        latitude = float(latitude)
+        longitude = float(longitude)
         if latitude < -90 or latitude > 90 or longitude < -180 or longitude > 180:
             raise ValueError("Invalid latitude or longitude.")
         params['latitude'] = latitude
