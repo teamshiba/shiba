@@ -1,5 +1,13 @@
 # Shiba Match
 
+Shiba Match is an App which helps users make decisions on which place to go for gatherings. Sometimes a group cannot decide upon a restaurant or hotel to go to, which causes unnecessary time to ping-pong ideas of where to go to. Additionally, we always have to search through the web to check for good places that suit the group's preferences, which takes more time. This is where ShibaMatch comes in. On ShibaMatch each individual user in the group can independently swipe left or right on cards to indicate if they like that particular place.
+
+## Tech stacks
+
+- React.js for the front-end.
+- Flask.py for the back-end.
+- Connected using RESTful APIs.
+
 ## Notes for developers
 
 ### Commits
